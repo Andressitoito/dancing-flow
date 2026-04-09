@@ -51,9 +51,10 @@ const useStore = create((set, get) => ({
   },
 
   // Choreo Actions
-  saveCurrentChoreo: async () => {
+  saveCurrentChoreo: async (asNew = false) => {
     const { currentChoreo } = get();
-    const savedChoreo = await api.saveChoreo(currentChoreo);
+    const choreoToSave = asNew ? { ...currentChoreo, id: null } : currentChoreo;
+    const savedChoreo = await api.saveChoreo(choreoToSave);
     set((state) => ({
       choreos: [...state.choreos.filter(c => c.id !== savedChoreo.id), savedChoreo],
       currentChoreo: savedChoreo
@@ -103,7 +104,13 @@ const useStore = create((set, get) => ({
     const totalSlots = currentChoreo.measures * 8;
     if (slotIndex + step.duration > totalSlots) return;
 
-    // VALIDATION: Check if it overflows the 8-beat measure boundary IF required (e.g. 4-beat step can't start at 7)
+    // VALIDATION: Strict alignment (Desborde and division lines)
+    // Rule: duration 4 can only start on 0, 4 (relative to measure)
+    // Rule: duration 2 can only start on 0, 2, 4, 6 (relative to measure)
+    const relativeSlot = slotIndex % 8;
+    if (relativeSlot % step.duration !== 0) return;
+
+    // VALIDATION: Check if it overflows the 8-beat measure boundary
     const measureStart = Math.floor(slotIndex / 8) * 8;
     const measureEnd = measureStart + 8;
     if (slotIndex + step.duration > measureEnd) return;

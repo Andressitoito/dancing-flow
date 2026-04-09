@@ -8,7 +8,7 @@ const StepForm = ({ initialStep, onSave, onCancel }) => {
     name: '',
     duration: 1,
     description: '',
-    color: COLORS[0],
+    color: APP_COLORS[0],
     category: 'base'
   });
 

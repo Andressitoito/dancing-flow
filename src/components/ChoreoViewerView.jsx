@@ -1,50 +1,75 @@
 import React, { useState, useRef, useEffect } from 'react';
 import useStore from '../store/useStore';
-import { Play, Pause, ChevronRight } from 'lucide-react';
+import { Play, Pause, ChevronRight, X } from 'lucide-react';
 
-const ViewerGrid = ({ choreo, steps, activeSlot }) => {
+const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick }) => {
   const totalSlots = (choreo.measures || 2) * 8;
-  const slots = [];
+  const gridItems = [];
 
-  const getStepAtSlot = (index) => {
-    return choreo.sequence.find(item => {
+  // Helper to find step starting at or spanning across a slot
+  const getStepData = (index) => {
+    const item = choreo.sequence.find(item => {
       const step = steps.find(s => s.id === item.stepId);
       if (!step) return false;
       return index >= item.slotIndex && index < item.slotIndex + step.duration;
     });
+    if (!item) return null;
+    return { item, step: steps.find(s => s.id === item.stepId) };
   };
 
   for (let i = 0; i < totalSlots; i++) {
-    const item = getStepAtSlot(i);
-    const step = item ? steps.find(s => s.id === item.stepId) : null;
-    const isStart = item && item.slotIndex === i;
-    const isEnd = item && item.slotIndex + (step?.duration || 1) - 1 === i;
+    const data = getStepData(i);
     const isActive = activeSlot === i;
+    const isStart = data && data.item.slotIndex === i;
 
-    slots.push(
-      <div
-        key={i}
-        className={`
-          aspect-square border border-zinc-800/50 flex items-center justify-center text-[8px] transition-all
-          ${isActive ? 'ring-2 ring-primary z-10 bg-primary/20 scale-105' : 'bg-zinc-900/30'}
-        `}
-        style={{
-          backgroundColor: step ? step.color : undefined,
-          borderTopLeftRadius: isStart ? '4px' : '0',
-          borderBottomLeftRadius: isStart ? '4px' : '0',
-          borderTopRightRadius: isEnd ? '4px' : '0',
-          borderBottomRightRadius: isEnd ? '4px' : '0',
-        }}
-      >
-        {isStart && <span className="text-white font-bold truncate px-0.5 pointer-events-none drop-shadow-md">{step.name}</span>}
-        {!step && <span className="text-zinc-800">{(i % 8) + 1}</span>}
-      </div>
-    );
+    if (isStart) {
+      // Render the step as a single rectangle spanning its duration
+      gridItems.push(
+        <div
+          key={`step-${i}`}
+          onDoubleClick={() => onStepDoubleClick(data.step)}
+          className={`
+            relative flex items-center justify-center transition-all cursor-help
+            ${isActive ? 'ring-2 ring-white z-20 shadow-lg scale-[1.02]' : 'z-10'}
+          `}
+          style={{
+            gridColumn: `span ${data.step.duration}`,
+            backgroundColor: data.step.color,
+            height: '100%',
+            borderRadius: '6px',
+            border: '1px solid rgba(255,255,255,0.1)'
+          }}
+        >
+          <span className="text-white font-bold text-[10px] truncate px-2 drop-shadow-md">
+            {data.step.name}
+          </span>
+          {/* Active indicator overlay when playing */}
+          {isActive && (
+            <div className="absolute inset-0 bg-white/20 animate-pulse rounded-[6px]" />
+          )}
+        </div>
+      );
+      // Skip the slots occupied by this step
+      i += (data.step.duration - 1);
+    } else {
+      // Empty slot with beat number
+      gridItems.push(
+        <div
+          key={`slot-${i}`}
+          className={`
+            aspect-square border border-zinc-800/30 flex items-center justify-center transition-all
+            ${isActive ? 'bg-primary/40 ring-2 ring-primary z-20 scale-105' : 'bg-zinc-900/20'}
+          `}
+        >
+          <span className="text-zinc-800 text-[10px] font-medium">{(i % 8) + 1}</span>
+        </div>
+      );
+    }
   }
 
   return (
-    <div className="grid grid-cols-8 gap-1 p-2 bg-zinc-950/30 rounded-lg">
-      {slots}
+    <div className="grid grid-cols-8 gap-1 p-2 bg-zinc-950/40 rounded-xl border border-zinc-800/50 shadow-inner">
+      {gridItems}
     </div>
   );
 };
@@ -55,6 +80,7 @@ const ChoreoViewerView = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeSlot, setActiveSlot] = useState(-1);
   const [bpm, setBpm] = useState(120);
+  const [helpStep, setHelpStep] = useState(null);
   const playbackInterval = useRef(null);
 
   useEffect(() => {
@@ -120,7 +146,16 @@ const ChoreoViewerView = () => {
       </div>
 
       <div className="flex-1 overflow-auto p-4 space-y-6">
-        <ViewerGrid choreo={selectedChoreo} steps={steps} activeSlot={activeSlot} />
+        <div className="flex items-center justify-between mb-2">
+           <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Secuencia</h3>
+           <span className="text-[10px] text-zinc-600 italic">Doble tap para ayuda</span>
+        </div>
+        <ViewerGrid
+          choreo={selectedChoreo}
+          steps={steps}
+          activeSlot={activeSlot}
+          onStepDoubleClick={setHelpStep}
+        />
 
         <div className="bg-zinc-900 p-4 rounded-xl space-y-4">
           <div className="flex items-center justify-between">
@@ -147,7 +182,7 @@ const ChoreoViewerView = () => {
             isPlaying ? 'bg-secondary text-black' : 'bg-primary text-white'
           }`}
         >
-          {isPlaying ? <Pause size={28} /> : <Play size={28} fill="currentColor" />}
+          {isPlaying ? <Pause size={28} className="text-black" /> : <Play size={28} className="text-white fill-white ml-1" />}
         </button>
 
         <div className="flex-1 flex flex-col">
@@ -162,6 +197,36 @@ const ChoreoViewerView = () => {
           />
         </div>
       </div>
+
+      {/* Help Modal */}
+      {helpStep && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-md">
+          <div className="bg-zinc-900 w-full max-w-sm rounded-2xl border border-zinc-800 p-6 shadow-2xl relative">
+            <button
+              onClick={() => setHelpStep(null)}
+              className="absolute top-4 right-4 text-zinc-500 hover:text-white"
+            >
+              <X size={24} />
+            </button>
+            <div
+              className="w-16 h-16 rounded-xl mb-4 flex items-center justify-center text-white font-bold text-xl"
+              style={{ backgroundColor: helpStep.color }}
+            >
+              {helpStep.duration}T
+            </div>
+            <h3 className="text-2xl font-black mb-2">{helpStep.name}</h3>
+            <p className="text-zinc-400 leading-relaxed italic">
+              {helpStep.description || 'No hay descripción disponible para este paso.'}
+            </p>
+            <button
+              onClick={() => setHelpStep(null)}
+              className="w-full mt-8 bg-zinc-800 py-3 rounded-xl font-bold text-white hover:bg-zinc-700 transition-colors"
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

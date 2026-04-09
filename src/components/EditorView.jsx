@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import useStore from '../store/useStore';
-import { Plus, Play, Pause, Save, Trash2, X, Info } from 'lucide-react';
+import { Plus, Play, Pause, Save, Trash2, X, Info, FilePlus, Copy } from 'lucide-react';
 import { APP_COLORS } from '../services/constants';
 
 const EditorView = () => {
@@ -71,6 +71,10 @@ const EditorView = () => {
 
   const handleLongPress = (e, index) => {
     e.preventDefault();
+    // Clear any previous selection first to ensure fresh state
+    setSelectedChoreoSlot(null);
+    setShowTooltip(null);
+
     longPressTimer.current = setTimeout(() => {
       setSelectedChoreoSlot(index);
       const item = getStepAtSlot(index);
@@ -182,11 +186,26 @@ const EditorView = () => {
             onChange={(e) => updateChoreoTitle(e.target.value)}
             className="flex-1 bg-transparent border-b border-zinc-700 text-xl font-bold text-white focus:outline-none focus:border-primary"
           />
-          <button onClick={saveCurrentChoreo} className="p-2 text-secondary hover:bg-secondary/10 rounded-full">
+          <button
+            onClick={() => saveCurrentChoreo(false)}
+            className="p-2 text-secondary hover:bg-secondary/10 rounded-full"
+            title="Guardar"
+          >
             <Save size={24} />
           </button>
-          <button onClick={resetChoreo} className="p-2 text-zinc-500 hover:bg-zinc-500/10 rounded-full">
-            <Trash2 size={24} />
+          <button
+            onClick={() => saveCurrentChoreo(true)}
+            className="p-2 text-emerald-500 hover:bg-emerald-500/10 rounded-full"
+            title="Guardar como nuevo"
+          >
+            <Copy size={24} />
+          </button>
+          <button
+            onClick={resetChoreo}
+            className="p-2 text-zinc-500 hover:bg-zinc-500/10 rounded-full"
+            title="Nueva Coreografía"
+          >
+            <FilePlus size={24} />
           </button>
         </div>
 
@@ -237,16 +256,19 @@ const EditorView = () => {
             </button>
           </div>
         ) : (
-          <div>
+        <div className="overflow-visible">
             <h3 className="text-xs font-bold text-zinc-500 uppercase mb-2">Librería Rápida</h3>
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex gap-2 overflow-x-auto pb-4 pt-2 scrollbar-hide">
               {steps.map(step => (
                 <button
                   key={step.id}
-                  onClick={() => setSelectedStepId(selectedStepId === step.id ? null : step.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedStepId(selectedStepId === step.id ? null : step.id);
+                  }}
                   className={`
-                    shrink-0 h-14 w-14 rounded-xl flex flex-col items-center justify-center transition-all border-2
-                    ${selectedStepId === step.id ? 'border-white scale-110 shadow-lg' : 'border-transparent opacity-80'}
+                    shrink-0 h-14 w-14 rounded-xl flex flex-col items-center justify-center transition-all border-2 relative
+                    ${selectedStepId === step.id ? 'border-white scale-[1.25] shadow-2xl z-20 mx-2' : 'border-transparent opacity-80'}
                   `}
                   style={{ backgroundColor: step.color }}
                 >
@@ -268,6 +290,10 @@ const EditorView = () => {
       {/* Main Grid Area */}
       <div
         ref={scrollContainerRef}
+        onClick={() => {
+          setSelectedChoreoSlot(null);
+          setShowTooltip(null);
+        }}
         className={`flex-1 p-4 overflow-auto scroll-smooth ${playbackMode === 'centered' && isPlaying ? 'flex items-center' : ''}`}
       >
         <div className={`
@@ -323,7 +349,7 @@ const EditorView = () => {
 
         <div className="pt-2">
           <h3 className="text-xs font-bold text-zinc-500 uppercase mb-2">Mis Coreografías</h3>
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex gap-2 overflow-visible pb-4 pt-2 scrollbar-hide">
             {choreos.map(choreo => (
               <button
                 key={choreo.id}
