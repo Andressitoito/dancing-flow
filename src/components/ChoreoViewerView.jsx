@@ -57,7 +57,10 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
              </div>
           )}
           {isActive && (
-            <div className="absolute inset-[-2px] border-[3px] border-white animate-pulse z-50 rounded-lg pointer-events-none" />
+            <>
+              <div className="absolute inset-0 bg-white animate-pulse z-40 opacity-70 rounded-lg" />
+              <div className="absolute inset-[-4px] border-[4px] border-white z-50 rounded-xl pointer-events-none shadow-[0_0_20px_white]" />
+            </>
           )}
         </div>
       );
@@ -79,7 +82,10 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
             {(i % 8) + 1}
           </span>
           {isActive && (
-            <div className="absolute inset-[-2px] border-[3px] border-white animate-pulse z-50 rounded-lg pointer-events-none" />
+            <>
+              <div className="absolute inset-0 bg-white z-40 rounded opacity-100" />
+              <div className="absolute inset-[-4px] border-[4px] border-white z-50 rounded-xl pointer-events-none shadow-[0_0_20px_white]" />
+            </>
           )}
         </div>
       );
@@ -106,36 +112,19 @@ const ChoreoViewerView = () => {
     playbackMode,
     setPlaybackMode,
     activeSlot,
-    setActiveSlot,
     isPlaying,
-    setIsPlaying
+    startPlayback,
+    pausePlayback,
+    stopPlayback,
+    loadChoreo
   } = useStore();
   const [selectedChoreo, setSelectedChoreo] = useState(null);
   const [bpm, setBpm] = useState(120);
   const [zoom, setZoom] = useState(1);
-  const playbackInterval = useRef(null);
-  const scrollContainerRef = useRef(null);
-
-  useEffect(() => {
-    if (isPlaying && selectedChoreo) {
-      const beatInterval = (60 / bpm) * 1000;
-      playbackInterval.current = setInterval(() => {
-        setActiveSlot((prev) => {
-          const totalSlots = (selectedChoreo.measures || 2) * 8;
-          const next = prev + 1;
-          return next >= totalSlots ? 0 : next;
-        });
-      }, beatInterval);
-    } else {
-      clearInterval(playbackInterval.current);
-      if (!isPlaying) setActiveSlot(-1);
-    }
-    return () => clearInterval(playbackInterval.current);
-  }, [isPlaying, bpm, selectedChoreo]);
 
   // Handle Centered Scroll Mode
   useEffect(() => {
-    if (isPlaying && playbackMode === 'centered' && activeSlot >= 0) {
+    if (playbackMode === 'centered' && activeSlot >= 0) {
       const slotElement = document.getElementById(`vslot-${activeSlot}`);
       const container = document.getElementById('viewer-scroll-container');
 
@@ -144,7 +133,7 @@ const ChoreoViewerView = () => {
         container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
       }
     }
-  }, [activeSlot, isPlaying, playbackMode]);
+  }, [activeSlot, playbackMode]);
 
   if (!selectedChoreo) {
     return (
@@ -159,7 +148,10 @@ const ChoreoViewerView = () => {
             {choreos.map(choreo => (
               <button
                 key={choreo.id}
-                onClick={() => setSelectedChoreo(choreo)}
+                onClick={() => {
+                   setSelectedChoreo(choreo);
+                   loadChoreo(choreo);
+                }}
                 className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex items-center justify-between hover:border-primary transition-all group"
               >
                 <div className="text-left">
@@ -183,7 +175,7 @@ const ChoreoViewerView = () => {
     <div className="h-screen flex flex-col overflow-hidden bg-background">
       <div className="p-4 flex items-center gap-3 border-b border-zinc-800 bg-zinc-950/50">
         <button
-          onClick={() => { setSelectedChoreo(null); setIsPlaying(false); }}
+          onClick={() => { setSelectedChoreo(null); stopPlayback(); }}
           className="p-2 -ml-2 text-zinc-400 hover:text-white"
         >
           <ChevronRight size={24} className="rotate-180" />
@@ -238,10 +230,16 @@ const ChoreoViewerView = () => {
 
       <PlaybackControls
         isPlaying={isPlaying}
-        onTogglePlay={() => setIsPlaying(!isPlaying)}
-        onStop={() => { setIsPlaying(false); setActiveSlot(-1); }}
+        onTogglePlay={() => isPlaying ? pausePlayback() : startPlayback(bpm)}
+        onStop={stopPlayback}
         bpm={bpm}
-        onBpmChange={setBpm}
+        onBpmChange={(newBpm) => {
+           setBpm(newBpm);
+           if (isPlaying) {
+             pausePlayback();
+             startPlayback(newBpm);
+           }
+        }}
         playbackMode={playbackMode}
         onToggleMode={() => setPlaybackMode(playbackMode === 'scroll' ? 'centered' : 'scroll')}
         showModeToggle={true}

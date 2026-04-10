@@ -15,6 +15,7 @@ const useStore = create((set, get) => ({
   activeSlot: -1, // For Playback mode
   playbackMode: 'scroll', // 'scroll' or 'centered'
   isPlaying: false,
+  playbackIntervalId: null,
 
   // Actions
   fetchInitialData: async () => {
@@ -91,16 +92,27 @@ const useStore = create((set, get) => ({
     }));
   },
 
-  removeMeasure: () => {
+  removeMeasure: (measureIndex) => {
     set((state) => {
-      const newMeasures = Math.max(1, state.currentChoreo.measures - 1);
-      // Also filter sequence to remove steps that were in the removed measure
-      const maxSlot = newMeasures * 8;
-      const newSequence = state.currentChoreo.sequence.filter(item => item.slotIndex < maxSlot);
+      const { currentChoreo } = state;
+      const newMeasures = Math.max(1, currentChoreo.measures - 1);
+
+      const startSlot = measureIndex * 8;
+      const endSlot = startSlot + 8;
+
+      // Remove steps in the deleted measure and shift steps after it
+      const newSequence = currentChoreo.sequence
+        .filter(item => item.slotIndex < startSlot || item.slotIndex >= endSlot)
+        .map(item => {
+           if (item.slotIndex >= endSlot) {
+             return { ...item, slotIndex: item.slotIndex - 8 };
+           }
+           return item;
+        });
 
       return {
         currentChoreo: {
-          ...state.currentChoreo,
+          ...currentChoreo,
           measures: newMeasures,
           sequence: newSequence
         }
@@ -108,9 +120,39 @@ const useStore = create((set, get) => ({
     });
   },
 
-  setActiveSlot: (slot) => set({ activeSlot: slot }),
+  setActiveSlot: (slot) => set((state) => ({
+    activeSlot: typeof slot === 'function' ? slot(state.activeSlot) : slot
+  })),
   setPlaybackMode: (mode) => set({ playbackMode: mode }),
   setIsPlaying: (isPlaying) => set({ isPlaying }),
+
+  startPlayback: (bpm) => {
+    const { playbackIntervalId } = get();
+    if (playbackIntervalId) clearInterval(playbackIntervalId);
+
+    const intervalId = setInterval(() => {
+      set((state) => {
+        const totalSlots = state.currentChoreo.measures * 8;
+        if (totalSlots === 0) return { activeSlot: -1 };
+        const nextSlot = (state.activeSlot + 1) % totalSlots;
+        return { activeSlot: nextSlot };
+      });
+    }, (60 / Math.max(bpm, 1)) * 1000);
+
+    set({ isPlaying: true, playbackIntervalId: intervalId });
+  },
+
+  stopPlayback: () => {
+    const { playbackIntervalId } = get();
+    if (playbackIntervalId) clearInterval(playbackIntervalId);
+    set({ isPlaying: false, activeSlot: -1, playbackIntervalId: null });
+  },
+
+  pausePlayback: () => {
+    const { playbackIntervalId } = get();
+    if (playbackIntervalId) clearInterval(playbackIntervalId);
+    set({ isPlaying: false, playbackIntervalId: null });
+  },
 
   addStepToChoreo: (stepId, slotIndex) => {
     const { currentChoreo, steps } = get();

@@ -84,21 +84,28 @@ const EditorView = () => {
       }
 
       gridElements.push(
-        <div key={`measure-${m}`} className="relative mb-8 last:mb-20">
+        <div key={`measure-${m}`} className="relative mb-10">
           <div className="grid grid-cols-8 gap-0 shadow-xl border border-zinc-800/50 rounded-lg overflow-hidden">
             {measureSlots}
           </div>
           <button
-            onClick={() => {
-              if (window.confirm('¿Eliminar este compás y sus pasos?')) {
-                removeMeasure();
-              }
+            onClick={async () => {
+              const result = await Swal.fire({
+                title: '¿Eliminar compás?',
+                text: "Se borrarán los pasos de este compás.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Eliminar',
+                background: '#18181b', color: '#fff'
+              });
+              if (result.isConfirmed) removeMeasure(m);
             }}
-            className="absolute -right-2 -top-2 bg-red-500/80 text-white rounded-full p-1 opacity-0 group-hover/measure:opacity-100 transition-opacity z-10"
+            className="absolute -right-2 top-1/2 -translate-y-1/2 bg-red-500 text-white rounded-full p-2 z-20 shadow-2xl active:scale-125 transition-all border-2 border-zinc-950"
           >
-            <X size={12} />
+            <X size={16} strokeWidth={3} />
           </button>
-          <div className="absolute -left-2 top-1/2 -translate-y-1/2 text-[8px] text-zinc-700 font-bold -rotate-90">
+          <div className="absolute -left-6 top-1/2 -translate-y-1/2 text-[10px] text-zinc-600 font-bold uppercase -rotate-90">
             C{m+1}
           </div>
         </div>
@@ -177,18 +184,18 @@ const EditorView = () => {
   };
 
   return (
-    <div className="bg-zinc-950 min-h-screen" onClick={() => setShowTooltip(null)}>
+    <div className="bg-zinc-950 min-h-screen flex flex-col" onClick={() => setShowTooltip(null)}>
       {/* Header & Library */}
-      <div className="sticky top-0 p-3 space-y-3 bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800 z-50">
-        <div className="flex flex-col gap-3">
+      <div className="sticky top-0 p-2 space-y-3 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800 z-50 shadow-lg">
+        <div className="flex flex-col gap-2 max-w-lg mx-auto">
           <div className="flex items-center gap-2">
             <input
               value={currentChoreo.title}
               onChange={(e) => updateChoreoTitle(e.target.value)}
-              className="flex-[4] bg-transparent border-b border-zinc-800 py-1 text-base font-bold text-white focus:outline-none focus:border-primary truncate"
-              placeholder="Mi Coreografía..."
+              className="flex-1 min-w-0 bg-transparent border-b border-zinc-700 py-1 text-sm font-black text-white focus:outline-none focus:border-primary truncate"
+              placeholder="Mi Coreo..."
             />
-            <div className="flex flex-1 gap-0.5 bg-zinc-900 rounded-lg p-0.5 border border-zinc-800 shadow-inner overflow-hidden">
+            <div className="flex shrink-0 gap-0.5 bg-zinc-900 rounded-lg p-0.5 border border-zinc-800 shadow-inner">
               <button
                 onClick={async () => {
                   const result = await Swal.fire({
@@ -202,9 +209,9 @@ const EditorView = () => {
                   });
                   if (result.isConfirmed) resetChoreo();
                 }}
-                className="flex-1 p-1.5 text-primary hover:bg-zinc-800 rounded transition-colors"
+                className="p-1.5 text-primary hover:bg-zinc-800 rounded transition-colors"
               >
-                <Plus size={16} />
+                <Plus size={14} />
               </button>
               <button
                 onClick={async () => {
@@ -220,9 +227,9 @@ const EditorView = () => {
                     await saveCurrentChoreo(false);
                   }
                 }}
-                className="flex-1 p-1.5 text-secondary hover:bg-zinc-800 rounded transition-colors"
+                className="p-1.5 text-secondary hover:bg-zinc-800 rounded transition-colors"
               >
-                <Save size={16} />
+                <Save size={14} />
               </button>
               <button
                 onClick={async () => {
@@ -238,9 +245,9 @@ const EditorView = () => {
                     await saveCurrentChoreo(true);
                   }
                 }}
-                className="flex-1 p-1.5 text-emerald-500 hover:bg-zinc-800 rounded transition-colors"
+                className="p-1.5 text-emerald-500 hover:bg-zinc-800 rounded transition-colors"
               >
-                <Copy size={16} />
+                <Copy size={14} />
               </button>
             </div>
           </div>
@@ -324,46 +331,49 @@ const EditorView = () => {
         )}
       </div>
 
-      {/* Main Grid Area - Grows naturally */}
+      {/* Main Flow Area - All scrolling together */}
       <div
         onClick={() => {
           setSelectedChoreoSlot(null);
           setShowTooltip(null);
         }}
-        className="p-6"
+        className="flex-1 overflow-y-auto p-4 space-y-12"
       >
         <div className="w-full max-w-lg mx-auto">
           {renderGrid()}
 
-          <div className="flex justify-center mt-2 mb-20">
+          <div className="flex justify-center mt-4">
             <button
               onClick={addMeasure}
-              className="px-6 py-3 bg-zinc-900 border border-zinc-800 text-zinc-400 rounded-2xl flex items-center gap-2 hover:bg-zinc-800 transition-colors shadow-lg"
+              className="px-8 py-4 bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-3xl flex items-center gap-3 hover:bg-zinc-800 transition-all shadow-xl active:scale-95"
             >
-              <Plus size={20} />
-              <span className="font-bold">Añadir Compás</span>
+              <Plus size={24} />
+              <span className="font-black uppercase tracking-wider text-sm">Añadir Compás</span>
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Choreo List */}
-      <div className="p-4 bg-zinc-950/80 border-t border-zinc-800 shrink-0">
-        <div className="pt-2">
-          <h3 className="text-xs font-bold text-zinc-500 uppercase mb-2">Mis Coreografías</h3>
-          <div className="flex gap-2 overflow-visible pb-4 pt-2 scrollbar-hide">
+        {/* Choreo List - Now part of the flow */}
+        <div className="w-full max-w-lg mx-auto pb-32 border-t border-zinc-800/50 pt-8">
+          <h3 className="text-xs font-black text-zinc-600 uppercase tracking-[0.2em] mb-4 px-2">Mis Coreografías</h3>
+          <div className="flex flex-wrap gap-2 px-2">
             {choreos.map(choreo => (
               <button
                 key={choreo.id}
                 onClick={() => loadChoreo(choreo)}
                 className={`
-                  shrink-0 px-4 py-2 rounded-lg bg-zinc-900 border border-zinc-800 text-xs font-bold transition-all
-                  ${currentChoreo.id === choreo.id ? 'border-primary text-primary' : 'text-zinc-400'}
+                  px-4 py-3 rounded-xl border font-bold text-sm transition-all active:scale-95
+                  ${currentChoreo.id === choreo.id
+                    ? 'bg-primary/10 border-primary text-primary shadow-[0_0_15px_rgba(225,29,72,0.2)]'
+                    : 'bg-zinc-900 border-zinc-800 text-zinc-500'}
                 `}
               >
                 {choreo.title}
               </button>
             ))}
+            {choreos.length === 0 && (
+              <p className="text-zinc-700 italic text-sm px-2">No hay coreos guardadas.</p>
+            )}
           </div>
         </div>
       </div>
