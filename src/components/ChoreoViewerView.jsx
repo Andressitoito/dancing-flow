@@ -121,6 +121,7 @@ const ChoreoViewerView = () => {
   const [selectedChoreo, setSelectedChoreo] = useState(null);
   const [bpm, setBpm] = useState(120);
   const [zoom, setZoom] = useState(1);
+  const scrollContainerRef = useRef(null);
 
   // Handle Centered Scroll Mode
   useEffect(() => {
