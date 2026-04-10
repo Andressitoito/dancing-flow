@@ -3,7 +3,7 @@ import useStore from '../store/useStore';
 import { Play, Pause, ChevronRight, X } from 'lucide-react';
 import PlaybackControls from './PlaybackControls';
 
-const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick }) => {
+const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode, zoom = 1 }) => {
   const totalSlots = (choreo.measures || 2) * 8;
   const gridItems = [];
 
@@ -24,7 +24,7 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick }) => {
     const isStart = data && data.item.slotIndex === i;
 
     if (data) {
-      // Render as individual squares but keeping the name and look requested
+      // Render as individual squares
       const step = data.step;
       const isItemStart = data.item.slotIndex === i;
       const isItemEnd = data.item.slotIndex + step.duration - 1 === i;
@@ -32,9 +32,10 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick }) => {
       gridItems.push(
         <div
           key={`step-slot-${i}`}
+          id={`vslot-${i}`}
           onDoubleClick={() => onStepDoubleClick(step)}
           className={`
-            relative aspect-square border border-zinc-800/30 flex items-center justify-center transition-all cursor-help
+            relative aspect-square border border-zinc-800/30 flex items-center justify-center transition-all cursor-help shrink-0
             ${isActive ? 'ring-2 ring-white z-30 scale-105' : 'z-10'}
           `}
           style={{
@@ -43,7 +44,8 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick }) => {
             borderBottomLeftRadius: isItemStart ? '8px' : '0',
             borderTopRightRadius: isItemEnd ? '8px' : '0',
             borderBottomRightRadius: isItemEnd ? '8px' : '0',
-            opacity: isActive ? 1 : 0.9
+            opacity: isActive ? 1 : 0.9,
+            width: playbackMode === 'centered' ? `${64 * zoom}px` : 'auto'
           }}
         >
           {isItemStart && (
@@ -63,10 +65,14 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick }) => {
       gridItems.push(
         <div
           key={`slot-${i}`}
+          id={`vslot-${i}`}
           className={`
-            aspect-square border border-zinc-800/30 flex items-center justify-center transition-all
+            aspect-square border border-zinc-800/30 flex items-center justify-center transition-all shrink-0
             ${isActive ? 'bg-primary/40 ring-2 ring-primary z-20 scale-105' : 'bg-zinc-900/20'}
           `}
+          style={{
+             width: playbackMode === 'centered' ? `${64 * zoom}px` : 'auto'
+          }}
         >
           <span className="text-zinc-800 text-[10px] font-medium">{(i % 8) + 1}</span>
         </div>
@@ -75,28 +81,40 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick }) => {
   }
 
   return (
-    <div className="grid grid-cols-8 gap-1 p-2 bg-zinc-950/40 rounded-xl border border-zinc-800/50 shadow-inner">
+    <div className={`
+      ${playbackMode === 'centered' ? 'flex overflow-x-auto scrollbar-hide py-10' : 'grid grid-cols-8 gap-1'}
+      p-2 bg-zinc-950/40 rounded-xl border border-zinc-800/50 shadow-inner
+    `}>
       {gridItems}
     </div>
   );
 };
 
 const ChoreoViewerView = () => {
-  const { choreos, steps } = useStore();
+  const {
+    choreos,
+    steps,
+    playbackMode,
+    setPlaybackMode,
+    activeSlot,
+    setActiveSlot,
+    isPlaying,
+    setIsPlaying
+  } = useStore();
   const [selectedChoreo, setSelectedChoreo] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [activeSlot, setActiveSlot] = useState(-1);
   const [bpm, setBpm] = useState(120);
+  const [zoom, setZoom] = useState(1);
   const [helpStep, setHelpStep] = useState(null);
   const playbackInterval = useRef(null);
+  const scrollContainerRef = useRef(null);
 
   useEffect(() => {
     if (isPlaying && selectedChoreo) {
       const beatInterval = (60 / bpm) * 1000;
       playbackInterval.current = setInterval(() => {
         setActiveSlot((prev) => {
-          const next = prev + 1;
           const totalSlots = (selectedChoreo.measures || 2) * 8;
+          const next = prev + 1;
           return next >= totalSlots ? 0 : next;
         });
       }, beatInterval);
@@ -106,6 +124,18 @@ const ChoreoViewerView = () => {
     }
     return () => clearInterval(playbackInterval.current);
   }, [isPlaying, bpm, selectedChoreo]);
+
+  // Handle Centered Scroll Mode
+  useEffect(() => {
+    if (isPlaying && playbackMode === 'centered' && activeSlot >= 0) {
+      const slotElement = document.getElementById(`vslot-${activeSlot}`);
+      if (slotElement && scrollContainerRef.current) {
+        const container = scrollContainerRef.current;
+        const scrollLeft = slotElement.offsetLeft - container.offsetWidth / 2 + slotElement.offsetWidth / 2;
+        container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+      }
+    }
+  }, [activeSlot, isPlaying, playbackMode]);
 
   if (!selectedChoreo) {
     return (
@@ -152,7 +182,10 @@ const ChoreoViewerView = () => {
         <h2 className="flex-1 text-xl font-bold truncate">{selectedChoreo.title}</h2>
       </div>
 
-      <div className="flex-1 overflow-auto p-4 space-y-6">
+      <div
+        ref={scrollContainerRef}
+        className="flex-1 overflow-auto p-4 space-y-6"
+      >
         <div className="flex items-center justify-between mb-2">
            <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Secuencia</h3>
            <span className="text-[10px] text-zinc-600 italic">Doble tap para ayuda</span>
@@ -162,24 +195,23 @@ const ChoreoViewerView = () => {
           steps={steps}
           activeSlot={activeSlot}
           onStepDoubleClick={setHelpStep}
+          playbackMode={playbackMode}
+          zoom={zoom}
         />
 
-        <div className="bg-zinc-900 p-4 rounded-xl space-y-4">
-          <div className="flex items-center justify-between">
-            <h4 className="font-bold text-zinc-400 uppercase text-xs">Información</h4>
-            <span className="text-xs font-bold text-primary">MODO SOLO LECTURA</span>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-zinc-800/50 p-3 rounded-lg">
-              <span className="block text-[10px] text-zinc-500 uppercase font-bold">Compases</span>
-              <span className="text-lg font-bold">{selectedChoreo.measures}</span>
-            </div>
-            <div className="bg-zinc-800/50 p-3 rounded-lg">
-              <span className="block text-[10px] text-zinc-500 uppercase font-bold">BPM Sugerido</span>
-              <span className="text-lg font-bold">120</span>
-            </div>
-          </div>
-        </div>
+        {playbackMode === 'centered' && (
+           <div className="flex flex-col gap-2 mt-4 bg-zinc-900/50 p-4 rounded-xl border border-zinc-800">
+             <div className="flex justify-between items-center">
+               <span className="text-[10px] text-zinc-500 font-bold uppercase">Zoom Modo Lineal</span>
+               <span className="text-xs font-bold text-primary">{Math.round(zoom * 100)}%</span>
+             </div>
+             <input
+               type="range" min="0.5" max="2" step="0.1" value={zoom}
+               onChange={(e) => setZoom(parseFloat(e.target.value))}
+               className="w-full accent-primary h-1 bg-zinc-700 rounded-lg appearance-none"
+             />
+           </div>
+        )}
       </div>
 
       <PlaybackControls
@@ -187,7 +219,9 @@ const ChoreoViewerView = () => {
         onTogglePlay={() => setIsPlaying(!isPlaying)}
         bpm={bpm}
         onBpmChange={setBpm}
-        showModeToggle={false}
+        playbackMode={playbackMode}
+        onToggleMode={() => setPlaybackMode(playbackMode === 'scroll' ? 'centered' : 'scroll')}
+        showModeToggle={true}
       />
 
       {/* Help Modal */}

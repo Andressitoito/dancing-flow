@@ -91,6 +91,23 @@ const useStore = create((set, get) => ({
     }));
   },
 
+  removeMeasure: () => {
+    set((state) => {
+      const newMeasures = Math.max(1, state.currentChoreo.measures - 1);
+      // Also filter sequence to remove steps that were in the removed measure
+      const maxSlot = newMeasures * 8;
+      const newSequence = state.currentChoreo.sequence.filter(item => item.slotIndex < maxSlot);
+
+      return {
+        currentChoreo: {
+          ...state.currentChoreo,
+          measures: newMeasures,
+          sequence: newSequence
+        }
+      };
+    });
+  },
+
   setActiveSlot: (slot) => set({ activeSlot: slot }),
   setPlaybackMode: (mode) => set({ playbackMode: mode }),
   setIsPlaying: (isPlaying) => set({ isPlaying }),

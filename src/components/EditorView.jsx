@@ -22,7 +22,8 @@ const EditorView = () => {
     isPlaying,
     setIsPlaying,
     playbackMode,
-    setPlaybackMode
+    setPlaybackMode,
+    removeMeasure
   } = useStore();
 
   const [selectedStepId, setSelectedStepId] = useState(null);
@@ -35,37 +36,10 @@ const EditorView = () => {
   const playbackInterval = useRef(null);
   const scrollContainerRef = useRef(null);
 
-  // Playback Logic
+  // Ensure we stop playing if we were playing and switch to Editor
   useEffect(() => {
-    if (isPlaying) {
-      const beatInterval = (60 / bpm) * 1000;
-      playbackInterval.current = setInterval(() => {
-        setActiveSlot((prev) => {
-          const totalSlots = currentChoreo.measures * 8;
-          const next = prev + 1;
-          return next >= totalSlots ? 0 : next;
-        });
-      }, beatInterval);
-    } else {
-      clearInterval(playbackInterval.current);
-      // Optional: setActiveSlot(-1); // Reset highlight when stopping
-    }
-    return () => {
-      if (playbackInterval.current) clearInterval(playbackInterval.current);
-    };
-  }, [isPlaying, bpm, currentChoreo.measures]); // Removed setActiveSlot from deps to prevent potential re-triggers if it's not stable
-
-  // Handle Centered Scroll Mode
-  useEffect(() => {
-    if (isPlaying && playbackMode === 'centered' && activeSlot >= 0) {
-      const slotElement = document.getElementById(`slot-${activeSlot}`);
-      if (slotElement && scrollContainerRef.current) {
-        const container = scrollContainerRef.current;
-        const scrollLeft = slotElement.offsetLeft - container.offsetWidth / 2 + slotElement.offsetWidth / 2;
-        container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
-      }
-    }
-  }, [activeSlot, isPlaying, playbackMode]);
+    setIsPlaying(false);
+  }, []);
 
   const handleSlotClick = (index) => {
     if (selectedStepId) {
@@ -98,10 +72,41 @@ const EditorView = () => {
   };
 
   const renderGrid = () => {
-    const totalSlots = currentChoreo.measures * 8;
-    const slots = [];
+    const measuresCount = currentChoreo.measures;
+    const gridElements = [];
 
-    for (let i = 0; i < totalSlots; i++) {
+    for (let m = 0; m < measuresCount; m++) {
+      const measureSlots = [];
+      for (let i = 0; i < 8; i++) {
+        const globalSlotIndex = m * 8 + i;
+        measureSlots.push(renderSlot(globalSlotIndex));
+      }
+
+      gridElements.push(
+        <div key={`measure-${m}`} className="relative group/measure mb-6">
+          <div className="grid grid-cols-8 gap-0">
+            {measureSlots}
+          </div>
+          <button
+            onClick={() => {
+              if (window.confirm('¿Eliminar este compás y sus pasos?')) {
+                removeMeasure();
+              }
+            }}
+            className="absolute -right-2 -top-2 bg-red-500/80 text-white rounded-full p-1 opacity-0 group-hover/measure:opacity-100 transition-opacity z-10"
+          >
+            <X size={12} />
+          </button>
+          <div className="absolute -left-2 top-1/2 -translate-y-1/2 text-[8px] text-zinc-700 font-bold -rotate-90">
+            C{m+1}
+          </div>
+        </div>
+      );
+    }
+    return gridElements;
+  };
+
+  const renderSlot = (i) => {
       const item = getStepAtSlot(i);
       const step = item ? steps.find(s => s.id === item.stepId) : null;
       const isStart = item && item.slotIndex === i;
@@ -112,7 +117,7 @@ const EditorView = () => {
       const isGroupEnd = (i + 1) % 4 === 0 && (i + 1) % 8 !== 0;
       const isMeasureEnd = (i + 1) % 8 === 0;
 
-      slots.push(
+      return (
         <div
           key={i}
           id={`slot-${i}`}
@@ -127,9 +132,7 @@ const EditorView = () => {
           onTouchEnd={clearLongPress}
           className={`
             relative aspect-square border-zinc-800 border flex items-center justify-center text-[10px] font-bold transition-all shrink-0
-            ${playbackMode === 'centered' && isPlaying ? 'w-16' : ''}
             ${isGroupEnd ? 'border-r-zinc-600 mr-1' : ''}
-            ${isMeasureEnd ? 'border-r-zinc-400 mr-2' : ''}
             ${isActive ? 'ring-2 ring-primary z-10 scale-105 bg-primary/20' : 'bg-zinc-900/50'}
             ${!step ? 'hover:bg-zinc-800' : ''}
           `}
@@ -170,54 +173,55 @@ const EditorView = () => {
           )}
         </div>
       );
-    }
-    return slots;
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] overflow-hidden" onClick={() => setShowTooltip(null)}>
+    <div className="flex flex-col h-[calc(100vh-64px)] overflow-hidden bg-zinc-950" onClick={() => setShowTooltip(null)}>
       {/* Header & Library */}
       <div className="p-4 space-y-4 bg-zinc-950/50 border-b border-zinc-800 shrink-0">
-        <div className="flex items-center gap-3">
-          <input
-            value={currentChoreo.title}
-            onChange={(e) => updateChoreoTitle(e.target.value)}
-            className="flex-1 bg-transparent border-b border-zinc-700 text-xl font-bold text-white focus:outline-none focus:border-primary"
-          />
-          <div className="flex gap-1 shrink-0">
-            <button
-              onClick={() => {
-                if (window.confirm('¿Confirmas que deseas sobreescribir la coreografía actual?')) {
-                  saveCurrentChoreo(false);
-                }
-              }}
-              className="p-2 text-secondary hover:bg-secondary/10 rounded-full"
-              title="Guardar"
-            >
-              <Save size={20} />
-            </button>
-            <button
-              onClick={() => {
-                if (window.confirm('¿Deseas guardar una copia nueva de esta coreografía?')) {
-                  saveCurrentChoreo(true);
-                }
-              }}
-              className="p-2 text-emerald-500 hover:bg-emerald-500/10 rounded-full"
-              title="Guardar como nuevo"
-            >
-              <Copy size={20} />
-            </button>
-            <button
-              onClick={() => {
-                if (window.confirm('¿Quieres empezar una coreografía nueva? Se perderán los cambios no guardados.')) {
-                  resetChoreo();
-                }
-              }}
-              className="p-2 text-zinc-500 hover:bg-zinc-500/10 rounded-full"
-              title="Nueva Coreografía"
-            >
-              <FilePlus size={20} />
-            </button>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <input
+              value={currentChoreo.title}
+              onChange={(e) => updateChoreoTitle(e.target.value)}
+              className="flex-1 bg-transparent border-b border-zinc-700 text-lg font-bold text-white focus:outline-none focus:border-primary mr-4"
+              placeholder="Nombre de la coreo..."
+            />
+            <div className="flex gap-0.5 shrink-0 bg-zinc-900 rounded-lg p-0.5 border border-zinc-800">
+              <button
+                onClick={() => {
+                  if (window.confirm('¿Quieres empezar una coreografía nueva?')) {
+                    resetChoreo();
+                  }
+                }}
+                className="p-2 text-primary hover:bg-zinc-800 rounded-md"
+                title="Nueva"
+              >
+                <Plus size={20} />
+              </button>
+              <button
+                onClick={() => {
+                  if (window.confirm('¿Sobreescribir la coreografía actual?')) {
+                    saveCurrentChoreo(false);
+                  }
+                }}
+                className="p-2 text-secondary hover:bg-zinc-800 rounded-md"
+                title="Guardar"
+              >
+                <Save size={20} />
+              </button>
+              <button
+                onClick={() => {
+                  if (window.confirm('¿Guardar como copia nueva?')) {
+                    saveCurrentChoreo(true);
+                  }
+                }}
+                className="p-2 text-emerald-500 hover:bg-zinc-800 rounded-md"
+                title="Copiar"
+              >
+                <Copy size={20} />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -299,44 +303,32 @@ const EditorView = () => {
         )}
       </div>
 
-      {/* Main Grid Area */}
+      {/* Main Grid Area - Now it grows with content */}
       <div
         ref={scrollContainerRef}
         onClick={() => {
           setSelectedChoreoSlot(null);
           setShowTooltip(null);
         }}
-        className={`flex-1 p-4 overflow-auto scroll-smooth ${playbackMode === 'centered' && isPlaying ? 'flex items-center' : ''}`}
+        className="flex-1 p-6 overflow-auto"
       >
-        <div className={`
-          ${playbackMode === 'centered' && isPlaying ? 'flex flex-nowrap' : 'grid grid-cols-8 gap-y-4'}
-          w-full max-w-lg mx-auto
-        `}>
+        <div className="w-full max-w-lg mx-auto">
           {renderGrid()}
 
-          <div className="col-span-8 flex justify-center mt-6">
+          <div className="flex justify-center mt-2 mb-20">
             <button
               onClick={addMeasure}
-              className="px-6 py-2 bg-zinc-800 text-zinc-400 rounded-full flex items-center gap-2 hover:bg-zinc-700 transition-colors"
+              className="px-6 py-3 bg-zinc-900 border border-zinc-800 text-zinc-400 rounded-2xl flex items-center gap-2 hover:bg-zinc-800 transition-colors shadow-lg"
             >
-              <Plus size={18} />
-              <span>Añadir Compás</span>
+              <Plus size={20} />
+              <span className="font-bold">Añadir Compás</span>
             </button>
           </div>
         </div>
       </div>
 
-      <PlaybackControls
-        isPlaying={isPlaying}
-        onTogglePlay={() => setIsPlaying(!isPlaying)}
-        bpm={bpm}
-        onBpmChange={setBpm}
-        playbackMode={playbackMode}
-        onToggleMode={() => setPlaybackMode(playbackMode === 'scroll' ? 'centered' : 'scroll')}
-      />
-
       {/* Choreo List */}
-      <div className="p-4 bg-zinc-950/80 border-t border-zinc-800 shrink-0 pb-10">
+      <div className="p-4 bg-zinc-950/80 border-t border-zinc-800 shrink-0">
         <div className="pt-2">
           <h3 className="text-xs font-bold text-zinc-500 uppercase mb-2">Mis Coreografías</h3>
           <div className="flex gap-2 overflow-visible pb-4 pt-2 scrollbar-hide">
