@@ -35,8 +35,8 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-white pb-20">
-      <main className="max-w-md mx-auto h-full">
+    <div className="min-h-screen bg-background text-white pb-32">
+      <main className="max-w-md mx-auto">
         {renderContent()}
       </main>
       <Navbar activeTab={activeTab} onTabChange={setActiveTab} />

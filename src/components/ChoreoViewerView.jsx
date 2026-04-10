@@ -37,7 +37,7 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
           onDoubleClick={() => onStepDoubleClick(step)}
           className={`
             relative aspect-square border border-zinc-800/30 flex items-center justify-center transition-all cursor-help shrink-0
-            ${isActive ? 'ring-[3px] ring-white z-40 scale-110 shadow-lg' : 'z-10'}
+            ${isActive ? 'z-40 scale-110 shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'z-10'}
           `}
           style={{
             backgroundColor: step.color,
@@ -57,7 +57,7 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
              </div>
           )}
           {isActive && (
-            <div className="absolute inset-0 bg-white/40 animate-pulse z-30" />
+            <div className="absolute inset-[-2px] border-[3px] border-white animate-pulse z-50 rounded-lg pointer-events-none" />
           )}
         </div>
       );
@@ -69,23 +69,31 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
           id={`vslot-${i}`}
           className={`
             aspect-square border border-zinc-800/30 flex items-center justify-center transition-all shrink-0
-            ${isActive ? 'bg-primary/40 ring-2 ring-primary z-20 scale-105' : 'bg-zinc-900/20'}
+            ${isActive ? 'bg-white z-40 scale-110 shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'bg-zinc-900/20'}
           `}
           style={{
              width: playbackMode === 'centered' ? `${64 * zoom}px` : 'auto'
           }}
         >
-          <span className="text-zinc-800 text-[10px] font-medium">{(i % 8) + 1}</span>
+          <span className={isActive ? 'text-black text-[12px] font-black' : 'text-zinc-800 text-[10px] font-medium'}>
+            {(i % 8) + 1}
+          </span>
+          {isActive && (
+            <div className="absolute inset-[-2px] border-[3px] border-white animate-pulse z-50 rounded-lg pointer-events-none" />
+          )}
         </div>
       );
     }
   }
 
   return (
-    <div className={`
-      ${playbackMode === 'centered' ? 'flex overflow-x-auto scrollbar-hide py-10' : 'grid grid-cols-8 gap-1'}
-      p-2 bg-zinc-950/40 rounded-xl border border-zinc-800/50 shadow-inner
-    `}>
+    <div
+      className={`
+        ${playbackMode === 'centered' ? 'flex overflow-x-auto scrollbar-hide py-10' : 'grid grid-cols-8 gap-1'}
+        p-2 bg-zinc-950/40 rounded-xl border border-zinc-800/50 shadow-inner scroll-smooth
+      `}
+      id="viewer-scroll-container"
+    >
       {gridItems}
     </div>
   );
@@ -129,8 +137,9 @@ const ChoreoViewerView = () => {
   useEffect(() => {
     if (isPlaying && playbackMode === 'centered' && activeSlot >= 0) {
       const slotElement = document.getElementById(`vslot-${activeSlot}`);
-      if (slotElement && scrollContainerRef.current) {
-        const container = scrollContainerRef.current;
+      const container = document.getElementById('viewer-scroll-container');
+
+      if (slotElement && container) {
         const scrollLeft = slotElement.offsetLeft - container.offsetWidth / 2 + slotElement.offsetWidth / 2;
         container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
       }

@@ -177,84 +177,70 @@ const EditorView = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] overflow-hidden bg-zinc-950" onClick={() => setShowTooltip(null)}>
+    <div className="bg-zinc-950 min-h-screen" onClick={() => setShowTooltip(null)}>
       {/* Header & Library */}
-      <div className="p-3 space-y-3 bg-zinc-950/50 border-b border-zinc-800 shrink-0">
+      <div className="sticky top-0 p-3 space-y-3 bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800 z-50">
         <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
             <input
               value={currentChoreo.title}
               onChange={(e) => updateChoreoTitle(e.target.value)}
-              className="w-full bg-transparent border-b border-zinc-800 py-1 text-base font-bold text-white focus:outline-none focus:border-primary"
-              placeholder="Nombre de la coreografía..."
+              className="flex-[4] bg-transparent border-b border-zinc-800 py-1 text-base font-bold text-white focus:outline-none focus:border-primary truncate"
+              placeholder="Mi Coreografía..."
             />
-            <div className="flex justify-between items-center bg-zinc-900 rounded-xl p-1 border border-zinc-800 shadow-inner">
+            <div className="flex flex-1 gap-0.5 bg-zinc-900 rounded-lg p-0.5 border border-zinc-800 shadow-inner overflow-hidden">
               <button
                 onClick={async () => {
                   const result = await Swal.fire({
-                    title: '¿Nueva coreografía?',
-                    text: "Se perderán los cambios no guardados.",
+                    title: '¿Nueva?',
+                    text: "Se perderán cambios.",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#e11d48',
-                    cancelButtonColor: '#3f3f46',
-                    confirmButtonText: 'Sí, nueva',
-                    cancelButtonText: 'Cancelar',
-                    background: '#18181b',
-                    color: '#fff'
+                    confirmButtonText: 'Sí',
+                    background: '#18181b', color: '#fff'
                   });
                   if (result.isConfirmed) resetChoreo();
                 }}
-                className="p-2 text-primary hover:bg-zinc-800 rounded-lg transition-colors"
-                title="Nueva"
+                className="flex-1 p-1.5 text-primary hover:bg-zinc-800 rounded transition-colors"
               >
-                <Plus size={18} />
+                <Plus size={16} />
               </button>
               <button
                 onClick={async () => {
                   const result = await Swal.fire({
-                    title: '¿Guardar cambios?',
-                    text: "¿Deseas sobreescribir la coreografía actual?",
+                    title: '¿Guardar?',
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#fbbf24',
-                    confirmButtonText: 'Guardar',
-                    cancelButtonText: 'Cancelar',
-                    background: '#18181b',
-                    color: '#fff'
+                    confirmButtonText: 'Sí',
+                    background: '#18181b', color: '#fff'
                   });
                   if (result.isConfirmed) {
                     await saveCurrentChoreo(false);
-                    Swal.fire({ title: 'Guardado', icon: 'success', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, background: '#18181b', color: '#fff' });
                   }
                 }}
-                className="p-2 text-secondary hover:bg-zinc-800 rounded-lg transition-colors"
-                title="Guardar"
+                className="flex-1 p-1.5 text-secondary hover:bg-zinc-800 rounded transition-colors"
               >
-                <Save size={18} />
+                <Save size={16} />
               </button>
               <button
                 onClick={async () => {
                   const result = await Swal.fire({
-                    title: '¿Guardar copia?',
-                    text: "Se creará una nueva entrada en tu lista.",
+                    title: '¿Copiar?',
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#10b981',
-                    confirmButtonText: 'Copiar',
-                    cancelButtonText: 'Cancelar',
-                    background: '#18181b',
-                    color: '#fff'
+                    confirmButtonText: 'Sí',
+                    background: '#18181b', color: '#fff'
                   });
                   if (result.isConfirmed) {
                     await saveCurrentChoreo(true);
-                    Swal.fire({ title: 'Copiado', icon: 'success', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, background: '#18181b', color: '#fff' });
                   }
                 }}
-                className="p-2 text-emerald-500 hover:bg-zinc-800 rounded-lg transition-colors"
-                title="Copiar"
+                className="flex-1 p-1.5 text-emerald-500 hover:bg-zinc-800 rounded transition-colors"
               >
-                <Copy size={18} />
+                <Copy size={16} />
               </button>
             </div>
           </div>
@@ -338,14 +324,13 @@ const EditorView = () => {
         )}
       </div>
 
-      {/* Main Grid Area - Now it grows with content */}
+      {/* Main Grid Area - Grows naturally */}
       <div
-        ref={scrollContainerRef}
         onClick={() => {
           setSelectedChoreoSlot(null);
           setShowTooltip(null);
         }}
-        className="flex-1 p-6 overflow-auto"
+        className="p-6"
       >
         <div className="w-full max-w-lg mx-auto">
           {renderGrid()}
