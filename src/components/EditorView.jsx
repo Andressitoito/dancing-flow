@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import useStore from '../store/useStore';
 import { Plus, Play, Pause, Save, Trash2, X, Info, FilePlus, Copy } from 'lucide-react';
 import { APP_COLORS } from '../services/constants';
+import PlaybackControls from './PlaybackControls';
 
 const EditorView = () => {
   const {
@@ -40,16 +41,19 @@ const EditorView = () => {
       const beatInterval = (60 / bpm) * 1000;
       playbackInterval.current = setInterval(() => {
         setActiveSlot((prev) => {
-          const next = prev + 1;
           const totalSlots = currentChoreo.measures * 8;
+          const next = prev + 1;
           return next >= totalSlots ? 0 : next;
         });
       }, beatInterval);
     } else {
       clearInterval(playbackInterval.current);
+      // Optional: setActiveSlot(-1); // Reset highlight when stopping
     }
-    return () => clearInterval(playbackInterval.current);
-  }, [isPlaying, bpm, currentChoreo.measures, setActiveSlot]);
+    return () => {
+      if (playbackInterval.current) clearInterval(playbackInterval.current);
+    };
+  }, [isPlaying, bpm, currentChoreo.measures]); // Removed setActiveSlot from deps to prevent potential re-triggers if it's not stable
 
   // Handle Centered Scroll Mode
   useEffect(() => {
@@ -77,13 +81,7 @@ const EditorView = () => {
 
     longPressTimer.current = setTimeout(() => {
       setSelectedChoreoSlot(index);
-      const item = getStepAtSlot(index);
-      if (item) {
-        const step = steps.find(s => s.id === item.stepId);
-        if (step?.description) {
-          setShowTooltip({ slotIndex: index, description: step.description });
-        }
-      }
+      // Tooltips are now disabled in Editor mode as per user request
     }, 800);
   };
 
@@ -186,27 +184,41 @@ const EditorView = () => {
             onChange={(e) => updateChoreoTitle(e.target.value)}
             className="flex-1 bg-transparent border-b border-zinc-700 text-xl font-bold text-white focus:outline-none focus:border-primary"
           />
-          <button
-            onClick={() => saveCurrentChoreo(false)}
-            className="p-2 text-secondary hover:bg-secondary/10 rounded-full"
-            title="Guardar"
-          >
-            <Save size={24} />
-          </button>
-          <button
-            onClick={() => saveCurrentChoreo(true)}
-            className="p-2 text-emerald-500 hover:bg-emerald-500/10 rounded-full"
-            title="Guardar como nuevo"
-          >
-            <Copy size={24} />
-          </button>
-          <button
-            onClick={resetChoreo}
-            className="p-2 text-zinc-500 hover:bg-zinc-500/10 rounded-full"
-            title="Nueva Coreografía"
-          >
-            <FilePlus size={24} />
-          </button>
+          <div className="flex gap-1 shrink-0">
+            <button
+              onClick={() => {
+                if (window.confirm('¿Confirmas que deseas sobreescribir la coreografía actual?')) {
+                  saveCurrentChoreo(false);
+                }
+              }}
+              className="p-2 text-secondary hover:bg-secondary/10 rounded-full"
+              title="Guardar"
+            >
+              <Save size={20} />
+            </button>
+            <button
+              onClick={() => {
+                if (window.confirm('¿Deseas guardar una copia nueva de esta coreografía?')) {
+                  saveCurrentChoreo(true);
+                }
+              }}
+              className="p-2 text-emerald-500 hover:bg-emerald-500/10 rounded-full"
+              title="Guardar como nuevo"
+            >
+              <Copy size={20} />
+            </button>
+            <button
+              onClick={() => {
+                if (window.confirm('¿Quieres empezar una coreografía nueva? Se perderán los cambios no guardados.')) {
+                  resetChoreo();
+                }
+              }}
+              className="p-2 text-zinc-500 hover:bg-zinc-500/10 rounded-full"
+              title="Nueva Coreografía"
+            >
+              <FilePlus size={20} />
+            </button>
+          </div>
         </div>
 
         {isQuickAddOpen ? (
@@ -314,39 +326,17 @@ const EditorView = () => {
         </div>
       </div>
 
-      {/* Playback Controls & Choreo List */}
-      <div className="p-4 bg-zinc-950/80 border-t border-zinc-800 space-y-4 shrink-0">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setIsPlaying(!isPlaying)}
-              className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all ${
-                isPlaying ? 'bg-secondary text-black' : 'bg-primary text-white'
-              }`}
-            >
-              {isPlaying ? <Pause size={24} /> : <Play size={24} fill="currentColor" />}
-            </button>
+      <PlaybackControls
+        isPlaying={isPlaying}
+        onTogglePlay={() => setIsPlaying(!isPlaying)}
+        bpm={bpm}
+        onBpmChange={setBpm}
+        playbackMode={playbackMode}
+        onToggleMode={() => setPlaybackMode(playbackMode === 'scroll' ? 'centered' : 'scroll')}
+      />
 
-            <div className="flex flex-col">
-              <span className="text-[10px] text-zinc-500 font-bold uppercase">BPM: {bpm}</span>
-              <input
-                type="range" min="60" max="180" value={bpm}
-                onChange={(e) => setBpm(parseInt(e.target.value))}
-                className="w-24 accent-primary"
-              />
-            </div>
-          </div>
-
-          <button
-            onClick={() => setPlaybackMode(playbackMode === 'scroll' ? 'centered' : 'scroll')}
-            className={`px-3 py-1 rounded-full text-[10px] font-bold border ${
-              playbackMode === 'centered' ? 'bg-primary border-primary text-white' : 'border-zinc-700 text-zinc-500'
-            }`}
-          >
-            {playbackMode === 'centered' ? 'MODO LINEAL' : 'MODO REJILLA'}
-          </button>
-        </div>
-
+      {/* Choreo List */}
+      <div className="p-4 bg-zinc-950/80 border-t border-zinc-800 shrink-0 pb-10">
         <div className="pt-2">
           <h3 className="text-xs font-bold text-zinc-500 uppercase mb-2">Mis Coreografías</h3>
           <div className="flex gap-2 overflow-visible pb-4 pt-2 scrollbar-hide">

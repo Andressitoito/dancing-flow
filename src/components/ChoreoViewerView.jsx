@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import useStore from '../store/useStore';
 import { Play, Pause, ChevronRight, X } from 'lucide-react';
+import PlaybackControls from './PlaybackControls';
 
 const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick }) => {
   const totalSlots = (choreo.measures || 2) * 8;
@@ -22,35 +23,41 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick }) => {
     const isActive = activeSlot === i;
     const isStart = data && data.item.slotIndex === i;
 
-    if (isStart) {
-      // Render the step as a single rectangle spanning its duration
+    if (data) {
+      // Render as individual squares but keeping the name and look requested
+      const step = data.step;
+      const isItemStart = data.item.slotIndex === i;
+      const isItemEnd = data.item.slotIndex + step.duration - 1 === i;
+
       gridItems.push(
         <div
-          key={`step-${i}`}
-          onDoubleClick={() => onStepDoubleClick(data.step)}
+          key={`step-slot-${i}`}
+          onDoubleClick={() => onStepDoubleClick(step)}
           className={`
-            relative flex items-center justify-center transition-all cursor-help
-            ${isActive ? 'ring-2 ring-white z-20 shadow-lg scale-[1.02]' : 'z-10'}
+            relative aspect-square border border-zinc-800/30 flex items-center justify-center transition-all cursor-help
+            ${isActive ? 'ring-2 ring-white z-30 scale-105' : 'z-10'}
           `}
           style={{
-            gridColumn: `span ${data.step.duration}`,
-            backgroundColor: data.step.color,
-            height: '100%',
-            borderRadius: '6px',
-            border: '1px solid rgba(255,255,255,0.1)'
+            backgroundColor: step.color,
+            borderTopLeftRadius: isItemStart ? '8px' : '0',
+            borderBottomLeftRadius: isItemStart ? '8px' : '0',
+            borderTopRightRadius: isItemEnd ? '8px' : '0',
+            borderBottomRightRadius: isItemEnd ? '8px' : '0',
+            opacity: isActive ? 1 : 0.9
           }}
         >
-          <span className="text-white font-bold text-[10px] truncate px-2 drop-shadow-md">
-            {data.step.name}
-          </span>
-          {/* Active indicator overlay when playing */}
+          {isItemStart && (
+             <div className="absolute inset-0 flex items-center justify-center p-1 overflow-hidden pointer-events-none z-20">
+               <span className="truncate text-white font-bold text-[8px] drop-shadow-md">
+                 {step.name}
+               </span>
+             </div>
+          )}
           {isActive && (
-            <div className="absolute inset-0 bg-white/20 animate-pulse rounded-[6px]" />
+            <div className="absolute inset-0 bg-white/20 animate-pulse" />
           )}
         </div>
       );
-      // Skip the slots occupied by this step
-      i += (data.step.duration - 1);
     } else {
       // Empty slot with beat number
       gridItems.push(
@@ -175,28 +182,13 @@ const ChoreoViewerView = () => {
         </div>
       </div>
 
-      <div className="p-6 bg-zinc-950 border-t border-zinc-800 flex items-center gap-6">
-        <button
-          onClick={() => setIsPlaying(!isPlaying)}
-          className={`w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all ${
-            isPlaying ? 'bg-secondary text-black' : 'bg-primary text-white'
-          }`}
-        >
-          {isPlaying ? <Pause size={28} className="text-black" /> : <Play size={28} className="text-white fill-white ml-1" />}
-        </button>
-
-        <div className="flex-1 flex flex-col">
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-[10px] text-zinc-500 font-bold uppercase">Ajustar BPM</span>
-            <span className="text-xs font-black text-secondary">{bpm}</span>
-          </div>
-          <input
-            type="range" min="60" max="180" value={bpm}
-            onChange={(e) => setBpm(parseInt(e.target.value))}
-            className="w-full accent-primary"
-          />
-        </div>
-      </div>
+      <PlaybackControls
+        isPlaying={isPlaying}
+        onTogglePlay={() => setIsPlaying(!isPlaying)}
+        bpm={bpm}
+        onBpmChange={setBpm}
+        showModeToggle={false}
+      />
 
       {/* Help Modal */}
       {helpStep && (
