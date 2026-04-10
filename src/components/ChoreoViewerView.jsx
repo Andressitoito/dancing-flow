@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import useStore from '../store/useStore';
 import { Play, Pause, ChevronRight, X } from 'lucide-react';
 import PlaybackControls from './PlaybackControls';
+import Swal from 'sweetalert2';
 
 const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode, zoom = 1 }) => {
   const totalSlots = (choreo.measures || 2) * 8;
@@ -36,7 +37,7 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
           onDoubleClick={() => onStepDoubleClick(step)}
           className={`
             relative aspect-square border border-zinc-800/30 flex items-center justify-center transition-all cursor-help shrink-0
-            ${isActive ? 'ring-2 ring-white z-30 scale-105' : 'z-10'}
+            ${isActive ? 'ring-[3px] ring-white z-40 scale-110 shadow-lg' : 'z-10'}
           `}
           style={{
             backgroundColor: step.color,
@@ -56,7 +57,7 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
              </div>
           )}
           {isActive && (
-            <div className="absolute inset-0 bg-white/20 animate-pulse" />
+            <div className="absolute inset-0 bg-white/40 animate-pulse z-30" />
           )}
         </div>
       );
@@ -104,7 +105,6 @@ const ChoreoViewerView = () => {
   const [selectedChoreo, setSelectedChoreo] = useState(null);
   const [bpm, setBpm] = useState(120);
   const [zoom, setZoom] = useState(1);
-  const [helpStep, setHelpStep] = useState(null);
   const playbackInterval = useRef(null);
   const scrollContainerRef = useRef(null);
 
@@ -194,7 +194,20 @@ const ChoreoViewerView = () => {
           choreo={selectedChoreo}
           steps={steps}
           activeSlot={activeSlot}
-          onStepDoubleClick={setHelpStep}
+          onStepDoubleClick={(step) => {
+             Swal.fire({
+               title: step.name,
+               text: step.description || 'No hay descripción para este paso.',
+               iconHtml: `<div class="w-12 h-12 rounded-lg" style="background-color: ${step.color}"></div>`,
+               confirmButtonText: 'Entendido',
+               confirmButtonColor: '#e11d48',
+               background: '#18181b',
+               color: '#fff',
+               customClass: {
+                 icon: 'border-none'
+               }
+             });
+          }}
           playbackMode={playbackMode}
           zoom={zoom}
         />
@@ -217,6 +230,7 @@ const ChoreoViewerView = () => {
       <PlaybackControls
         isPlaying={isPlaying}
         onTogglePlay={() => setIsPlaying(!isPlaying)}
+        onStop={() => { setIsPlaying(false); setActiveSlot(-1); }}
         bpm={bpm}
         onBpmChange={setBpm}
         playbackMode={playbackMode}
@@ -224,35 +238,6 @@ const ChoreoViewerView = () => {
         showModeToggle={true}
       />
 
-      {/* Help Modal */}
-      {helpStep && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-md">
-          <div className="bg-zinc-900 w-full max-w-sm rounded-2xl border border-zinc-800 p-6 shadow-2xl relative">
-            <button
-              onClick={() => setHelpStep(null)}
-              className="absolute top-4 right-4 text-zinc-500 hover:text-white"
-            >
-              <X size={24} />
-            </button>
-            <div
-              className="w-16 h-16 rounded-xl mb-4 flex items-center justify-center text-white font-bold text-xl"
-              style={{ backgroundColor: helpStep.color }}
-            >
-              {helpStep.duration}T
-            </div>
-            <h3 className="text-2xl font-black mb-2">{helpStep.name}</h3>
-            <p className="text-zinc-400 leading-relaxed italic">
-              {helpStep.description || 'No hay descripción disponible para este paso.'}
-            </p>
-            <button
-              onClick={() => setHelpStep(null)}
-              className="w-full mt-8 bg-zinc-800 py-3 rounded-xl font-bold text-white hover:bg-zinc-700 transition-colors"
-            >
-              Entendido
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

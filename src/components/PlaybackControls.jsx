@@ -1,9 +1,10 @@
 import React from 'react';
-import { Play, Pause } from 'lucide-react';
+import { Play, Pause, Square } from 'lucide-react';
 
 const PlaybackControls = ({
   isPlaying,
   onTogglePlay,
+  onStop,
   bpm,
   onBpmChange,
   playbackMode,
@@ -11,19 +12,26 @@ const PlaybackControls = ({
   showModeToggle = true
 }) => {
   return (
-    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-zinc-900/90 backdrop-blur-md border border-zinc-800 rounded-full px-6 py-3 flex items-center justify-between shadow-2xl z-40">
-      <div className="flex items-center gap-4">
+    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-[95%] max-w-sm bg-zinc-900/90 backdrop-blur-md border border-zinc-800 rounded-full px-4 py-3 flex items-center justify-between shadow-2xl z-40">
+      <div className="flex items-center gap-2">
         <button
           onClick={onTogglePlay}
-          className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all ${
+          className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all ${
             isPlaying ? 'bg-secondary text-white' : 'bg-primary text-white'
           }`}
         >
           {isPlaying ? (
-            <Pause size={24} className="text-white fill-white" />
+            <Pause size={20} className="text-white fill-white" />
           ) : (
-            <Play size={24} className="text-white fill-white ml-1" />
+            <Play size={20} className="text-white fill-white ml-0.5" />
           )}
+        </button>
+
+        <button
+          onClick={onStop}
+          className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center shadow-lg text-white"
+        >
+          <Square size={16} className="fill-white" />
         </button>
 
         <div className="flex flex-col">

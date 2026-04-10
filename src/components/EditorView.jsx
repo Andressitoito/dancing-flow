@@ -3,6 +3,7 @@ import useStore from '../store/useStore';
 import { Plus, Play, Pause, Save, Trash2, X, Info, FilePlus, Copy } from 'lucide-react';
 import { APP_COLORS } from '../services/constants';
 import PlaybackControls from './PlaybackControls';
+import Swal from 'sweetalert2';
 
 const EditorView = () => {
   const {
@@ -83,8 +84,8 @@ const EditorView = () => {
       }
 
       gridElements.push(
-        <div key={`measure-${m}`} className="relative group/measure mb-6">
-          <div className="grid grid-cols-8 gap-0">
+        <div key={`measure-${m}`} className="relative mb-8 last:mb-20">
+          <div className="grid grid-cols-8 gap-0 shadow-xl border border-zinc-800/50 rounded-lg overflow-hidden">
             {measureSlots}
           </div>
           <button
@@ -178,48 +179,82 @@ const EditorView = () => {
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] overflow-hidden bg-zinc-950" onClick={() => setShowTooltip(null)}>
       {/* Header & Library */}
-      <div className="p-4 space-y-4 bg-zinc-950/50 border-b border-zinc-800 shrink-0">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
+      <div className="p-3 space-y-3 bg-zinc-950/50 border-b border-zinc-800 shrink-0">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             <input
               value={currentChoreo.title}
               onChange={(e) => updateChoreoTitle(e.target.value)}
-              className="flex-1 bg-transparent border-b border-zinc-700 text-lg font-bold text-white focus:outline-none focus:border-primary mr-4"
-              placeholder="Nombre de la coreo..."
+              className="w-full bg-transparent border-b border-zinc-800 py-1 text-base font-bold text-white focus:outline-none focus:border-primary"
+              placeholder="Nombre de la coreografía..."
             />
-            <div className="flex gap-0.5 shrink-0 bg-zinc-900 rounded-lg p-0.5 border border-zinc-800">
+            <div className="flex justify-between items-center bg-zinc-900 rounded-xl p-1 border border-zinc-800 shadow-inner">
               <button
-                onClick={() => {
-                  if (window.confirm('¿Quieres empezar una coreografía nueva?')) {
-                    resetChoreo();
-                  }
+                onClick={async () => {
+                  const result = await Swal.fire({
+                    title: '¿Nueva coreografía?',
+                    text: "Se perderán los cambios no guardados.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e11d48',
+                    cancelButtonColor: '#3f3f46',
+                    confirmButtonText: 'Sí, nueva',
+                    cancelButtonText: 'Cancelar',
+                    background: '#18181b',
+                    color: '#fff'
+                  });
+                  if (result.isConfirmed) resetChoreo();
                 }}
-                className="p-2 text-primary hover:bg-zinc-800 rounded-md"
+                className="p-2 text-primary hover:bg-zinc-800 rounded-lg transition-colors"
                 title="Nueva"
               >
-                <Plus size={20} />
+                <Plus size={18} />
               </button>
               <button
-                onClick={() => {
-                  if (window.confirm('¿Sobreescribir la coreografía actual?')) {
-                    saveCurrentChoreo(false);
+                onClick={async () => {
+                  const result = await Swal.fire({
+                    title: '¿Guardar cambios?',
+                    text: "¿Deseas sobreescribir la coreografía actual?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#fbbf24',
+                    confirmButtonText: 'Guardar',
+                    cancelButtonText: 'Cancelar',
+                    background: '#18181b',
+                    color: '#fff'
+                  });
+                  if (result.isConfirmed) {
+                    await saveCurrentChoreo(false);
+                    Swal.fire({ title: 'Guardado', icon: 'success', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, background: '#18181b', color: '#fff' });
                   }
                 }}
-                className="p-2 text-secondary hover:bg-zinc-800 rounded-md"
+                className="p-2 text-secondary hover:bg-zinc-800 rounded-lg transition-colors"
                 title="Guardar"
               >
-                <Save size={20} />
+                <Save size={18} />
               </button>
               <button
-                onClick={() => {
-                  if (window.confirm('¿Guardar como copia nueva?')) {
-                    saveCurrentChoreo(true);
+                onClick={async () => {
+                  const result = await Swal.fire({
+                    title: '¿Guardar copia?',
+                    text: "Se creará una nueva entrada en tu lista.",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#10b981',
+                    confirmButtonText: 'Copiar',
+                    cancelButtonText: 'Cancelar',
+                    background: '#18181b',
+                    color: '#fff'
+                  });
+                  if (result.isConfirmed) {
+                    await saveCurrentChoreo(true);
+                    Swal.fire({ title: 'Copiado', icon: 'success', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, background: '#18181b', color: '#fff' });
                   }
                 }}
-                className="p-2 text-emerald-500 hover:bg-zinc-800 rounded-md"
+                className="p-2 text-emerald-500 hover:bg-zinc-800 rounded-lg transition-colors"
                 title="Copiar"
               >
-                <Copy size={20} />
+                <Copy size={18} />
               </button>
             </div>
           </div>
