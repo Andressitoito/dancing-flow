@@ -11,19 +11,35 @@ const TOKEN = "bachata2026";
 app.use(cors());
 app.use(bodyParser.json());
 
-const dbPath = (filename) => path.join(__dirname, '..', 'db', filename);
+const DB_DIR = path.join(__dirname, '..', 'db');
+if (!fs.existsSync(DB_DIR)) {
+  fs.mkdirSync(DB_DIR);
+}
+
+const dbPath = (filename) => path.join(DB_DIR, filename);
 
 const readDB = (file) => {
   try {
+    if (!fs.existsSync(dbPath(file))) return [];
     return JSON.parse(fs.readFileSync(dbPath(file), 'utf8'));
   } catch (e) {
+    console.error(`Error reading ${file}:`, e);
     return [];
   }
 };
-const writeDB = (file, data) => fs.writeFileSync(dbPath(file), JSON.stringify(data, null, 2));
+
+const writeDB = (file, data) => {
+  try {
+    fs.writeFileSync(dbPath(file), JSON.stringify(data, null, 2));
+  } catch (e) {
+    console.error(`Error writing ${file}:`, e);
+    throw e;
+  }
+};
 
 // Auth Endpoints
-app.post('/api/register', (req, res) => {
+app.post('/api/register', (req, res, next) => {
+  try {
   const { username, password, token } = req.body;
   if (token !== TOKEN) {
     return res.status(401).json({ error: 'Token de registro inválido' });
@@ -40,94 +56,137 @@ app.post('/api/register', (req, res) => {
 
   const { password: _, ...userWithoutPassword } = newUser;
   res.json(userWithoutPassword);
+  } catch (e) { next(e); }
 });
 
-app.post('/api/login', (req, res) => {
-  const { username, password } = req.body;
-  const users = readDB('users.json');
-  const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
+app.post('/api/login', (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+    const users = readDB('users.json');
+    const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
 
-  if (!user) {
-    return res.status(401).json({ error: 'Credenciales inválidas' });
-  }
+    if (!user) {
+      return res.status(401).json({ error: 'Credenciales inválidas' });
+    }
 
-  const { password: _, ...userWithoutPassword } = user;
-  res.json(userWithoutPassword);
+    const { password: _, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword);
+  } catch (e) { next(e); }
 });
 
 // Steps API
-app.get('/api/steps', (req, res) => {
-  const { userId } = req.query;
-  const steps = readDB('steps.json');
-  const filteredSteps = steps.filter(s => s.userId === 'andresito' || s.userId === userId);
-  res.json(filteredSteps);
+app.get('/api/steps', (req, res, next) => {
+  try {
+    const { userId } = req.query;
+    const steps = readDB('steps.json');
+    const filteredSteps = steps.filter(s => s.userId === 'andresito' || s.userId === userId);
+    res.json(filteredSteps);
+  } catch (e) { next(e); }
 });
 
-app.post('/api/steps', (req, res) => {
-  const { step, userId } = req.body;
-  if (!userId) return res.status(400).json({ error: 'Falta userId' });
+app.post('/api/steps', (req, res, next) => {
+  try {
+    const { step, userId } = req.body;
+    if (!userId) return res.status(400).json({ error: 'Falta userId' });
 
-  const steps = readDB('steps.json');
-  const newStep = { ...step, id: Date.now().toString(), userId };
-  steps.push(newStep);
-  writeDB('steps.json', steps);
-  res.json(newStep);
+    const steps = readDB('steps.json');
+    const newStep = { ...step, id: Date.now().toString(), userId };
+    steps.push(newStep);
+    writeDB('steps.json', steps);
+    res.json(newStep);
+  } catch (e) { next(e); }
 });
 
-app.put('/api/steps', (req, res) => {
-  const { step, userId } = req.body;
-  let steps = readDB('steps.json');
-  const index = steps.findIndex(s => s.id === step.id && s.userId === userId);
-  if (index === -1) return res.status(403).json({ error: 'No autorizado o no encontrado' });
+app.put('/api/steps', (req, res, next) => {
+  try {
+    const { step, userId } = req.body;
+    let steps = readDB('steps.json');
+    const index = steps.findIndex(s => s.id === step.id && s.userId === userId);
+    if (index === -1) return res.status(403).json({ error: 'No autorizado o no encontrado' });
 
-  steps[index] = { ...step, userId };
-  writeDB('steps.json', steps);
-  res.json(steps[index]);
+    steps[index] = { ...step, userId };
+    writeDB('steps.json', steps);
+    res.json(steps[index]);
+  } catch (e) { next(e); }
 });
 
-app.delete('/api/steps/:id', (req, res) => {
-  const { userId } = req.query;
-  const { id } = req.params;
-  let steps = readDB('steps.json');
-  steps = steps.filter(s => !(s.id === id && s.userId === userId));
-  writeDB('steps.json', steps);
-  res.sendStatus(204);
+app.delete('/api/steps/:id', (req, res, next) => {
+  try {
+    const { userId } = req.query;
+    const { id } = req.params;
+    let steps = readDB('steps.json');
+    steps = steps.filter(s => !(s.id === id && s.userId === userId));
+    writeDB('steps.json', steps);
+    res.sendStatus(204);
+  } catch (e) { next(e); }
 });
 
 // Choreos API
-app.get('/api/choreos', (req, res) => {
-  const { userId } = req.query;
-  const choreos = readDB('choreos.json');
-  const filteredChoreos = choreos.filter(c => c.userId === 'andresito' || c.userId === userId);
-  res.json(filteredChoreos);
+app.get('/api/choreos', (req, res, next) => {
+  try {
+    const { userId } = req.query;
+    const choreos = readDB('choreos.json');
+    const filteredChoreos = choreos.filter(c => c.userId === 'andresito' || c.userId === userId);
+    res.json(filteredChoreos);
+  } catch (e) { next(e); }
 });
 
-app.post('/api/choreos', (req, res) => {
-  const { choreo, userId } = req.body;
-  const choreos = readDB('choreos.json');
+app.post('/api/choreos', (req, res, next) => {
+  try {
+    const { choreo, userId } = req.body;
+    const choreos = readDB('choreos.json');
 
-  // Create or Update
-  const newChoreo = { ...choreo, id: choreo.id || Date.now().toString(), userId };
-  const existingIndex = choreos.findIndex(c => c.id === newChoreo.id && c.userId === userId);
+    // Create or Update
+    const newChoreo = { ...choreo, id: choreo.id || Date.now().toString(), userId };
+    const existingIndex = choreos.findIndex(c => c.id === newChoreo.id && c.userId === userId);
 
-  if (existingIndex > -1) {
-    choreos[existingIndex] = newChoreo;
-  } else {
-    choreos.push(newChoreo);
-  }
+    if (existingIndex > -1) {
+      choreos[existingIndex] = newChoreo;
+    } else {
+      choreos.push(newChoreo);
+    }
 
-  writeDB('choreos.json', choreos);
-  res.json(newChoreo);
+    writeDB('choreos.json', choreos);
+    res.json(newChoreo);
+  } catch (e) { next(e); }
 });
+
+// 404 for missing API routes (must be after all API routes but before static files)
+app.use('/api', (req, res) => {
+  res.status(404).json({ error: 'Ruta de API no encontrada' });
+});
+
+// Seed Initial Steps for Andresito if they don't exist
+const seedSteps = [
+  { id: 'basic-1', userId: 'andresito', name: 'Paso Básico', duration: 1, description: 'El paso fundamental de la bachata (1 tiempo)', color: '#e11d48', category: 'base' },
+  { id: 'basic-2', userId: 'andresito', name: 'Paso Lateral', duration: 2, description: 'Desplazamiento lateral de dos tiempos', color: '#fbbf24', category: 'base' },
+  { id: 'giro-derecha', userId: 'andresito', name: 'Giro Derecha', duration: 4, description: 'Giro básico a la derecha en 4 tiempos', color: '#10b981', category: 'giro' }
+];
+
+const currentSteps = readDB('steps.json');
+if (currentSteps.length === 0) {
+  writeDB('steps.json', seedSteps);
+}
 
 // Serve static files
 const buildPath = path.join(__dirname, '..', 'build');
 if (fs.existsSync(buildPath)) {
   app.use(express.static(buildPath));
+
+  // SPA fallback: any route that isn't an API route and didn't match a static file
   app.get('*', (req, res) => {
     res.sendFile(path.join(buildPath, 'index.html'));
   });
 }
+
+// Global Error Handler to return JSON instead of HTML
+app.use((err, req, res, next) => {
+  console.error('Server Error:', err);
+  res.status(500).json({
+    error: 'Error interno del servidor',
+    message: err.message
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`BachataFlow Monolith running on port ${PORT}`);
