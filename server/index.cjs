@@ -11,6 +11,12 @@ const TOKEN = "bachata2026";
 app.use(cors());
 app.use(bodyParser.json());
 
+// Request Logger
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+
 const DB_DIR = path.join(__dirname, '..', 'db');
 if (!fs.existsSync(DB_DIR)) {
   fs.mkdirSync(DB_DIR);
@@ -38,7 +44,7 @@ const writeDB = (file, data) => {
 };
 
 // Auth Endpoints
-app.post('/api/register', (req, res, next) => {
+app.post('/api/auth/signup', (req, res, next) => {
   try {
   const { username, password, token } = req.body;
   if (token !== TOKEN) {
@@ -59,7 +65,7 @@ app.post('/api/register', (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-app.post('/api/login', (req, res, next) => {
+app.post('/api/auth/signin', (req, res, next) => {
   try {
     const { username, password } = req.body;
     const users = readDB('users.json');

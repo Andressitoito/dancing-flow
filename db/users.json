@@ -27,5 +27,17 @@
     "username": "jules_final",
     "password": "secret",
     "isAdmin": false
+  },
+  {
+    "id": "1776451942266",
+    "username": "testjules",
+    "password": "password",
+    "isAdmin": false
+  },
+  {
+    "id": "1776452290384",
+    "username": "jules_final_v2",
+    "password": "secret123",
+    "isAdmin": false
   }
 ]
