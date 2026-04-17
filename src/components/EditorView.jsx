@@ -320,7 +320,7 @@ const EditorView = () => {
             )}
           </div>
           <div className="flex gap-3 overflow-x-auto pb-4 pt-2 scrollbar-hide px-1">
-              {steps.map(step => (
+              {(steps || []).map(step => (
                 <button
                   key={step.id}
                   onClick={(e) => {
@@ -402,7 +402,7 @@ const EditorView = () => {
         <div className="w-full max-w-lg mx-auto pb-32 border-t border-zinc-800/50 pt-8">
           <h3 className="text-xs font-black text-zinc-600 uppercase tracking-[0.2em] mb-4 px-2">Mis Coreografías</h3>
           <div className="flex flex-wrap gap-2 px-2">
-            {choreos.map(choreo => (
+            {(choreos || []).map(choreo => (
               <button
                 key={choreo.id}
                 onClick={() => loadChoreo(choreo)}

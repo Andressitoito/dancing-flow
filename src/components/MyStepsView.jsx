@@ -107,7 +107,7 @@ const MyStepsView = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredSteps = steps.filter(s =>
+  const filteredSteps = (steps || []).filter(s =>
     s.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -134,7 +134,7 @@ const MyStepsView = () => {
       </div>
 
       <div className="space-y-3">
-        {filteredSteps.map((step) => (
+        {(filteredSteps || []).map((step) => (
           <div key={step.id} className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex items-center gap-4">
             <div
               className="w-12 h-12 rounded-lg flex items-center justify-center font-bold text-white shadow-inner"

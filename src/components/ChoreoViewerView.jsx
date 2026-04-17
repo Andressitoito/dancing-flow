@@ -153,13 +153,13 @@ const ChoreoViewerView = () => {
     return (
       <div className="p-4 space-y-6">
         <h2 className="text-2xl font-bold">Mis Coreografías</h2>
-        {choreos.length === 0 ? (
+        {(!choreos || choreos.length === 0) ? (
           <div className="text-center py-20 text-zinc-500 italic">
             Aún no has creado ninguna coreografía.
           </div>
         ) : (
           <div className="grid gap-3">
-            {choreos.map(choreo => (
+            {(choreos || []).map(choreo => (
               <button
                 key={choreo.id}
                 onClick={() => {

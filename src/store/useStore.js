@@ -48,9 +48,18 @@ const useStore = create((set, get) => ({
         api.getSteps(user?.id),
         api.getChoreos(user?.id)
       ]);
-      set({ steps, choreos, loading: false });
+      set({
+        steps: steps || [],
+        choreos: choreos || [],
+        loading: false
+      });
     } catch (error) {
-      set({ error: error.message, loading: false });
+      set({
+        error: error.message,
+        loading: false,
+        steps: [],
+        choreos: []
+      });
     }
   },
 
