@@ -39,5 +39,11 @@
     "username": "jules_final_v2",
     "password": "secret123",
     "isAdmin": false
+  },
+  {
+    "id": "1776453698979",
+    "username": "dance_test_user",
+    "password": "dance123",
+    "isAdmin": false
   }
 ]

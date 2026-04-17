@@ -20,7 +20,7 @@ const handleResponse = async (res) => {
 export const api = {
   // Auth
   async login(username, password) {
-    const res = await fetch(`${API_BASE}/auth/signin`, {
+    const res = await fetch(`${API_BASE}/dance/enter`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -29,7 +29,7 @@ export const api = {
   },
 
   async register(username, password, token) {
-    const res = await fetch(`${API_BASE}/auth/signup`, {
+    const res = await fetch(`${API_BASE}/dance/enroll`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password, token })

@@ -44,7 +44,7 @@ const writeDB = (file, data) => {
 };
 
 // Auth Endpoints
-app.post('/api/auth/signup', (req, res, next) => {
+app.post('/api/dance/enroll', (req, res, next) => {
   try {
   const { username, password, token } = req.body;
   if (token !== TOKEN) {
@@ -65,7 +65,7 @@ app.post('/api/auth/signup', (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-app.post('/api/auth/signin', (req, res, next) => {
+app.post('/api/dance/enter', (req, res, next) => {
   try {
     const { username, password } = req.body;
     const users = readDB('users.json');
