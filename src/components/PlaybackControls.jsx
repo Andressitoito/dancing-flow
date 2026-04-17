@@ -48,7 +48,7 @@ const PlaybackControls = ({
         <button
           onClick={onToggleMode}
           className={`px-3 py-2 rounded-full text-[10px] font-bold border transition-colors ${
-            playbackMode === 'centered' ? 'bg-primary border-primary text-white' : 'border-zinc-700 text-zinc-500'
+            playbackMode === 'centered' ? 'bg-primary border-primary text-white shadow-[0_0_10px_rgba(225,29,72,0.3)]' : 'bg-zinc-800 border-zinc-700 text-zinc-400'
           }`}
         >
           {playbackMode === 'centered' ? 'MODO LINEAL' : 'MODO REJILLA'}
