@@ -1,7 +1,5 @@
-// Use relative path for monolith deployment, fallback to localhost for dev
-const API_BASE = (typeof window !== 'undefined' && window.location.hostname !== 'localhost')
-  ? '/api'
-  : 'http://localhost:3001/api';
+// Relative path works both for Production (monolith) and Dev (Vite Proxy)
+const API_BASE = '/api';
 
 export const api = {
   // Auth
