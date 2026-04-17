@@ -16,8 +16,9 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
     return { item, step: steps.find(s => s.id === item.stepId) };
   };
 
-  const measures = [];
   const measuresCount = choreo.measures || 2;
+  const gridItems = []; // For scroll/grid mode
+  const measures = [];  // For centered/linear mode
 
   for (let m = 0; m < measuresCount; m++) {
     const measureSlots = [];
@@ -26,85 +27,60 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
       const data = getStepData(globalIdx);
       const isActive = activeSlot === globalIdx;
 
-      if (data) {
-        const step = data.step;
-        const isItemStart = data.item.slotIndex === globalIdx;
-        const isItemEnd = data.item.slotIndex + step.duration - 1 === globalIdx;
-
-        measureSlots.push(
-          <div
-            key={`step-slot-${globalIdx}`}
-            id={`vslot-${globalIdx}`}
-            onDoubleClick={() => onStepDoubleClick(step)}
-            className={`
-              relative aspect-square border border-zinc-800/30 flex items-center justify-center transition-all cursor-help shrink-0
-              ${isActive ? 'z-40 scale-110 shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'z-10'}
-            `}
-            style={{
-              backgroundColor: step.color,
-              borderTopLeftRadius: isItemStart ? '8px' : '0',
-              borderBottomLeftRadius: isItemStart ? '8px' : '0',
-              borderTopRightRadius: isItemEnd ? '8px' : '0',
-              borderBottomRightRadius: isItemEnd ? '8px' : '0',
-              opacity: isActive ? 1 : 0.9,
-              width: playbackMode === 'centered' ? `${64 * zoom}px` : 'auto'
-            }}
-          >
-            {isItemStart && (
-               <div className="absolute inset-0 flex items-center justify-center p-1 overflow-hidden pointer-events-none z-20">
-                 <span className="truncate text-white font-bold text-[8px] drop-shadow-md">
-                   {step.name}
-                 </span>
-               </div>
-            )}
-            {isActive && (
-              <>
-                <div className="absolute inset-0 bg-white animate-pulse z-40 opacity-70 rounded-lg" />
-                <div className="absolute inset-[-4px] border-[4px] border-white z-50 rounded-xl pointer-events-none shadow-[0_0_20px_white]" />
-              </>
-            )}
-          </div>
-        );
-      } else {
-        measureSlots.push(
-          <div
-            key={`slot-${globalIdx}`}
-            id={`vslot-${globalIdx}`}
-            className={`
-              aspect-square border border-zinc-800/30 flex items-center justify-center transition-all shrink-0
-              ${isActive ? 'bg-white z-40 scale-110 shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'bg-zinc-900/20'}
-            `}
-            style={{
-               width: playbackMode === 'centered' ? `${64 * zoom}px` : 'auto'
-            }}
-          >
+      const slot = (
+        <div
+          key={`slot-comp-${globalIdx}`}
+          id={`vslot-${globalIdx}`}
+          onDoubleClick={data ? () => onStepDoubleClick(data.step) : undefined}
+          className={`
+            relative aspect-square border border-zinc-800/30 flex items-center justify-center transition-all shrink-0
+            ${isActive ? 'z-40 scale-110 shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'z-10'}
+            ${!data && isActive ? 'bg-white' : ''}
+            ${!data && !isActive ? 'bg-zinc-900/20' : ''}
+            ${data ? 'cursor-help' : ''}
+          `}
+          style={{
+            backgroundColor: data ? data.step.color : undefined,
+            borderTopLeftRadius: data && data.item.slotIndex === globalIdx ? '8px' : '0',
+            borderBottomLeftRadius: data && data.item.slotIndex === globalIdx ? '8px' : '0',
+            borderTopRightRadius: data && data.item.slotIndex + data.step.duration - 1 === globalIdx ? '8px' : '0',
+            borderBottomRightRadius: data && data.item.slotIndex + data.step.duration - 1 === globalIdx ? '8px' : '0',
+            opacity: isActive ? 1 : 0.9,
+            width: playbackMode === 'centered' ? `${64 * zoom}px` : 'auto'
+          }}
+        >
+          {data && data.item.slotIndex === globalIdx && (
+             <div className="absolute inset-0 flex items-center justify-center p-1 overflow-hidden pointer-events-none z-20">
+               <span className="truncate text-white font-bold text-[8px] drop-shadow-md">
+                 {data.step.name}
+               </span>
+             </div>
+          )}
+          {!data && (
             <span className={isActive ? 'text-black text-[12px] font-black' : 'text-zinc-800 text-[10px] font-medium'}>
               {(globalIdx % 8) + 1}
             </span>
-            {isActive && (
-              <>
-                <div className="absolute inset-0 bg-white z-40 rounded opacity-100" />
-                <div className="absolute inset-[-4px] border-[4px] border-white z-50 rounded-xl pointer-events-none shadow-[0_0_20px_white]" />
-              </>
-            )}
-          </div>
-        );
-      }
+          )}
+          {isActive && (
+            <>
+              <div className={`absolute inset-0 bg-white z-40 rounded opacity-70 ${data ? 'animate-pulse' : ''}`} />
+              <div className="absolute inset-[-4px] border-[4px] border-white z-50 rounded-xl pointer-events-none shadow-[0_0_20px_white]" />
+            </>
+          )}
+        </div>
+      );
+      measureSlots.push(slot);
+      gridItems.push(slot);
     }
 
     measures.push(
       <div
-        key={`measure-${m}`}
-        className={`
-          flex transition-all gap-0.5 relative
-          ${playbackMode === 'centered' ? 'shrink-0 p-2 bg-zinc-900/40 rounded-xl border border-zinc-800/50 mx-4' : 'contents'}
-        `}
+        key={`measure-centered-${m}`}
+        className="flex transition-all gap-0.5 relative shrink-0 p-2 bg-zinc-900/40 rounded-xl border border-zinc-800/50 mx-4"
       >
-        {playbackMode === 'centered' && (
-          <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-black text-zinc-600 uppercase tracking-tighter">
-            Compás {m + 1}
-          </span>
-        )}
+        <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-black text-zinc-400 uppercase tracking-tight">
+          Compás {m + 1}
+        </span>
         {measureSlots}
       </div>
     );
@@ -118,7 +94,7 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
       `}
       id="viewer-scroll-container"
     >
-      {measures}
+      {playbackMode === 'centered' ? measures : gridItems}
     </div>
   );
 };
@@ -148,6 +124,13 @@ const ChoreoViewerView = () => {
     });
     return item ? steps.find(s => s.id === item.stepId) : null;
   })() : null;
+
+  // Debug trace for playback state
+  useEffect(() => {
+    if (isPlaying) {
+      console.log('Playback Active:', { activeSlot, activeStep: activeStep?.name });
+    }
+  }, [activeSlot, isPlaying, activeStep]);
   const scrollContainerRef = useRef(null);
 
   // Handle Centered Scroll Mode
@@ -261,11 +244,11 @@ const ChoreoViewerView = () => {
 
       {/* Active Step Indicator - Floating above controls */}
       {activeStep && isPlaying && (
-        <div className="fixed bottom-36 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-40 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <div className="bg-zinc-900/90 backdrop-blur-md border border-primary/30 rounded-2xl p-4 shadow-2xl flex items-center gap-4">
+        <div className="fixed bottom-48 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-50 animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <div className="bg-zinc-900/95 backdrop-blur-md border border-primary/40 rounded-2xl p-4 shadow-2xl flex items-center gap-4 border-b-4 border-b-primary/30">
             <div className="w-4 h-4 rounded-full animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.5)]" style={{ backgroundColor: activeStep.color }} />
             <div className="flex-1 overflow-hidden">
-              <span className="block text-zinc-500 text-[10px] font-black uppercase tracking-widest leading-none mb-1">Paso Actual</span>
+              <span className="block text-primary/80 text-[10px] font-black uppercase tracking-widest leading-none mb-1">Paso Actual</span>
               <span className="block text-white font-bold text-lg truncate leading-none">{activeStep.name}</span>
             </div>
           </div>

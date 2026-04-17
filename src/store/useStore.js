@@ -130,6 +130,11 @@ const useStore = create((set, get) => ({
     const { playbackIntervalId } = get();
     if (playbackIntervalId) clearInterval(playbackIntervalId);
 
+    // Initial tick to start immediately if at -1
+    if (get().activeSlot === -1) {
+      set({ activeSlot: 0 });
+    }
+
     const intervalId = setInterval(() => {
       set((state) => {
         const totalSlots = state.currentChoreo.measures * 8;
