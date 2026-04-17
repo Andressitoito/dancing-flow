@@ -2,28 +2,51 @@ import { create } from 'zustand';
 import { api } from '../services/api';
 
 const useStore = create((set, get) => ({
+  user: JSON.parse(localStorage.getItem('bachataflow_user')) || null,
   steps: [],
   choreos: [],
   currentChoreo: {
     id: null,
     title: 'Nueva Coreografía',
-    sequence: [], // { stepId: string, slotIndex: number }
-    measures: 2, // Default 2 measures of 8 beats each
+    sequence: [],
+    measures: 2,
   },
   loading: false,
   error: null,
-  activeSlot: -1, // For Playback mode
-  playbackMode: 'scroll', // 'scroll' or 'centered'
+  activeSlot: -1,
+  playbackMode: 'scroll',
   isPlaying: false,
   playbackIntervalId: null,
+
+  // Auth Actions
+  login: async (username, password) => {
+    const user = await api.login(username, password);
+    set({ user });
+    localStorage.setItem('bachataflow_user', JSON.stringify(user));
+    await get().fetchInitialData();
+  },
+
+  register: async (username, password, token) => {
+    const user = await api.register(username, password, token);
+    set({ user });
+    localStorage.setItem('bachataflow_user', JSON.stringify(user));
+    await get().fetchInitialData();
+  },
+
+  logout: () => {
+    set({ user: null, steps: [], choreos: [] });
+    localStorage.removeItem('bachataflow_user');
+    get().fetchInitialData();
+  },
 
   // Actions
   fetchInitialData: async () => {
     set({ loading: true });
     try {
+      const { user } = get();
       const [steps, choreos] = await Promise.all([
-        api.getSteps(),
-        api.getChoreos()
+        api.getSteps(user?.id),
+        api.getChoreos(user?.id)
       ]);
       set({ steps, choreos, loading: false });
     } catch (error) {
@@ -33,19 +56,25 @@ const useStore = create((set, get) => ({
 
   // Step Actions
   addStep: async (step) => {
-    const newStep = await api.saveStep(step);
+    const { user } = get();
+    if (!user) throw new Error('Debes iniciar sesión');
+    const newStep = await api.saveStep(step, user.id);
     set((state) => ({ steps: [...state.steps, newStep] }));
   },
 
   updateStep: async (step) => {
-    const updatedStep = await api.updateStep(step);
+    const { user } = get();
+    if (!user) throw new Error('Debes iniciar sesión');
+    const updatedStep = await api.updateStep(step, user.id);
     set((state) => ({
       steps: state.steps.map((s) => (s.id === updatedStep.id ? updatedStep : s))
     }));
   },
 
   deleteStep: async (id) => {
-    await api.deleteStep(id);
+    const { user } = get();
+    if (!user) throw new Error('Debes iniciar sesión');
+    await api.deleteStep(id, user.id);
     set((state) => ({
       steps: state.steps.filter((s) => s.id !== id)
     }));
@@ -53,9 +82,12 @@ const useStore = create((set, get) => ({
 
   // Choreo Actions
   saveCurrentChoreo: async (asNew = false) => {
-    const { currentChoreo } = get();
+    const { currentChoreo, user } = get();
+    if (!user) throw new Error('Debes iniciar sesión para guardar');
+
     const choreoToSave = asNew ? { ...currentChoreo, id: null } : currentChoreo;
-    const savedChoreo = await api.saveChoreo(choreoToSave);
+    const savedChoreo = await api.saveChoreo(choreoToSave, user.id);
+
     set((state) => ({
       choreos: [...state.choreos.filter(c => c.id !== savedChoreo.id), savedChoreo],
       currentChoreo: savedChoreo
@@ -100,7 +132,6 @@ const useStore = create((set, get) => ({
       const startSlot = measureIndex * 8;
       const endSlot = startSlot + 8;
 
-      // Remove steps in the deleted measure and shift steps after it
       const newSequence = currentChoreo.sequence
         .filter(item => item.slotIndex < startSlot || item.slotIndex >= endSlot)
         .map(item => {
@@ -130,7 +161,6 @@ const useStore = create((set, get) => ({
     const { playbackIntervalId } = get();
     if (playbackIntervalId) clearInterval(playbackIntervalId);
 
-    // Initial tick to start immediately if at -1
     if (get().activeSlot === -1) {
       set({ activeSlot: 0 });
     }
@@ -164,27 +194,19 @@ const useStore = create((set, get) => ({
     const step = steps.find(s => s.id === stepId);
     if (!step) return;
 
-    // VALIDATION: Prevent measure/timeline overflow ("desborde")
     const totalSlots = currentChoreo.measures * 8;
     if (slotIndex + step.duration > totalSlots) return;
 
-    // VALIDATION: Strict alignment (Desborde and division lines)
-    // Rule: duration 4 can only start on 0, 4 (relative to measure)
-    // Rule: duration 2 can only start on 0, 2, 4, 6 (relative to measure)
     const relativeSlot = slotIndex % 8;
     if (relativeSlot % step.duration !== 0) return;
 
-    // VALIDATION: Check if it overflows the 8-beat measure boundary
     const measureStart = Math.floor(slotIndex / 8) * 8;
     const measureEnd = measureStart + 8;
     if (slotIndex + step.duration > measureEnd) return;
 
-    // Check for occupancy conflicts
     const newSequence = currentChoreo.sequence.filter(item => {
       const itemStep = steps.find(s => s.id === item.stepId);
       if (!itemStep) return false;
-      // Remove any step that occupies the same slotIndex
-      // Or if the new step overlaps with existing one
       const itemEnd = item.slotIndex + itemStep.duration;
       const newEnd = slotIndex + step.duration;
       return !(slotIndex < itemEnd && newEnd > item.slotIndex);

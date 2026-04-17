@@ -4,14 +4,22 @@ import useStore from './store/useStore';
 import MyStepsView from './components/MyStepsView';
 import EditorView from './components/EditorView';
 import ChoreoViewerView from './components/ChoreoViewerView';
+import LoginView from './components/LoginView';
 
 function App() {
   const [activeTab, setActiveTab] = useState('editor');
-  const { fetchInitialData, loading } = useStore();
+  const { fetchInitialData, loading, stopPlayback } = useStore();
 
   useEffect(() => {
     fetchInitialData();
   }, [fetchInitialData]);
+
+  // Stop playback when switching away from Viewer
+  useEffect(() => {
+    if (activeTab !== 'viewer') {
+      stopPlayback();
+    }
+  }, [activeTab, stopPlayback]);
 
   if (loading) {
     return (
@@ -29,6 +37,8 @@ function App() {
         return <MyStepsView />;
       case 'viewer':
         return <ChoreoViewerView />;
+      case 'login':
+        return <LoginView />;
       default:
         return <EditorView />;
     }

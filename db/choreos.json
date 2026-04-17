@@ -1,0 +1,15 @@
+[
+  {
+    "id": "choreo-public-1",
+    "userId": "andresito",
+    "title": "Básico y Giro (Andresito)",
+    "measures": 2,
+    "sequence": [
+      { "stepId": "basic-1", "slotIndex": 0 },
+      { "stepId": "basic-1", "slotIndex": 1 },
+      { "stepId": "basic-1", "slotIndex": 2 },
+      { "stepId": "basic-1", "slotIndex": 3 },
+      { "stepId": "giro-derecha", "slotIndex": 4 }
+    ]
+  }
+]
