@@ -1,5 +1,5 @@
 // Relative path works both for Production (monolith) and Dev (Vite Proxy)
-const API_BASE = '/api';
+const API_BASE = '/backend-service';
 
 const handleResponse = async (res) => {
   const contentType = res.headers.get('content-type');
@@ -20,7 +20,7 @@ const handleResponse = async (res) => {
 export const api = {
   // Auth
   async login(username, password) {
-    const res = await fetch(`${API_BASE}/dance/enter`, {
+    const res = await fetch(`${API_BASE}/login-user`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -29,7 +29,7 @@ export const api = {
   },
 
   async register(username, password, token) {
-    const res = await fetch(`${API_BASE}/dance/enroll`, {
+    const res = await fetch(`${API_BASE}/signup-user`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password, token })

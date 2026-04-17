@@ -1,9 +1,9 @@
 BachataFlow Monolith running on port 3001
-[2026-04-17T19:21:34.908Z] GET /
-[2026-04-17T19:21:34.957Z] GET /assets/index-BqidOg7q.js
-[2026-04-17T19:21:34.980Z] GET /assets/index-ymUehyjL.css
-[2026-04-17T19:21:35.178Z] GET /api/steps
-[2026-04-17T19:21:35.195Z] GET /api/choreos
-[2026-04-17T19:21:38.978Z] POST /api/dance/enroll
-[2026-04-17T19:21:38.995Z] GET /api/steps
-[2026-04-17T19:21:38.998Z] GET /api/choreos
+[2026-04-17T19:37:47.737Z] GET /
+[2026-04-17T19:37:47.780Z] GET /assets/index-BsjVwPRT.js
+[2026-04-17T19:37:47.781Z] GET /assets/index-ymUehyjL.css
+[2026-04-17T19:37:47.966Z] GET /backend-service/steps
+[2026-04-17T19:37:47.973Z] GET /backend-service/choreos
+[2026-04-17T19:37:51.753Z] POST /backend-service/signup-user
+[2026-04-17T19:37:51.776Z] GET /backend-service/steps
+[2026-04-17T19:37:51.783Z] GET /backend-service/choreos

@@ -45,5 +45,11 @@
     "username": "dance_test_user",
     "password": "dance123",
     "isAdmin": false
+  },
+  {
+    "id": "1776454671754",
+    "username": "backend_test_user",
+    "password": "password123",
+    "isAdmin": false
   }
 ]
