@@ -102,12 +102,13 @@ const StepForm = ({ initialStep, onSave, onCancel }) => {
 };
 
 const MyStepsView = () => {
-  const { steps, addStep, updateStep, deleteStep } = useStore();
+  const { user, steps, addStep, updateStep, deleteStep } = useStore();
   const [editingStep, setEditingStep] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredSteps = (steps || []).filter(s =>
+  const mySteps = (steps || []).filter(s => s.userId === user?.id);
+  const filteredSteps = mySteps.filter(s =>
     s.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 

@@ -25,5 +25,25 @@
     "description": "Giro básico a la derecha en 4 tiempos",
     "color": "#10b981",
     "category": "giro"
+  },
+  {
+    "name": "Paso de Prueba fullstack",
+    "duration": 1,
+    "description": "",
+    "color": "#e11d48",
+    "category": "base",
+    "id": "1776444832149",
+    "userId": "1776444828369",
+    "creatorName": "jules_test"
+  },
+  {
+    "name": "Giro Final Jules",
+    "duration": 1,
+    "description": "",
+    "color": "#e11d48",
+    "category": "base",
+    "id": "1776444952836",
+    "userId": "1776444951299",
+    "creatorName": "jules_final"
   }
 ]

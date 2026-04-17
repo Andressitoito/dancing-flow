@@ -9,5 +9,23 @@
     "username": "Jules",
     "password": "testpass",
     "isAdmin": false
+  },
+  {
+    "id": "1776444756946",
+    "username": "testuser",
+    "password": "password123",
+    "isAdmin": false
+  },
+  {
+    "id": "1776444828369",
+    "username": "jules_test",
+    "password": "test1234",
+    "isAdmin": false
+  },
+  {
+    "id": "1776444951299",
+    "username": "jules_final",
+    "password": "secret",
+    "isAdmin": false
   }
 ]

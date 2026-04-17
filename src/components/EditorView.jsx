@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 
 const EditorView = () => {
   const {
+    user,
     steps,
     addStep,
     currentChoreo,
@@ -320,7 +321,7 @@ const EditorView = () => {
             )}
           </div>
           <div className="flex gap-3 overflow-x-auto pb-4 pt-2 scrollbar-hide px-1">
-              {(steps || []).map(step => (
+              {(steps || []).filter(s => s.userId === user?.id || s.userId === 'andresito').map(step => (
                 <button
                   key={step.id}
                   onClick={(e) => {

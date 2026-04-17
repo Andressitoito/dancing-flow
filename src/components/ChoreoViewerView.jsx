@@ -171,7 +171,7 @@ const ChoreoViewerView = () => {
                 <div className="text-left">
                   <h4 className="font-bold text-lg">{choreo.title}</h4>
                   <p className="text-xs text-zinc-500 font-medium">
-                    {choreo.measures} compases • {choreo.sequence.length} pasos
+                    Por <span className="text-primary font-bold">{choreo.creatorName || 'Andresito'}</span> • {choreo.measures} compases
                   </p>
                 </div>
                 <div className="text-zinc-600 group-hover:text-primary transition-colors">
@@ -194,7 +194,12 @@ const ChoreoViewerView = () => {
         >
           <ChevronRight size={24} className="rotate-180" />
         </button>
-        <h2 className="flex-1 text-xl font-bold truncate">{selectedChoreo.title}</h2>
+        <div className="flex-1 min-w-0">
+          <h2 className="text-lg font-bold truncate leading-tight">{selectedChoreo.title}</h2>
+          <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">
+            Autor: <span className="text-primary">{selectedChoreo.creatorName || 'Andresito'}</span>
+          </p>
+        </div>
       </div>
 
       <div

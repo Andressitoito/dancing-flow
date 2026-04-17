@@ -5,11 +5,39 @@
     "title": "Básico y Giro (Andresito)",
     "measures": 2,
     "sequence": [
-      { "stepId": "basic-1", "slotIndex": 0 },
-      { "stepId": "basic-1", "slotIndex": 1 },
-      { "stepId": "basic-1", "slotIndex": 2 },
-      { "stepId": "basic-1", "slotIndex": 3 },
-      { "stepId": "giro-derecha", "slotIndex": 4 }
+      {
+        "stepId": "basic-1",
+        "slotIndex": 0
+      },
+      {
+        "stepId": "basic-1",
+        "slotIndex": 1
+      },
+      {
+        "stepId": "basic-1",
+        "slotIndex": 2
+      },
+      {
+        "stepId": "basic-1",
+        "slotIndex": 3
+      },
+      {
+        "stepId": "giro-derecha",
+        "slotIndex": 4
+      }
     ]
+  },
+  {
+    "id": "1776444955494",
+    "title": "Coreo de Jules",
+    "sequence": [
+      {
+        "stepId": "1776444952836",
+        "slotIndex": 0
+      }
+    ],
+    "measures": 2,
+    "userId": "1776444951299",
+    "creatorName": "jules_final"
   }
 ]

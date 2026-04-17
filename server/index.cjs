@@ -77,20 +77,18 @@ app.post('/api/login', (req, res, next) => {
 // Steps API
 app.get('/api/steps', (req, res, next) => {
   try {
-    const { userId } = req.query;
     const steps = readDB('steps.json');
-    const filteredSteps = steps.filter(s => s.userId === 'andresito' || s.userId === userId);
-    res.json(filteredSteps);
+    res.json(steps);
   } catch (e) { next(e); }
 });
 
 app.post('/api/steps', (req, res, next) => {
   try {
-    const { step, userId } = req.body;
+    const { step, userId, username } = req.body;
     if (!userId) return res.status(400).json({ error: 'Falta userId' });
 
     const steps = readDB('steps.json');
-    const newStep = { ...step, id: Date.now().toString(), userId };
+    const newStep = { ...step, id: Date.now().toString(), userId, creatorName: username };
     steps.push(newStep);
     writeDB('steps.json', steps);
     res.json(newStep);
@@ -124,21 +122,19 @@ app.delete('/api/steps/:id', (req, res, next) => {
 // Choreos API
 app.get('/api/choreos', (req, res, next) => {
   try {
-    const { userId } = req.query;
     const choreos = readDB('choreos.json');
-    const filteredChoreos = choreos.filter(c => c.userId === 'andresito' || c.userId === userId);
-    res.json(filteredChoreos);
+    res.json(choreos);
   } catch (e) { next(e); }
 });
 
 app.post('/api/choreos', (req, res, next) => {
   try {
-    const { choreo, userId } = req.body;
+    const { choreo, userId, username } = req.body;
     const choreos = readDB('choreos.json');
 
     // Create or Update
-    const newChoreo = { ...choreo, id: choreo.id || Date.now().toString(), userId };
-    const existingIndex = choreos.findIndex(c => c.id === newChoreo.id && c.userId === userId);
+    const newChoreo = { ...choreo, id: choreo.id || Date.now().toString(), userId, creatorName: username };
+    const existingIndex = choreos.findIndex(c => c.id === newChoreo.id && (c.userId === userId || c.id === choreo.id));
 
     if (existingIndex > -1) {
       choreos[existingIndex] = newChoreo;

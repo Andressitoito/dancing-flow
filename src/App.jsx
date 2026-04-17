@@ -7,8 +7,8 @@ import ChoreoViewerView from './components/ChoreoViewerView';
 import LoginView from './components/LoginView';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('editor');
-  const { fetchInitialData, loading, stopPlayback } = useStore();
+  const { user, fetchInitialData, loading, stopPlayback } = useStore();
+  const [activeTab, setActiveTab] = useState(user ? 'editor' : 'viewer');
 
   useEffect(() => {
     fetchInitialData();
@@ -20,6 +20,15 @@ function App() {
       stopPlayback();
     }
   }, [activeTab, stopPlayback]);
+
+  // Handle protected tabs
+  const handleTabChange = (tab) => {
+    if ((tab === 'editor' || tab === 'steps') && !user) {
+      setActiveTab('login');
+      return;
+    }
+    setActiveTab(tab);
+  };
 
   if (loading) {
     return (
@@ -49,7 +58,7 @@ function App() {
       <main className="max-w-md mx-auto">
         {renderContent()}
       </main>
-      <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
+      <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
     </div>
   );
 }

@@ -43,10 +43,9 @@ const useStore = create((set, get) => ({
   fetchInitialData: async () => {
     set({ loading: true });
     try {
-      const { user } = get();
       const [steps, choreos] = await Promise.all([
-        api.getSteps(user?.id),
-        api.getChoreos(user?.id)
+        api.getSteps(),
+        api.getChoreos()
       ]);
       set({
         steps: steps || [],
@@ -67,14 +66,14 @@ const useStore = create((set, get) => ({
   addStep: async (step) => {
     const { user } = get();
     if (!user) throw new Error('Debes iniciar sesión');
-    const newStep = await api.saveStep(step, user.id);
+    const newStep = await api.saveStep(step, user.id, user.username);
     set((state) => ({ steps: [...state.steps, newStep] }));
   },
 
   updateStep: async (step) => {
     const { user } = get();
     if (!user) throw new Error('Debes iniciar sesión');
-    const updatedStep = await api.updateStep(step, user.id);
+    const updatedStep = await api.updateStep(step, user.id, user.username);
     set((state) => ({
       steps: state.steps.map((s) => (s.id === updatedStep.id ? updatedStep : s))
     }));
@@ -95,7 +94,7 @@ const useStore = create((set, get) => ({
     if (!user) throw new Error('Debes iniciar sesión para guardar');
 
     const choreoToSave = asNew ? { ...currentChoreo, id: null } : currentChoreo;
-    const savedChoreo = await api.saveChoreo(choreoToSave, user.id);
+    const savedChoreo = await api.saveChoreo(choreoToSave, user.id, user.username);
 
     set((state) => ({
       choreos: [...state.choreos.filter(c => c.id !== savedChoreo.id), savedChoreo],

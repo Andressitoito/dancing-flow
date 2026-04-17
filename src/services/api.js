@@ -38,25 +38,25 @@ export const api = {
   },
 
   // Steps API
-  async getSteps(userId) {
-    const res = await fetch(`${API_BASE}/steps?userId=${userId || ''}`);
+  async getSteps() {
+    const res = await fetch(`${API_BASE}/steps`);
     return handleResponse(res);
   },
 
-  async saveStep(step, userId) {
+  async saveStep(step, userId, username) {
     const res = await fetch(`${API_BASE}/steps`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ step, userId })
+      body: JSON.stringify({ step, userId, username })
     });
     return handleResponse(res);
   },
 
-  async updateStep(step, userId) {
+  async updateStep(step, userId, username) {
     const res = await fetch(`${API_BASE}/steps`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ step, userId })
+      body: JSON.stringify({ step, userId, username })
     });
     return handleResponse(res);
   },
@@ -69,16 +69,16 @@ export const api = {
   },
 
   // Choreos API
-  async getChoreos(userId) {
-    const res = await fetch(`${API_BASE}/choreos?userId=${userId || ''}`);
+  async getChoreos() {
+    const res = await fetch(`${API_BASE}/choreos`);
     return handleResponse(res);
   },
 
-  async saveChoreo(choreo, userId) {
+  async saveChoreo(choreo, userId, username) {
     const res = await fetch(`${API_BASE}/choreos`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ choreo, userId })
+      body: JSON.stringify({ choreo, userId, username })
     });
     return handleResponse(res);
   }
