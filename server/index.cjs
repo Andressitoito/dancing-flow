@@ -17,6 +17,15 @@ app.use((req, res, next) => {
   next();
 });
 
+// Health Check
+app.get('/backend-service/ping', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 const DB_DIR = path.join(__dirname, '..', 'db');
 if (!fs.existsSync(DB_DIR)) {
   fs.mkdirSync(DB_DIR);

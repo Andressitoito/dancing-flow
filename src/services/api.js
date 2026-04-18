@@ -4,11 +4,22 @@ const API_BASE = '/backend-service';
 const handleResponse = async (res) => {
   const contentType = res.headers.get('content-type');
   if (!res.ok) {
+    console.error(`API Error ${res.status}:`, {
+      url: res.url,
+      method: res.method,
+      contentType
+    });
+
     if (contentType && contentType.includes('application/json')) {
       const error = await res.json();
       throw new Error(error.error || 'Error del servidor');
     }
-    throw new Error(`Error ${res.status}: El servidor devolvió un formato inesperado.`);
+
+    // Attempt to read body text for debugging
+    const text = await res.text().catch(() => 'No body');
+    console.error('API Error Body Snippet:', text.substring(0, 200));
+
+    throw new Error(`Error ${res.status}: El servidor devolvió un formato inesperado (${contentType}).`);
   }
 
   if (contentType && contentType.includes('application/json')) {

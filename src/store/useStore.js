@@ -13,6 +13,7 @@ const useStore = create((set, get) => ({
   },
   loading: false,
   error: null,
+  backendStatus: 'checking', // 'ok', 'error', 'checking'
   activeSlot: -1,
   playbackMode: 'scroll',
   isPlaying: false,
@@ -40,9 +41,28 @@ const useStore = create((set, get) => ({
   },
 
   // Actions
+  checkBackend: async () => {
+    try {
+      const res = await fetch('/backend-service/ping');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.status === 'ok') {
+          set({ backendStatus: 'ok' });
+          return true;
+        }
+      }
+      set({ backendStatus: 'error' });
+      return false;
+    } catch (e) {
+      set({ backendStatus: 'error' });
+      return false;
+    }
+  },
+
   fetchInitialData: async () => {
     set({ loading: true });
     try {
+      await get().checkBackend();
       const [steps, choreos] = await Promise.all([
         api.getSteps(),
         api.getChoreos()
