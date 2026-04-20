@@ -48,9 +48,10 @@ const useStore = create((set, get) => ({
   setPalette: (palette) => {
     set({ palette });
     localStorage.setItem('dancingflow_palette', JSON.stringify(palette));
-    document.documentElement.style.setProperty('--color-primary', palette.primary);
-    document.documentElement.style.setProperty('--color-secondary', palette.secondary);
-    document.documentElement.style.setProperty('--color-accent', palette.accent);
+    document.documentElement.style.setProperty('--df-primary', palette.primary);
+    document.documentElement.style.setProperty('--df-secondary', palette.secondary);
+    document.documentElement.style.setProperty('--df-accent', palette.accent);
+    document.documentElement.style.setProperty('--df-bg', palette.background || '#1a1a1a');
   },
 
   // Actions
@@ -89,9 +90,10 @@ const useStore = create((set, get) => ({
       });
       // Apply initial palette
       const { palette } = get();
-      document.documentElement.style.setProperty('--color-primary', palette.primary);
-      document.documentElement.style.setProperty('--color-secondary', palette.secondary);
-      document.documentElement.style.setProperty('--color-accent', palette.accent);
+      document.documentElement.style.setProperty('--df-primary', palette.primary);
+      document.documentElement.style.setProperty('--df-secondary', palette.secondary);
+      document.documentElement.style.setProperty('--df-accent', palette.accent);
+      document.documentElement.style.setProperty('--df-bg', palette.background || '#1a1a1a');
     } catch (error) {
       set({
         error: error.message,

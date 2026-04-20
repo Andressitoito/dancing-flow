@@ -1,11 +1,20 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: var(--df-primary);
+  --color-secondary: var(--df-secondary);
+  --color-accent: var(--df-accent);
+  --color-background: var(--df-bg);
+}
+
 :root {
-  background-color: #1a1a1a;
+  --df-primary: #ff0000;
+  --df-secondary: #ff9800;
+  --df-accent: #ffc340;
+  --df-bg: #1a1a1a;
+
+  background-color: var(--df-bg);
   color: white;
-  --color-primary: #ff0000;
-  --color-secondary: #ff9800;
-  --color-accent: #ffc340;
 }
 
 body {
