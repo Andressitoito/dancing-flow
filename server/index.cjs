@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 });
 
 // Health Check
-app.get('/backend-service/ping', (req, res) => {
+app.get('/ping', (req, res) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
@@ -53,7 +53,7 @@ const writeDB = (file, data) => {
 };
 
 // Auth Endpoints
-app.post('/backend-service/signup-user', (req, res, next) => {
+app.post('/signup-user', (req, res, next) => {
   try {
   const { username, password, token } = req.body;
   if (token !== TOKEN) {
@@ -74,7 +74,7 @@ app.post('/backend-service/signup-user', (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-app.post('/backend-service/login-user', (req, res, next) => {
+app.post('/login-user', (req, res, next) => {
   try {
     const { username, password } = req.body;
     const users = readDB('users.json');
@@ -90,14 +90,14 @@ app.post('/backend-service/login-user', (req, res, next) => {
 });
 
 // Steps API
-app.get('/backend-service/steps', (req, res, next) => {
+app.get('/steps', (req, res, next) => {
   try {
     const steps = readDB('steps.json');
     res.json(steps);
   } catch (e) { next(e); }
 });
 
-app.post('/backend-service/steps', (req, res, next) => {
+app.post('/steps', (req, res, next) => {
   try {
     const { step, userId, username } = req.body;
     if (!userId) return res.status(400).json({ error: 'Falta userId' });
@@ -110,7 +110,7 @@ app.post('/backend-service/steps', (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-app.put('/backend-service/steps', (req, res, next) => {
+app.put('/steps', (req, res, next) => {
   try {
     const { step, userId } = req.body;
     let steps = readDB('steps.json');
@@ -123,7 +123,7 @@ app.put('/backend-service/steps', (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-app.delete('/backend-service/steps/:id', (req, res, next) => {
+app.delete('/steps/:id', (req, res, next) => {
   try {
     const { userId } = req.query;
     const { id } = req.params;
@@ -135,14 +135,14 @@ app.delete('/backend-service/steps/:id', (req, res, next) => {
 });
 
 // Choreos API
-app.get('/backend-service/choreos', (req, res, next) => {
+app.get('/choreos', (req, res, next) => {
   try {
     const choreos = readDB('choreos.json');
     res.json(choreos);
   } catch (e) { next(e); }
 });
 
-app.post('/backend-service/choreos', (req, res, next) => {
+app.post('/choreos', (req, res, next) => {
   try {
     const { choreo, userId, username } = req.body;
     const choreos = readDB('choreos.json');
@@ -163,7 +163,8 @@ app.post('/backend-service/choreos', (req, res, next) => {
 });
 
 // 404 for missing API routes (must be after all API routes but before static files)
-app.use('/backend-service', (req, res) => {
+app.use(['/ping', '/steps', '/choreos', '/signup-user', '/login-user'], (req, res, next) => {
+  // If it matches one of our routes but no method matched
   res.status(404).json({ error: 'Ruta de API no encontrada' });
 });
 

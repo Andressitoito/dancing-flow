@@ -1,1 +1,2 @@
 BachataFlow Monolith running on port 3001
+[2026-04-20T03:10:39.402Z] GET /ping
