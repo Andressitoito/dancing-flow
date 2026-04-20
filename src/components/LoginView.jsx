@@ -27,7 +27,7 @@ const PalettePicker = () => {
         <Palette size={18} className="text-secondary" />
         <h3 className="text-sm font-black uppercase tracking-widest">Paleta de Colores</h3>
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-3 gap-3">
         {Object.entries(APP_PALETTES).map(([key, p]) => (
           <button
             key={key}

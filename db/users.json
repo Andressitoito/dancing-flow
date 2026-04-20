@@ -65,5 +65,12 @@
     "password": "pass123",
     "role": "student",
     "status": "active"
+  },
+  {
+    "id": "1776716452718",
+    "username": "refinement_tester",
+    "password": "pass123",
+    "role": "student",
+    "status": "active"
   }
 ]

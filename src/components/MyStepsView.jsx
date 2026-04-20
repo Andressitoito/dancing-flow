@@ -118,7 +118,7 @@ const MyStepsView = () => {
         <h2 className="text-2xl font-bold">Mis Pasos</h2>
         <button
           onClick={() => setIsAdding(true)}
-          className="bg-primary p-2 rounded-full text-white shadow-lg hover:bg-rose-600"
+          className="bg-primary p-2 rounded-full text-white shadow-lg opacity-90 hover:opacity-100"
         >
           <Plus size={24} />
         </button>

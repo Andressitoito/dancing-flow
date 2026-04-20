@@ -1,4 +1,11 @@
 export const APP_PALETTES = {
+  tropical: {
+    name: 'Tropical (Nueva)',
+    primary: '#ff0000',
+    secondary: '#ff9800',
+    accent: '#ffc340',
+    background: '#1a1a1a'
+  },
   latina: {
     name: 'Latina (Original)',
     primary: '#e11d48',
@@ -6,11 +13,11 @@ export const APP_PALETTES = {
     accent: '#8b5cf6',
     background: '#1a1a1a'
   },
-  tropical: {
-    name: 'Tropical (Nueva)',
-    primary: '#ff0000',
-    secondary: '#ff9800',
-    accent: '#ffc340',
+  classic: {
+    name: 'Clásico Dark',
+    primary: '#6366f1',
+    secondary: '#ec4899',
+    accent: '#10b981',
     background: '#1a1a1a'
   }
 };

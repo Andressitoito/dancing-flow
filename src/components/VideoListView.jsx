@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import useStore from '../store/useStore';
-import { Plus, Trash2, Video, ChevronRight, Play, Pause, FastForward, Rewind, Square } from 'lucide-react';
+import { Plus, Trash2, Video, ChevronRight, Play, Pause, FastForward, Rewind, Square, RotateCcw } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 const VideoPlayer = ({ video, onBack }) => {
   const [playbackRate, setPlaybackRate] = useState(1);
   const videoRef = React.useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLooping, setIsLooping] = useState(false);
 
   const togglePlay = () => {
     if (videoRef.current.paused) {
@@ -55,12 +56,22 @@ const VideoPlayer = ({ video, onBack }) => {
       </div>
 
       <div className="p-6 bg-zinc-900 border-t border-zinc-800 space-y-6">
-        <div className="flex justify-center items-center gap-8">
+        <div className="flex justify-center items-center gap-6">
+           <button
+             onClick={() => {
+               setIsLooping(!isLooping);
+               videoRef.current.loop = !isLooping;
+             }}
+             className={`p-2 rounded-lg transition-all ${isLooping ? 'bg-primary text-white shadow-lg' : 'text-zinc-500'}`}
+           >
+             <RotateCcw size={24} />
+           </button>
            <button onClick={() => { videoRef.current.currentTime -= 5 }} className="text-zinc-400 hover:text-white"><Rewind size={32} /></button>
            <button onClick={togglePlay} className="bg-white text-black p-4 rounded-full">
              {isPlaying ? <Pause size={32} fill="black" /> : <Play size={32} fill="black" />}
            </button>
            <button onClick={() => { videoRef.current.currentTime += 5 }} className="text-zinc-400 hover:text-white"><FastForward size={32} /></button>
+           <div className="w-10" /> {/* Spacer */}
         </div>
 
         <div className="flex flex-col gap-3">
@@ -89,7 +100,7 @@ const VideoListView = () => {
   const [level, setLevel] = useState('principiante');
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
-  const [newVideo, setNewVideo] = useState({ title: '', url: '', level: 'principiante' });
+  const [newVideo, setNewVideo] = useState({ title: '', url: '', level: 'principiante', videoFile: null });
 
   const filteredVideos = (videos || []).filter(v => v.level === level);
 
@@ -98,7 +109,7 @@ const VideoListView = () => {
     try {
       await addVideo(newVideo);
       setIsAdding(false);
-      setNewVideo({ title: '', url: '', level: 'principiante' });
+      setNewVideo({ title: '', url: '', level: 'principiante', videoFile: null });
       Swal.fire({ title: 'Video Subido', icon: 'success', background: '#18181b', color: '#fff' });
     } catch (e) {
       Swal.fire({ title: 'Error', text: e.message, icon: 'error', background: '#18181b', color: '#fff' });
@@ -190,12 +201,25 @@ const VideoListView = () => {
                 value={newVideo.title}
                 onChange={e => setNewVideo({...newVideo, title: e.target.value})}
               />
-              <input
-                required placeholder="URL del video (MP4)"
-                className="w-full bg-zinc-800 p-3 rounded-xl border border-zinc-700"
-                value={newVideo.url}
-                onChange={e => setNewVideo({...newVideo, url: e.target.value})}
-              />
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-zinc-500 uppercase ml-2">Opción 1: Archivo local</label>
+                <input
+                  type="file" accept="video/mp4"
+                  className="w-full bg-zinc-800 p-3 rounded-xl border border-zinc-700 text-xs"
+                  onChange={e => setNewVideo({...newVideo, videoFile: e.target.files[0], url: ''})}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-zinc-500 uppercase ml-2">Opción 2: URL externa</label>
+                <input
+                  placeholder="URL del video (MP4)"
+                  className="w-full bg-zinc-800 p-3 rounded-xl border border-zinc-700"
+                  value={newVideo.url}
+                  disabled={!!newVideo.videoFile}
+                  onChange={e => setNewVideo({...newVideo, url: e.target.value})}
+                />
+              </div>
               <select
                 className="w-full bg-zinc-800 p-3 rounded-xl border border-zinc-700"
                 value={newVideo.level}

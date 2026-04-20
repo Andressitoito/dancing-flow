@@ -17,6 +17,9 @@ const videoRoutes = require('./routes/videos.cjs');
 app.use(cors());
 app.use(bodyParser.json());
 
+// Serve uploads
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+
 // Request Logger
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);

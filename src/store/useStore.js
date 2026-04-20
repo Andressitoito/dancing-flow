@@ -3,7 +3,7 @@ import { api } from '../services/api';
 import { APP_PALETTES } from '../services/constants';
 
 const useStore = create((set, get) => ({
-  user: JSON.parse(localStorage.getItem('bachataflow_user')) || null,
+  user: JSON.parse(localStorage.getItem('dancingflow_user')) || JSON.parse(localStorage.getItem('bachataflow_user')) || null,
   palette: JSON.parse(localStorage.getItem('dancingflow_palette')) || APP_PALETTES.tropical,
   steps: [],
   choreos: [],
@@ -27,19 +27,20 @@ const useStore = create((set, get) => ({
   login: async (username, password) => {
     const user = await api.login(username, password);
     set({ user });
-    localStorage.setItem('bachataflow_user', JSON.stringify(user));
+    localStorage.setItem('dancingflow_user', JSON.stringify(user));
     await get().fetchInitialData();
   },
 
   register: async (username, password, token) => {
     const user = await api.register(username, password, token);
     set({ user });
-    localStorage.setItem('bachataflow_user', JSON.stringify(user));
+    localStorage.setItem('dancingflow_user', JSON.stringify(user));
     await get().fetchInitialData();
   },
 
   logout: () => {
     set({ user: null, steps: [], choreos: [], videos: [] });
+    localStorage.removeItem('dancingflow_user');
     localStorage.removeItem('bachataflow_user');
     get().fetchInitialData();
   },
@@ -49,6 +50,7 @@ const useStore = create((set, get) => ({
     localStorage.setItem('dancingflow_palette', JSON.stringify(palette));
     document.documentElement.style.setProperty('--color-primary', palette.primary);
     document.documentElement.style.setProperty('--color-secondary', palette.secondary);
+    document.documentElement.style.setProperty('--color-accent', palette.accent);
   },
 
   // Actions
@@ -89,6 +91,7 @@ const useStore = create((set, get) => ({
       const { palette } = get();
       document.documentElement.style.setProperty('--color-primary', palette.primary);
       document.documentElement.style.setProperty('--color-secondary', palette.secondary);
+      document.documentElement.style.setProperty('--color-accent', palette.accent);
     } catch (error) {
       set({
         error: error.message,
@@ -152,11 +155,35 @@ const useStore = create((set, get) => ({
   },
 
   // Video Actions
-  addVideo: async (video) => {
+  addVideo: async (videoData) => {
     const { user } = get();
     if (!user) throw new Error('Inicia sesión');
-    const newVideo = await api.saveVideo(video, user.id, user.username);
-    set(state => ({ videos: [...state.videos, newVideo] }));
+
+    // Check if it's a file upload
+    if (videoData.videoFile) {
+      const formData = new FormData();
+      formData.append('videoFile', videoData.videoFile);
+      formData.append('title', videoData.title);
+      formData.append('level', videoData.level);
+      formData.append('userId', user.id);
+      formData.append('username', user.username);
+
+      const res = await fetch('/backend-service/videos', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Error al subir video');
+      }
+
+      const newVideo = await res.json();
+      set(state => ({ videos: [...state.videos, newVideo] }));
+    } else {
+      const newVideo = await api.saveVideo(videoData, user.id, user.username);
+      set(state => ({ videos: [...state.videos, newVideo] }));
+    }
   },
 
   deleteVideo: async (id) => {

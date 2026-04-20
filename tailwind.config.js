@@ -15,6 +15,9 @@ export default {
         secondary: {
           DEFAULT: 'var(--color-secondary, #ff9800)',
         },
+        accent: {
+          DEFAULT: 'var(--color-accent, #ffc340)',
+        },
       },
     },
   },
