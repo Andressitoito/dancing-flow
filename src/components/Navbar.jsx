@@ -1,11 +1,12 @@
 import React from 'react';
-import { LayoutGrid, PlayCircle, Settings, User } from 'lucide-react';
+import { LayoutGrid, PlayCircle, Settings, User, Video } from 'lucide-react';
 
 const Navbar = ({ activeTab, onTabChange }) => {
   const tabs = [
     { id: 'editor', name: 'Editor', icon: LayoutGrid },
     { id: 'steps', name: 'Mis Pasos', icon: Settings },
     { id: 'viewer', name: 'Visor', icon: PlayCircle },
+    { id: 'videos', name: 'Tutoriales', icon: Video },
     { id: 'login', name: 'Cuenta', icon: User },
   ];
 

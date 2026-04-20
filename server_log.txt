@@ -1,3 +1,1 @@
-BachataFlow Monolith running on port 3001
-[2026-04-20T03:53:48.322Z] GET /backend-service/ping
-[2026-04-20T03:53:48.344Z] GET /ping
+Dancing Flow Monolith running on port 3001

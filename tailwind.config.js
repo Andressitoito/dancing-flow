@@ -9,11 +9,11 @@ export default {
       colors: {
         background: '#1a1a1a',
         primary: {
-          DEFAULT: '#e11d48', // Bachata Rose
+          DEFAULT: 'var(--color-primary, #ff0000)',
           light: '#fb7185',
         },
         secondary: {
-          DEFAULT: '#fbbf24', // Tropical Amber
+          DEFAULT: 'var(--color-secondary, #ff9800)',
         },
       },
     },

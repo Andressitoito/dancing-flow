@@ -51,5 +51,19 @@
     "username": "backend_test_user",
     "password": "password123",
     "isAdmin": false
+  },
+  {
+    "id": "1776694833121",
+    "username": "new_master",
+    "password": "master123",
+    "role": "student",
+    "status": "active"
+  },
+  {
+    "id": "1776695345642",
+    "username": "jules_refactor",
+    "password": "pass123",
+    "role": "student",
+    "status": "active"
   }
 ]

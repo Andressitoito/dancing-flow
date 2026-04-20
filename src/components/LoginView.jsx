@@ -12,9 +12,42 @@ import {
   Play,
   Trash2,
   ShieldCheck,
-  UserCheck
+  UserCheck,
+  Palette
 } from 'lucide-react';
 import Swal from 'sweetalert2';
+import { APP_PALETTES } from '../services/constants';
+
+const PalettePicker = () => {
+  const { palette, setPalette } = useStore();
+
+  return (
+    <div className="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-4">
+      <div className="flex items-center gap-2">
+        <Palette size={18} className="text-secondary" />
+        <h3 className="text-sm font-black uppercase tracking-widest">Paleta de Colores</h3>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        {Object.entries(APP_PALETTES).map(([key, p]) => (
+          <button
+            key={key}
+            onClick={() => setPalette(p)}
+            className={`p-3 rounded-xl border-2 transition-all text-left space-y-2 ${
+              palette.name === p.name ? 'border-primary bg-primary/10' : 'border-zinc-800 bg-zinc-950/50'
+            }`}
+          >
+            <span className="text-[10px] font-bold block">{p.name}</span>
+            <div className="flex gap-1">
+              <div className="w-4 h-4 rounded-full" style={{ backgroundColor: p.primary }} />
+              <div className="w-4 h-4 rounded-full" style={{ backgroundColor: p.secondary }} />
+              <div className="w-4 h-4 rounded-full" style={{ backgroundColor: p.accent }} />
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const AdminPanel = () => {
   const { user, allUsers, fetchUsers, updateUserRoleOrStatus, deleteUserAccount } = useStore();
@@ -178,6 +211,8 @@ const LoginView = () => {
           Cerrar Sesión
         </button>
 
+        <PalettePicker />
+
         {(user.role === 'master' || user.role === 'moderator') && <AdminPanel />}
       </div>
     );
@@ -186,7 +221,7 @@ const LoginView = () => {
   return (
     <div className="p-6 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="text-center space-y-2">
-        <h2 className="text-4xl font-black">BachataFlow</h2>
+        <h2 className="text-4xl font-black">Dancing Flow</h2>
         <p className="text-zinc-500 font-medium">
           {isRegister ? 'Crea tu cuenta de estudiante' : 'Inicia sesión para guardar tus coreos'}
         </p>

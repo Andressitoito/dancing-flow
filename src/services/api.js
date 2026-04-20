@@ -121,5 +121,27 @@ export const api = {
       method: 'DELETE'
     });
     return handleResponse(res);
+  },
+
+  // Videos API
+  async getVideos() {
+    const res = await fetch(`${API_BASE}/videos`);
+    return handleResponse(res);
+  },
+
+  async saveVideo(video, userId, username) {
+    const res = await fetch(`${API_BASE}/videos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ video, userId, username })
+    });
+    return handleResponse(res);
+  },
+
+  async deleteVideo(id, userId) {
+    const res = await fetch(`${API_BASE}/videos/${id}?userId=${userId}`, {
+      method: 'DELETE'
+    });
+    return handleResponse(res);
   }
 };

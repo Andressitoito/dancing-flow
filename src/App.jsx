@@ -5,6 +5,7 @@ import MyStepsView from './components/MyStepsView';
 import EditorView from './components/EditorView';
 import ChoreoViewerView from './components/ChoreoViewerView';
 import LoginView from './components/LoginView';
+import VideoListView from './components/VideoListView';
 
 import { AlertCircle } from 'lucide-react';
 
@@ -73,6 +74,8 @@ function App() {
         return <MyStepsView />;
       case 'viewer':
         return <ChoreoViewerView />;
+      case 'videos':
+        return <VideoListView />;
       case 'login':
         return <LoginView />;
       default:

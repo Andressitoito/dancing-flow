@@ -1,10 +1,13 @@
 import { create } from 'zustand';
 import { api } from '../services/api';
+import { APP_PALETTES } from '../services/constants';
 
 const useStore = create((set, get) => ({
   user: JSON.parse(localStorage.getItem('bachataflow_user')) || null,
+  palette: JSON.parse(localStorage.getItem('dancingflow_palette')) || APP_PALETTES.tropical,
   steps: [],
   choreos: [],
+  videos: [],
   allUsers: [],
   currentChoreo: {
     id: null,
@@ -36,9 +39,16 @@ const useStore = create((set, get) => ({
   },
 
   logout: () => {
-    set({ user: null, steps: [], choreos: [] });
+    set({ user: null, steps: [], choreos: [], videos: [] });
     localStorage.removeItem('bachataflow_user');
     get().fetchInitialData();
+  },
+
+  setPalette: (palette) => {
+    set({ palette });
+    localStorage.setItem('dancingflow_palette', JSON.stringify(palette));
+    document.documentElement.style.setProperty('--color-primary', palette.primary);
+    document.documentElement.style.setProperty('--color-secondary', palette.secondary);
   },
 
   // Actions
@@ -64,15 +74,21 @@ const useStore = create((set, get) => ({
     set({ loading: true });
     try {
       await get().checkBackend();
-      const [steps, choreos] = await Promise.all([
+      const [steps, choreos, videos] = await Promise.all([
         api.getSteps(),
-        api.getChoreos()
+        api.getChoreos(),
+        api.getVideos()
       ]);
       set({
         steps: steps || [],
         choreos: choreos || [],
+        videos: videos || [],
         loading: false
       });
+      // Apply initial palette
+      const { palette } = get();
+      document.documentElement.style.setProperty('--color-primary', palette.primary);
+      document.documentElement.style.setProperty('--color-secondary', palette.secondary);
     } catch (error) {
       set({
         error: error.message,
@@ -133,6 +149,21 @@ const useStore = create((set, get) => ({
     set((state) => ({
       allUsers: state.allUsers.filter(u => u.id !== userId)
     }));
+  },
+
+  // Video Actions
+  addVideo: async (video) => {
+    const { user } = get();
+    if (!user) throw new Error('Inicia sesión');
+    const newVideo = await api.saveVideo(video, user.id, user.username);
+    set(state => ({ videos: [...state.videos, newVideo] }));
+  },
+
+  deleteVideo: async (id) => {
+    const { user } = get();
+    if (!user) throw new Error('Inicia sesión');
+    await api.deleteVideo(id, user.id);
+    set(state => ({ videos: state.videos.filter(v => v.id !== id) }));
   },
 
   // Choreo Actions

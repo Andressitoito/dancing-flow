@@ -1,12 +1,31 @@
+export const APP_PALETTES = {
+  latina: {
+    name: 'Latina (Original)',
+    primary: '#e11d48',
+    secondary: '#fbbf24',
+    accent: '#8b5cf6',
+    background: '#1a1a1a'
+  },
+  tropical: {
+    name: 'Tropical (Nueva)',
+    primary: '#ff0000',
+    secondary: '#ff9800',
+    accent: '#ffc340',
+    background: '#1a1a1a'
+  }
+};
+
 export const APP_COLORS = [
-  '#e11d48', // Bachata Rose
-  '#fbbf24', // Tropical Amber
-  '#8b5cf6', // Violet
+  '#e11d48', // Rose
+  '#fbbf24', // Amber
   '#10b981', // Emerald
   '#3b82f6', // Blue
+  '#8b5cf6', // Violet
   '#f97316', // Orange
+  '#06b6d4', // Cyan
+  '#e28000', // Deep Orange
+  '#ff9800', // Bright Orange
+  '#ffc340', // Golden
+  '#e00000', // Deep Red
+  '#ff0000', // Pure Red
 ];
-
-export const BPM_DEFAULT = 120;
-export const MEASURE_BEATS = 8;
-export const HALF_MEASURE_BEATS = 4;
