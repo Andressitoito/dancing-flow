@@ -118,9 +118,9 @@ const EditorView = () => {
                 });
                 if (result.isConfirmed) removeMeasure(m);
               }}
-              className="absolute inset-0 z-30 flex items-center justify-center bg-red-500/20 backdrop-blur-[1px] rounded-lg border-2 border-dashed border-red-500 animate-in fade-in zoom-in duration-200"
+              className="absolute inset-0 z-30 flex items-center justify-center bg-primary/20 backdrop-blur-[1px] rounded-lg border-2 border-dashed border-primary animate-in fade-in zoom-in duration-200"
             >
-              <div className="bg-red-500 text-white p-3 rounded-full shadow-2xl">
+              <div className="bg-primary text-white p-3 rounded-full shadow-2xl">
                 <Trash2 size={24} strokeWidth={3} />
               </div>
             </button>
@@ -284,7 +284,7 @@ const EditorView = () => {
                     await saveCurrentChoreo(true);
                   }
                 }}
-                className="p-2 text-emerald-500 hover:bg-zinc-800 rounded-lg transition-colors"
+                className="p-2 text-accent hover:bg-zinc-800 rounded-lg transition-colors"
               >
                 <Copy size={20} />
               </button>
@@ -420,7 +420,7 @@ const EditorView = () => {
               onClick={() => setIsDeleteMode(!isDeleteMode)}
               className={`py-3 rounded-2xl flex items-center justify-center gap-3 transition-all border font-bold uppercase tracking-wide text-[10px] ${
                 isDeleteMode
-                ? 'bg-red-500 border-red-400 text-white shadow-[0_0_20px_rgba(239,68,68,0.3)]'
+                ? 'bg-primary border-primary/50 text-white shadow-[0_0_20px_rgba(239,68,68,0.3)]'
                 : 'bg-zinc-900 border-zinc-800 text-zinc-500'
               }`}
             >

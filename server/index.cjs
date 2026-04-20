@@ -15,7 +15,8 @@ const adminRoutes = require('./routes/admin.cjs');
 const videoRoutes = require('./routes/videos.cjs');
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '100mb' }));
+app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
 
 // Serve uploads
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));

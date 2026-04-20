@@ -116,9 +116,9 @@ const AdminPanel = () => {
                 </p>
               </div>
               <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase ${
-                u.status === 'active' ? 'bg-emerald-500/10 text-emerald-500' :
-                u.status === 'paused' ? 'bg-amber-500/10 text-amber-500' :
-                'bg-red-500/10 text-red-500'
+                u.status === 'active' ? 'bg-accent/10 text-accent' :
+                u.status === 'paused' ? 'bg-secondary/10 text-secondary' :
+                'bg-primary/10 text-primary'
               }`}>
                 {u.status}
               </span>
@@ -126,11 +126,11 @@ const AdminPanel = () => {
 
             <div className="flex gap-2">
               {u.status === 'active' ? (
-                <button onClick={() => handleStatus(u, 'paused')} className="flex-1 bg-zinc-800 p-2 rounded-lg text-amber-500 flex justify-center">
+                <button onClick={() => handleStatus(u, 'paused')} className="flex-1 bg-zinc-800 p-2 rounded-lg text-secondary flex justify-center">
                   <Ban size={16} />
                 </button>
               ) : (
-                <button onClick={() => handleStatus(u, 'active')} className="flex-1 bg-zinc-800 p-2 rounded-lg text-emerald-500 flex justify-center">
+                <button onClick={() => handleStatus(u, 'active')} className="flex-1 bg-zinc-800 p-2 rounded-lg text-accent flex justify-center">
                   <Play size={16} />
                 </button>
               )}
@@ -205,7 +205,7 @@ const LoginView = () => {
 
         <button
           onClick={logout}
-          className="flex items-center gap-2 px-8 py-4 bg-zinc-900 border border-zinc-800 rounded-2xl font-bold text-red-500 hover:bg-zinc-800 transition-all active:scale-95"
+          className="flex items-center gap-2 px-8 py-4 bg-zinc-900 border border-zinc-800 rounded-2xl font-bold text-primary hover:bg-zinc-800 transition-all active:scale-95"
         >
           <LogOut size={20} />
           Cerrar Sesión

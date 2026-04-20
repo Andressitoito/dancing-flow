@@ -72,5 +72,19 @@
     "password": "pass123",
     "role": "student",
     "status": "active"
+  },
+  {
+    "id": "1776719498106",
+    "username": "final_theme_tester",
+    "password": "pass123",
+    "role": "student",
+    "status": "active"
+  },
+  {
+    "id": "1776720474395",
+    "username": "final_user",
+    "password": "pass",
+    "role": "student",
+    "status": "active"
   }
 ]

@@ -15,8 +15,8 @@ export const APP_PALETTES = {
   },
   classic: {
     name: 'Clásico Dark',
-    primary: '#6366f1',
-    secondary: '#ec4899',
+    primary: '#e11d48',
+    secondary: '#fbbf24',
     accent: '#10b981',
     background: '#1a1a1a'
   }

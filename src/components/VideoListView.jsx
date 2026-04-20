@@ -100,12 +100,14 @@ const VideoListView = () => {
   const [level, setLevel] = useState('principiante');
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [newVideo, setNewVideo] = useState({ title: '', url: '', level: 'principiante', videoFile: null });
 
   const filteredVideos = (videos || []).filter(v => v.level === level);
 
   const handleAdd = async (e) => {
     e.preventDefault();
+    setIsUploading(true);
     try {
       await addVideo(newVideo);
       setIsAdding(false);
@@ -113,6 +115,8 @@ const VideoListView = () => {
       Swal.fire({ title: 'Video Subido', icon: 'success', background: '#18181b', color: '#fff' });
     } catch (e) {
       Swal.fire({ title: 'Error', text: e.message, icon: 'error', background: '#18181b', color: '#fff' });
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -176,7 +180,7 @@ const VideoListView = () => {
                     if (res.isConfirmed) deleteVideo(video.id);
                   });
                 }}
-                className="absolute -top-1 -right-1 bg-red-500 p-1 rounded-full text-white shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute -top-1 -right-1 bg-primary p-1 rounded-full text-white shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <Trash2 size={10} />
               </button>
@@ -229,8 +233,26 @@ const VideoListView = () => {
                 <option value="avanzado">Intermedio / Avanzado</option>
               </select>
               <div className="flex gap-2 pt-4">
-                <button type="button" onClick={() => setIsAdding(false)} className="flex-1 py-3 bg-zinc-800 rounded-xl font-bold">Cancelar</button>
-                <button type="submit" className="flex-1 py-3 bg-primary rounded-xl font-bold">Subir</button>
+                <button
+                  type="button"
+                  disabled={isUploading}
+                  onClick={() => setIsAdding(false)}
+                  className="flex-1 py-3 bg-zinc-800 rounded-xl font-bold disabled:opacity-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={isUploading}
+                  className="flex-1 py-3 bg-primary rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-70"
+                >
+                  {isUploading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Subiendo...
+                    </>
+                  ) : 'Subir'}
+                </button>
               </div>
            </form>
         </div>

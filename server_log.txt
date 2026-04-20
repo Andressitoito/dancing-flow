@@ -1,1 +1,13 @@
 Dancing Flow Monolith running on port 3001
+[2026-04-20T21:27:51.978Z] GET /
+[2026-04-20T21:27:51.997Z] GET /assets/index-BCLh88iW.js
+[2026-04-20T21:27:51.999Z] GET /assets/index-CbxsZ9ST.css
+[2026-04-20T21:27:52.092Z] GET /backend-service/ping
+[2026-04-20T21:27:52.101Z] GET /backend-service/steps
+[2026-04-20T21:27:52.104Z] GET /backend-service/choreos
+[2026-04-20T21:27:52.107Z] GET /backend-service/videos
+[2026-04-20T21:27:54.394Z] POST /backend-service/signup-user
+[2026-04-20T21:27:54.405Z] GET /backend-service/ping
+[2026-04-20T21:27:54.409Z] GET /backend-service/steps
+[2026-04-20T21:27:54.411Z] GET /backend-service/choreos
+[2026-04-20T21:27:54.412Z] GET /backend-service/videos
