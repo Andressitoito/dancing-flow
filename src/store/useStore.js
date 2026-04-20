@@ -5,6 +5,7 @@ const useStore = create((set, get) => ({
   user: JSON.parse(localStorage.getItem('bachataflow_user')) || null,
   steps: [],
   choreos: [],
+  allUsers: [],
   currentChoreo: {
     id: null,
     title: 'Nueva Coreografía',
@@ -108,6 +109,32 @@ const useStore = create((set, get) => ({
     }));
   },
 
+  // Admin Actions
+  fetchUsers: async () => {
+    const { user } = get();
+    if (!user) return;
+    try {
+      const users = await api.getUsers(user.id);
+      set({ allUsers: users || [] });
+    } catch (e) { console.error(e); }
+  },
+
+  updateUserRoleOrStatus: async (userId, data) => {
+    const { user } = get();
+    const updatedUser = await api.updateUser(userId, data, user.id);
+    set((state) => ({
+      allUsers: state.allUsers.map(u => u.id === userId ? updatedUser : u)
+    }));
+  },
+
+  deleteUserAccount: async (userId) => {
+    const { user } = get();
+    await api.deleteUser(userId, user.id);
+    set((state) => ({
+      allUsers: state.allUsers.filter(u => u.id !== userId)
+    }));
+  },
+
   // Choreo Actions
   saveCurrentChoreo: async (asNew = false) => {
     const { currentChoreo, user } = get();
@@ -124,6 +151,21 @@ const useStore = create((set, get) => ({
 
   loadChoreo: (choreo) => {
     set({ currentChoreo: choreo });
+  },
+
+  deleteChoreo: async (id) => {
+    const { user } = get();
+    if (!user) throw new Error('Debes iniciar sesión');
+    await api.deleteChoreo(id, user.id);
+    set((state) => ({
+      choreos: state.choreos.filter(c => c.id !== id),
+      currentChoreo: state.currentChoreo.id === id ? {
+        id: null,
+        title: 'Nueva Coreografía',
+        sequence: [],
+        measures: 2,
+      } : state.currentChoreo
+    }));
   },
 
   resetChoreo: () => {

@@ -1,7 +1,128 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useStore from '../store/useStore';
-import { LogIn, User as UserIcon, LogOut, Key, Lock, UserPlus } from 'lucide-react';
+import {
+  LogIn,
+  User as UserIcon,
+  LogOut,
+  Key,
+  Lock,
+  UserPlus,
+  Shield,
+  Ban,
+  Play,
+  Trash2,
+  ShieldCheck,
+  UserCheck
+} from 'lucide-react';
 import Swal from 'sweetalert2';
+
+const AdminPanel = () => {
+  const { user, allUsers, fetchUsers, updateUserRoleOrStatus, deleteUserAccount } = useStore();
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const handleStatus = async (targetUser, newStatus) => {
+    const result = await Swal.fire({
+      title: '¿Confirmar cambio?',
+      text: `Vas a cambiar el estado de ${targetUser.username} a ${newStatus}.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e11d48',
+      background: '#18181b', color: '#fff'
+    });
+    if (result.isConfirmed) {
+      await updateUserRoleOrStatus(targetUser.id, { status: newStatus });
+    }
+  };
+
+  const handleRole = async (targetUser, newRole) => {
+    const result = await Swal.fire({
+      title: '¿Promover/Degradar?',
+      text: `Vas a cambiar el rol de ${targetUser.username} a ${newRole}.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#fbbf24',
+      background: '#18181b', color: '#fff'
+    });
+    if (result.isConfirmed) {
+      await updateUserRoleOrStatus(targetUser.id, { role: newRole });
+    }
+  };
+
+  const handleDelete = async (targetUser) => {
+    const result = await Swal.fire({
+      title: '¿ELIMINAR CUENTA?',
+      text: `Esta acción borrará permanentemente al usuario ${targetUser.username}.`,
+      icon: 'error',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      background: '#18181b', color: '#fff'
+    });
+    if (result.isConfirmed) {
+      await deleteUserAccount(targetUser.id);
+    }
+  };
+
+  return (
+    <div className="mt-8 pt-8 border-t border-zinc-800 space-y-4">
+      <div className="flex items-center gap-2 px-2">
+        <Shield className="text-primary" size={20} />
+        <h3 className="font-black uppercase tracking-widest text-sm">Administración</h3>
+      </div>
+
+      <div className="space-y-3">
+        {allUsers.filter(u => u.id !== user.id).map(u => (
+          <div key={u.id} className="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3">
+            <div className="flex justify-between items-start">
+              <div>
+                <h4 className="font-bold text-white">{u.username}</h4>
+                <p className="text-[10px] uppercase font-black tracking-tighter text-zinc-500">
+                  ID: {u.id} • Rol: <span className={u.role === 'student' ? 'text-zinc-400' : 'text-secondary'}>{u.role}</span>
+                </p>
+              </div>
+              <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase ${
+                u.status === 'active' ? 'bg-emerald-500/10 text-emerald-500' :
+                u.status === 'paused' ? 'bg-amber-500/10 text-amber-500' :
+                'bg-red-500/10 text-red-500'
+              }`}>
+                {u.status}
+              </span>
+            </div>
+
+            <div className="flex gap-2">
+              {u.status === 'active' ? (
+                <button onClick={() => handleStatus(u, 'paused')} className="flex-1 bg-zinc-800 p-2 rounded-lg text-amber-500 flex justify-center">
+                  <Ban size={16} />
+                </button>
+              ) : (
+                <button onClick={() => handleStatus(u, 'active')} className="flex-1 bg-zinc-800 p-2 rounded-lg text-emerald-500 flex justify-center">
+                  <Play size={16} />
+                </button>
+              )}
+
+              {user.role === 'master' && (
+                <>
+                  <button
+                    onClick={() => handleRole(u, u.role === 'student' ? 'moderator' : 'student')}
+                    className="flex-1 bg-zinc-800 p-2 rounded-lg text-secondary flex justify-center"
+                  >
+                    {u.role === 'student' ? <ShieldCheck size={16} /> : <UserCheck size={16} />}
+                  </button>
+                  <button onClick={() => handleDelete(u)} className="flex-1 bg-zinc-800 p-2 rounded-lg text-primary flex justify-center">
+                    <Trash2 size={16} />
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        ))}
+        {allUsers.length <= 1 && <p className="text-center text-zinc-600 text-xs py-4">No hay otros usuarios.</p>}
+      </div>
+    </div>
+  );
+};
 
 const LoginView = () => {
   const { user, login, register, logout } = useStore();
@@ -45,7 +166,7 @@ const LoginView = () => {
         <div className="text-center">
           <h2 className="text-3xl font-black">{user.username}</h2>
           <p className="text-zinc-500 font-bold uppercase tracking-widest text-xs mt-1">
-            {user.isAdmin ? 'Administrador' : 'Estudiante'}
+            {user.role === 'master' ? 'Master de Baile' : user.role === 'moderator' ? 'Moderador' : 'Estudiante'}
           </p>
         </div>
 
@@ -56,6 +177,8 @@ const LoginView = () => {
           <LogOut size={20} />
           Cerrar Sesión
         </button>
+
+        {(user.role === 'master' || user.role === 'moderator') && <AdminPanel />}
       </div>
     );
   }

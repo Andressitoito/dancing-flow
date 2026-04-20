@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import useStore from '../store/useStore';
-import { Play, Pause, ChevronRight, X } from 'lucide-react';
+import { Play, Pause, ChevronRight, X, Trash2 } from 'lucide-react';
 import PlaybackControls from './PlaybackControls';
 import Swal from 'sweetalert2';
 
@@ -101,6 +101,7 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
 
 const ChoreoViewerView = () => {
   const {
+    user,
     choreos,
     steps,
     playbackMode,
@@ -110,7 +111,8 @@ const ChoreoViewerView = () => {
     startPlayback,
     pausePlayback,
     stopPlayback,
-    loadChoreo
+    loadChoreo,
+    deleteChoreo
   } = useStore();
   const [selectedChoreo, setSelectedChoreo] = useState(null);
   const [bpm, setBpm] = useState(120);
@@ -200,6 +202,29 @@ const ChoreoViewerView = () => {
             Autor: <span className="text-primary">{selectedChoreo.creatorName || 'Andresito'}</span>
           </p>
         </div>
+
+        {(user?.id === selectedChoreo.userId || user?.role === 'master' || user?.role === 'moderator') && (
+          <button
+            onClick={async () => {
+               const result = await Swal.fire({
+                 title: '¿Eliminar Coreografía?',
+                 text: "Esta acción no se puede deshacer.",
+                 icon: 'warning',
+                 showCancelButton: true,
+                 confirmButtonColor: '#e11d48',
+                 confirmButtonText: 'Eliminar',
+                 background: '#18181b', color: '#fff'
+               });
+               if (result.isConfirmed) {
+                 await deleteChoreo(selectedChoreo.id);
+                 setSelectedChoreo(null);
+               }
+            }}
+            className="p-2 text-zinc-600 hover:text-primary transition-colors"
+          >
+            <Trash2 size={20} />
+          </button>
+        )}
       </div>
 
       <div

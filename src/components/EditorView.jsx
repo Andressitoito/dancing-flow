@@ -45,6 +45,19 @@ const EditorView = () => {
   }, []);
 
   const handleSlotClick = (index) => {
+    const isOwner = currentChoreo.userId === user?.id || !currentChoreo.id;
+    const isPrivileged = user?.role === 'master' || user?.role === 'moderator';
+
+    if (!isOwner && !isPrivileged && currentChoreo.id) {
+       Swal.fire({
+         title: 'Solo Lectura',
+         text: 'No puedes editar la coreografía de otro usuario.',
+         icon: 'info',
+         background: '#18181b', color: '#fff'
+       });
+       return;
+    }
+
     if (selectedStepId) {
       addStepToChoreo(selectedStepId, index);
     }
@@ -223,6 +236,19 @@ const EditorView = () => {
               </button>
               <button
                 onClick={async () => {
+                  const isOwner = currentChoreo.userId === user?.id || !currentChoreo.id;
+                  const isPrivileged = user?.role === 'master' || user?.role === 'moderator';
+
+                  if (!isOwner && !isPrivileged && currentChoreo.id) {
+                    Swal.fire({
+                      title: 'Acceso Denegado',
+                      text: 'No tienes permiso para sobreescribir esta coreografía.',
+                      icon: 'error',
+                      background: '#18181b', color: '#fff'
+                    });
+                    return;
+                  }
+
                   const result = await Swal.fire({
                     title: '¿Guardar?',
                     icon: 'question',
@@ -232,7 +258,12 @@ const EditorView = () => {
                     background: '#18181b', color: '#fff'
                   });
                   if (result.isConfirmed) {
-                    await saveCurrentChoreo(false);
+                    try {
+                      await saveCurrentChoreo(false);
+                      Swal.fire({ title: 'Guardado', icon: 'success', toast: true, position: 'top-end', timer: 2000, showConfirmButton: false, background: '#18181b', color: '#fff' });
+                    } catch (e) {
+                      Swal.fire({ title: 'Error', text: e.message, icon: 'error', background: '#18181b', color: '#fff' });
+                    }
                   }
                 }}
                 className="p-2 text-secondary hover:bg-zinc-800 rounded-lg transition-colors"

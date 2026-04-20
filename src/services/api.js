@@ -92,5 +92,34 @@ export const api = {
       body: JSON.stringify({ choreo, userId, username })
     });
     return handleResponse(res);
+  },
+
+  async deleteChoreo(id, userId) {
+    const res = await fetch(`${API_BASE}/choreos/${id}?userId=${userId}`, {
+      method: 'DELETE'
+    });
+    return handleResponse(res);
+  },
+
+  // Admin API
+  async getUsers(requesterId) {
+    const res = await fetch(`${API_BASE}/admin/users?requesterId=${requesterId}`);
+    return handleResponse(res);
+  },
+
+  async updateUser(userId, data, requesterId) {
+    const res = await fetch(`${API_BASE}/admin/users/${userId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...data, requesterId })
+    });
+    return handleResponse(res);
+  },
+
+  async deleteUser(userId, requesterId) {
+    const res = await fetch(`${API_BASE}/admin/users/${userId}?requesterId=${requesterId}`, {
+      method: 'DELETE'
+    });
+    return handleResponse(res);
   }
 };
