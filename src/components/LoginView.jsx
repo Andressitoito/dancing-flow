@@ -22,7 +22,7 @@ const PalettePicker = () => {
   const { palette, setPalette } = useStore();
 
   return (
-    <div className="bg-surface p-4 rounded-2xl border border-zinc-800 space-y-4">
+    <div className="bg-surface p-4 rounded-2xl border border-outline space-y-4">
       <div className="flex items-center gap-2">
         <Palette size={18} className="text-secondary" />
         <h3 className="text-sm font-black uppercase tracking-widest">Paleta de Colores</h3>
@@ -33,7 +33,7 @@ const PalettePicker = () => {
             key={key}
             onClick={() => setPalette(p)}
             className={`p-3 rounded-xl border-2 transition-all text-left space-y-2 ${
-              palette.name === p.name ? 'border-primary bg-primary/10' : 'border-zinc-800 bg-zinc-950/50'
+              palette.name === p.name ? 'border-primary bg-primary/10' : 'border-outline bg-zinc-950/50'
             }`}
           >
             <span className="text-[10px] font-bold block">{p.name}</span>
@@ -99,7 +99,7 @@ const AdminPanel = () => {
   };
 
   return (
-    <div className="mt-8 pt-8 border-t border-zinc-800 space-y-4">
+    <div className="mt-8 pt-8 border-t border-outline space-y-4">
       <div className="flex items-center gap-2 px-2">
         <Shield className="text-primary" size={20} />
         <h3 className="font-black uppercase tracking-widest text-sm">Administración</h3>
@@ -107,7 +107,7 @@ const AdminPanel = () => {
 
       <div className="space-y-3">
         {allUsers.filter(u => u.id !== user.id).map(u => (
-          <div key={u.id} className="bg-surface p-4 rounded-2xl border border-zinc-800 space-y-3">
+          <div key={u.id} className="bg-surface p-4 rounded-2xl border border-outline space-y-3">
             <div className="flex justify-between items-start">
               <div>
                 <h4 className="font-bold text-white">{u.username}</h4>
@@ -205,7 +205,7 @@ const LoginView = () => {
 
         <button
           onClick={logout}
-          className="flex items-center gap-2 px-8 py-4 bg-surface border border-zinc-800 rounded-2xl font-bold text-primary hover:bg-surface/50 transition-all active:scale-95"
+          className="flex items-center gap-2 px-8 py-4 bg-surface border border-outline rounded-2xl font-bold text-primary hover:bg-surface/50 transition-all active:scale-95"
         >
           <LogOut size={20} />
           Cerrar Sesión
@@ -236,7 +236,7 @@ const LoginView = () => {
               required
               value={formData.username}
               onChange={(e) => setFormData({...formData, username: e.target.value})}
-              className="w-full bg-surface border border-zinc-800 rounded-2xl py-4 pl-12 pr-4 text-white focus:border-primary outline-none transition-all"
+              className="w-full bg-surface border border-outline rounded-2xl py-4 pl-12 pr-4 text-white focus:border-primary outline-none transition-all"
               placeholder="Ej. Andresito"
             />
           </div>
@@ -251,7 +251,7 @@ const LoginView = () => {
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}
-              className="w-full bg-surface border border-zinc-800 rounded-2xl py-4 pl-12 pr-4 text-white focus:border-primary outline-none transition-all"
+              className="w-full bg-surface border border-outline rounded-2xl py-4 pl-12 pr-4 text-white focus:border-primary outline-none transition-all"
               placeholder="••••••••"
             />
           </div>
@@ -266,7 +266,7 @@ const LoginView = () => {
                 required
                 value={formData.token}
                 onChange={(e) => setFormData({...formData, token: e.target.value})}
-                className="w-full bg-surface border border-zinc-800 rounded-2xl py-4 pl-12 pr-4 text-white focus:border-primary outline-none transition-all"
+                className="w-full bg-surface border border-outline rounded-2xl py-4 pl-12 pr-4 text-white focus:border-primary outline-none transition-all"
                 placeholder="Token de la Pi"
               />
             </div>

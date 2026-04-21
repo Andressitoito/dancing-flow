@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 const { readDB, writeDB } = require('./db.cjs');
 
 const TOKEN = "bachata2026";
@@ -16,10 +17,11 @@ router.post('/signup-user', (req, res) => {
       return res.status(400).json({ error: 'El usuario ya existe' });
     }
 
+    const hashedPassword = bcrypt.hashSync(password, 10);
     const newUser = {
       id: Date.now().toString(),
       username,
-      password,
+      password: hashedPassword,
       role: 'student',
       status: 'active'
     };
@@ -37,9 +39,9 @@ router.post('/login-user', (req, res) => {
   try {
     const { username, password } = req.body;
     const users = readDB('users.json');
-    const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
+    const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
 
-    if (!user) {
+    if (!user || !bcrypt.compareSync(password, user.password)) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
 

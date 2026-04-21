@@ -11,13 +11,13 @@ const Navbar = ({ activeTab, onTabChange }) => {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-surface border-t border-zinc-800 px-6 py-2 flex justify-between items-center z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-surface/90 backdrop-blur-lg border-t border-outline/30 px-6 py-2 flex justify-between items-center z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.3)]">
       {tabs.map((tab) => (
         <button
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
-          className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
-            activeTab === tab.id ? 'text-primary' : 'text-zinc-500'
+          className={`flex flex-col items-center p-2 rounded-lg transition-all duration-300 ${
+            activeTab === tab.id ? 'text-primary scale-110' : 'text-zinc-500'
           }`}
         >
           <tab.icon size={24} />

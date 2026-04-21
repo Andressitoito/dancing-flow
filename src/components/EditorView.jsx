@@ -100,7 +100,7 @@ const EditorView = () => {
 
       gridElements.push(
         <div key={`measure-${m}`} className="relative mb-8 group">
-          <div className={`grid grid-cols-8 gap-0 shadow-xl border border-zinc-800/50 rounded-lg overflow-hidden transition-all duration-300 ${isDeleteMode ? 'scale-[0.98] opacity-60 grayscale-[0.5]' : ''}`}>
+          <div className={`grid grid-cols-8 gap-0 shadow-xl border border-outline/50 rounded-lg overflow-hidden transition-all duration-300 ${isDeleteMode ? 'scale-[0.98] opacity-60 grayscale-[0.5]' : ''}`}>
             {measureSlots}
           </div>
 
@@ -160,7 +160,7 @@ const EditorView = () => {
           onTouchStart={(e) => handleLongPress(e, i)}
           onTouchEnd={clearLongPress}
           className={`
-            relative aspect-square border-zinc-800 border flex items-center justify-center text-[10px] font-bold transition-all shrink-0
+            relative aspect-square border-outline border flex items-center justify-center text-[10px] font-bold transition-all shrink-0
             ${isGroupEnd ? 'border-r-zinc-600 mr-1' : ''}
             ${isActive ? 'ring-2 ring-primary z-10 scale-105 bg-primary/20' : 'bg-surface/50'}
             ${!step ? 'hover:bg-surface/50' : ''}
@@ -207,16 +207,16 @@ const EditorView = () => {
   return (
     <div className="bg-background min-h-screen flex flex-col" onClick={() => setShowTooltip(null)}>
       {/* Header & Library */}
-      <div className="sticky top-0 p-3 space-y-4 bg-background/95 backdrop-blur-md border-b border-zinc-800 z-50 shadow-lg">
+      <div className="sticky top-0 p-3 space-y-4 bg-background/95 backdrop-blur-md border-b border-outline z-50 shadow-lg">
         <div className="flex flex-col gap-3 max-w-lg mx-auto">
           <div className="flex items-center gap-3">
             <input
               value={currentChoreo.title}
               onChange={(e) => updateChoreoTitle(e.target.value)}
-              className="flex-1 min-w-0 bg-transparent border-b border-zinc-700 py-1 text-2xl font-bold text-white focus:outline-none focus:border-primary truncate"
+              className="flex-1 min-w-0 bg-transparent border-b border-outline/60 py-1 text-2xl font-bold text-white focus:outline-none focus:border-primary truncate"
               placeholder="Mi Coreo..."
             />
-            <div className="flex shrink-0 gap-1 bg-surface rounded-xl p-1 border border-zinc-800 shadow-inner">
+            <div className="flex shrink-0 gap-1 bg-surface rounded-xl p-1 border border-outline shadow-inner">
               <button
                 onClick={async () => {
                   const result = await Swal.fire({
@@ -293,14 +293,14 @@ const EditorView = () => {
         </div>
 
         {isQuickAddOpen ? (
-          <div className="bg-surface p-3 rounded-xl border border-zinc-800 space-y-3">
+          <div className="bg-surface p-3 rounded-xl border border-outline space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-[10px] font-bold text-zinc-500 uppercase">Nuevo Paso Rápido</span>
               <button onClick={() => setIsQuickAddOpen(false)}><X size={14} /></button>
             </div>
             <input
               placeholder="Nombre del paso"
-              className="w-full bg-surface/50 text-xs p-2 rounded border border-zinc-700"
+              className="w-full bg-surface/50 text-xs p-2 rounded border border-outline/60"
               value={quickStep.name}
               onChange={e => setQuickStep({...quickStep, name: e.target.value})}
             />
@@ -371,7 +371,7 @@ const EditorView = () => {
               ))}
               <button
                 onClick={() => setIsQuickAddOpen(true)}
-                className="shrink-0 h-16 w-16 rounded-xl border-2 border-dashed border-zinc-700 flex items-center justify-center text-zinc-600"
+                className="shrink-0 h-16 w-16 rounded-xl border-2 border-dashed border-outline/60 flex items-center justify-center text-zinc-600"
               >
                 <Plus size={24} />
               </button>
@@ -410,7 +410,7 @@ const EditorView = () => {
             <button
               onClick={addMeasure}
               disabled={isDeleteMode}
-              className={`py-4 bg-surface border border-zinc-800 text-zinc-300 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-lg active:scale-95 ${isDeleteMode ? 'opacity-50 grayscale' : 'hover:bg-surface/50'}`}
+              className={`py-4 bg-surface border border-outline text-zinc-300 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-lg active:scale-95 ${isDeleteMode ? 'opacity-50 grayscale' : 'hover:bg-surface/50'}`}
             >
               <Plus size={20} />
               <span className="font-bold uppercase tracking-wide text-xs">Añadir Compás</span>
@@ -421,7 +421,7 @@ const EditorView = () => {
               className={`py-3 rounded-2xl flex items-center justify-center gap-3 transition-all border font-bold uppercase tracking-wide text-[10px] ${
                 isDeleteMode
                 ? 'bg-primary border-primary/50 text-white shadow-[0_0_20px_rgba(239,68,68,0.3)]'
-                : 'bg-surface border-zinc-800 text-zinc-500'
+                : 'bg-surface border-outline text-zinc-500'
               }`}
             >
               <Trash2 size={16} />
@@ -431,7 +431,7 @@ const EditorView = () => {
         </div>
 
         {/* Choreo List - Now part of the flow */}
-        <div className="w-full max-w-lg mx-auto pb-32 border-t border-zinc-800/50 pt-8">
+        <div className="w-full max-w-lg mx-auto pb-32 border-t border-outline/50 pt-8">
           <h3 className="text-xs font-black text-zinc-600 uppercase tracking-[0.2em] mb-4 px-2">Mis Coreografías</h3>
           <div className="flex flex-wrap gap-2 px-2">
             {(choreos || []).map(choreo => (
@@ -442,7 +442,7 @@ const EditorView = () => {
                   px-4 py-3 rounded-xl border font-bold text-sm transition-all active:scale-95
                   ${currentChoreo.id === choreo.id
                     ? 'bg-primary/10 border-primary text-primary shadow-[0_0_15px_rgba(225,29,72,0.2)]'
-                    : 'bg-surface border-zinc-800 text-zinc-500'}
+                    : 'bg-surface border-outline text-zinc-500'}
                 `}
               >
                 {choreo.title}

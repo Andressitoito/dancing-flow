@@ -33,7 +33,7 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
           id={`vslot-${globalIdx}`}
           onDoubleClick={data ? () => onStepDoubleClick(data.step) : undefined}
           className={`
-            relative aspect-square border border-zinc-800/30 flex items-center justify-center transition-all shrink-0
+            relative aspect-square border border-outline/30 flex items-center justify-center transition-all shrink-0
             ${isActive ? 'z-40 scale-110 shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'z-10'}
             ${!data && isActive ? 'bg-white' : ''}
             ${!data && !isActive ? 'bg-surface/20' : ''}
@@ -76,7 +76,7 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
     measures.push(
       <div
         key={`measure-centered-${m}`}
-        className="flex transition-all gap-0.5 relative shrink-0 p-2 bg-surface/40 rounded-xl border border-zinc-800/50 mx-4"
+        className="flex transition-all gap-0.5 relative shrink-0 p-2 bg-surface/40 rounded-xl border border-outline/50 mx-4"
       >
         <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-black text-zinc-400 uppercase tracking-tight">
           Compás {m + 1}
@@ -168,7 +168,7 @@ const ChoreoViewerView = () => {
                    setSelectedChoreo(choreo);
                    loadChoreo(choreo);
                 }}
-                className="bg-surface p-4 rounded-xl border border-zinc-800 flex items-center justify-between hover:border-primary transition-all group"
+                className="bg-surface p-4 rounded-xl border border-outline flex items-center justify-between hover:border-primary transition-all group"
               >
                 <div className="text-left">
                   <h4 className="font-bold text-lg">{choreo.title}</h4>
@@ -189,7 +189,7 @@ const ChoreoViewerView = () => {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-background">
-      <div className="p-4 flex items-center gap-3 border-b border-zinc-800 bg-background/50">
+      <div className="p-4 flex items-center gap-3 border-b border-outline bg-background/50">
         <button
           onClick={() => { setSelectedChoreo(null); stopPlayback(); }}
           className="p-2 -ml-2 text-zinc-400 hover:text-white"
@@ -258,7 +258,7 @@ const ChoreoViewerView = () => {
         />
 
         {playbackMode === 'centered' && (
-           <div className="flex flex-col gap-2 mt-4 bg-surface/50 p-4 rounded-xl border border-zinc-800">
+           <div className="flex flex-col gap-2 mt-4 bg-surface/50 p-4 rounded-xl border border-outline">
              <div className="flex justify-between items-center">
                <span className="text-[10px] text-zinc-500 font-bold uppercase">Zoom Modo Lineal</span>
                <span className="text-xs font-bold text-primary">{Math.round(zoom * 100)}%</span>

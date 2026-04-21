@@ -6,6 +6,7 @@
   --color-accent: var(--df-accent);
   --color-background: var(--df-bg);
   --color-surface: var(--df-surface);
+  --color-outline: var(--df-border);
 }
 
 :root {
@@ -14,6 +15,7 @@
   --df-accent: #ffc340;
   --df-bg: #0a0a0a;
   --df-surface: #1a1a1a;
+  --df-border: #333333;
 
   background-color: var(--df-bg);
   color: white;

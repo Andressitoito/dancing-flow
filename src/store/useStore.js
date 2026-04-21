@@ -53,6 +53,7 @@ const useStore = create((set, get) => ({
     document.documentElement.style.setProperty('--df-accent', palette.accent);
     document.documentElement.style.setProperty('--df-bg', palette.background || '#1a1a1a');
     document.documentElement.style.setProperty('--df-surface', palette.surface || '#1a1a1a');
+    document.documentElement.style.setProperty('--df-border', palette.border || '#333333');
   },
 
   // Actions
@@ -96,6 +97,7 @@ const useStore = create((set, get) => ({
       document.documentElement.style.setProperty('--df-accent', palette.accent);
       document.documentElement.style.setProperty('--df-bg', palette.background || '#1a1a1a');
       document.documentElement.style.setProperty('--df-surface', palette.surface || '#1a1a1a');
+      document.documentElement.style.setProperty('--df-border', palette.border || '#333333');
     } catch (error) {
       set({
         error: error.message,

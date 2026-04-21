@@ -12,7 +12,7 @@ const PlaybackControls = ({
   showModeToggle = true
 }) => {
   return (
-    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-[95%] max-w-sm bg-surface/90 backdrop-blur-md border border-zinc-800 rounded-full px-4 py-3 flex items-center justify-between shadow-2xl z-40">
+    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-[95%] max-w-sm bg-surface/90 backdrop-blur-md border border-outline rounded-full px-4 py-3 flex items-center justify-between shadow-2xl z-40">
       <div className="flex items-center gap-2">
         <button
           onClick={onTogglePlay}
@@ -48,7 +48,7 @@ const PlaybackControls = ({
         <button
           onClick={onToggleMode}
           className={`px-3 py-2 rounded-full text-[10px] font-bold border transition-colors ${
-            playbackMode === 'centered' ? 'bg-primary border-primary text-white shadow-[0_0_10px_rgba(225,29,72,0.3)]' : 'bg-surface/50 border-zinc-700 text-zinc-400'
+            playbackMode === 'centered' ? 'bg-primary border-primary text-white shadow-[0_0_10px_rgba(225,29,72,0.3)]' : 'bg-surface/50 border-outline/60 text-zinc-400'
           }`}
         >
           {playbackMode === 'centered' ? 'MODO LINEAL' : 'MODO REJILLA'}

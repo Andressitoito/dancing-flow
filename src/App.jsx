@@ -42,7 +42,7 @@ function App() {
           El servidor Node.js no está respondiendo correctamente (Error 405 o Fallo de Red).
           Esto sucede porque el Proxy (Nginx) está intentando servir las rutas de la API como archivos estáticos.
         </p>
-        <div className="bg-surface p-4 rounded-xl text-left border border-zinc-800 space-y-2">
+        <div className="bg-surface p-4 rounded-xl text-left border border-outline space-y-2">
            <p className="text-[10px] font-black text-primary uppercase">Solución Requerida:</p>
            <p className="text-[10px] text-zinc-400 font-mono">
              Debes configurar un location /backend-service/ en tu Nginx que haga proxy_pass al puerto 3001.
