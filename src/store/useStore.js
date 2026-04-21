@@ -48,11 +48,16 @@ const useStore = create((set, get) => ({
   setPalette: (palette) => {
     set({ palette });
     localStorage.setItem('dancingflow_palette', JSON.stringify(palette));
+    const hexToRgb = (hex) => {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '26, 26, 26';
+    };
     document.documentElement.style.setProperty('--df-primary', palette.primary);
     document.documentElement.style.setProperty('--df-secondary', palette.secondary);
     document.documentElement.style.setProperty('--df-accent', palette.accent);
     document.documentElement.style.setProperty('--df-bg', palette.background || '#1a1a1a');
     document.documentElement.style.setProperty('--df-surface', palette.surface || '#1a1a1a');
+    document.documentElement.style.setProperty('--df-surface-glass', `rgba(${hexToRgb(palette.surface || '#1a1a1a')}, 0.85)`);
     document.documentElement.style.setProperty('--df-border', palette.border || '#333333');
   },
 
@@ -91,13 +96,8 @@ const useStore = create((set, get) => ({
         loading: false
       });
       // Apply initial palette
-      const { palette } = get();
-      document.documentElement.style.setProperty('--df-primary', palette.primary);
-      document.documentElement.style.setProperty('--df-secondary', palette.secondary);
-      document.documentElement.style.setProperty('--df-accent', palette.accent);
-      document.documentElement.style.setProperty('--df-bg', palette.background || '#1a1a1a');
-      document.documentElement.style.setProperty('--df-surface', palette.surface || '#1a1a1a');
-      document.documentElement.style.setProperty('--df-border', palette.border || '#333333');
+      const { palette, setPalette } = get();
+      setPalette(palette);
     } catch (error) {
       set({
         error: error.message,

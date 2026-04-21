@@ -5,7 +5,7 @@
   --color-secondary: var(--df-secondary);
   --color-accent: var(--df-accent);
   --color-background: var(--df-bg);
-  --color-surface: var(--df-surface);
+  --color-surface: var(--df-surface-glass);
   --color-outline: var(--df-border);
 }
 
@@ -15,6 +15,7 @@
   --df-accent: #ffc340;
   --df-bg: #0a0a0a;
   --df-surface: #1a1a1a;
+  --df-surface-glass: rgba(26, 26, 26, 0.8);
   --df-border: #333333;
 
   background-color: var(--df-bg);

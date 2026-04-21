@@ -83,9 +83,27 @@ function App() {
     }
   };
 
+  const backgrounds = {
+    editor: '/assets/backgrounds/bg-editor.jpg',
+    steps: '/assets/backgrounds/bg-steps.jpg',
+    viewer: '/assets/backgrounds/bg-viewer.jpg',
+    videos: '/assets/backgrounds/bg-videos.jpg',
+    login: '/assets/backgrounds/bg-account.jpg'
+  };
+
   return (
-    <div className="min-h-screen bg-background text-white pb-32">
-      <main className="max-w-md mx-auto">
+    <div className="min-h-screen bg-background text-white pb-32 relative">
+      {/* Dynamic Background */}
+      <div
+        className="fixed inset-0 z-0 transition-all duration-1000 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url(${backgrounds[activeTab] || backgrounds.login})`,
+          opacity: 0.15 // Low opacity to keep text readable
+        }}
+      />
+
+      {/* Content Overlay */}
+      <main className="max-w-md mx-auto relative z-10">
         {renderContent()}
       </main>
       <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
