@@ -7,9 +7,13 @@ const TOKEN = "bachata2026";
 
 router.post('/signup-user', (req, res) => {
   try {
-    const { username, password, token } = req.body;
+    const { username, password, token, firstName, lastName } = req.body;
     if (token !== TOKEN) {
       return res.status(401).json({ error: 'Token de registro inválido' });
+    }
+
+    if (!password || password.length < 8) {
+      return res.status(400).json({ error: 'La contraseña debe tener al menos 8 caracteres' });
     }
 
     const users = readDB('users.json');
@@ -22,6 +26,8 @@ router.post('/signup-user', (req, res) => {
       id: Date.now().toString(),
       username,
       password: hashedPassword,
+      firstName: firstName || '',
+      lastName: lastName || '',
       role: 'student',
       status: 'active'
     };

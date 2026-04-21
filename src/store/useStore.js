@@ -31,8 +31,8 @@ const useStore = create((set, get) => ({
     await get().fetchInitialData();
   },
 
-  register: async (username, password, token) => {
-    const user = await api.register(username, password, token);
+  register: async (username, password, token, firstName, lastName) => {
+    const user = await api.register(username, password, token, firstName, lastName);
     set({ user });
     localStorage.setItem('dancingflow_user', JSON.stringify(user));
     await get().fetchInitialData();
@@ -170,9 +170,10 @@ const useStore = create((set, get) => ({
       const formData = new FormData();
       formData.append('videoFile', videoData.videoFile);
       formData.append('title', videoData.title);
+      formData.append('subtitle', videoData.subtitle || '');
       formData.append('level', videoData.level);
       formData.append('userId', user.id);
-      formData.append('username', user.username);
+      formData.append('creatorName', user.username);
 
       const res = await fetch('/backend-service/videos', {
         method: 'POST',
@@ -197,6 +198,20 @@ const useStore = create((set, get) => ({
     if (!user) throw new Error('Inicia sesión');
     await api.deleteVideo(id, user.id);
     set(state => ({ videos: state.videos.filter(v => v.id !== id) }));
+  },
+
+  likeVideo: async (id) => {
+    const { user } = get();
+    if (!user) return;
+    const updated = await api.likeVideo(id, user.id);
+    set(state => ({ videos: state.videos.map(v => v.id === id ? updated : v) }));
+  },
+
+  favoriteVideo: async (id) => {
+    const { user } = get();
+    if (!user) return;
+    const updated = await api.favoriteVideo(id, user.id);
+    set(state => ({ videos: state.videos.map(v => v.id === id ? updated : v) }));
   },
 
   // Choreo Actions
@@ -230,6 +245,20 @@ const useStore = create((set, get) => ({
         measures: 2,
       } : state.currentChoreo
     }));
+  },
+
+  likeChoreo: async (id) => {
+    const { user } = get();
+    if (!user) return;
+    const updated = await api.likeChoreo(id, user.id);
+    set(state => ({ choreos: state.choreos.map(c => c.id === id ? updated : c) }));
+  },
+
+  favoriteChoreo: async (id) => {
+    const { user } = get();
+    if (!user) return;
+    const updated = await api.favoriteChoreo(id, user.id);
+    set(state => ({ choreos: state.choreos.map(c => c.id === id ? updated : c) }));
   },
 
   resetChoreo: () => {

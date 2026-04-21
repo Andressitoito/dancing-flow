@@ -1,147 +1,158 @@
-// Relative path works both for Production (monolith) and Dev (Vite Proxy)
-const API_BASE = '/backend-service';
-
-const handleResponse = async (res) => {
-  const contentType = res.headers.get('content-type');
-  if (!res.ok) {
-    console.error(`API Error ${res.status}:`, {
-      url: res.url,
-      method: res.method,
-      contentType
-    });
-
-    if (contentType && contentType.includes('application/json')) {
-      const error = await res.json();
-      throw new Error(error.error || 'Error del servidor');
-    }
-
-    // Attempt to read body text for debugging
-    const text = await res.text().catch(() => 'No body');
-    console.error('API Error Body Snippet:', text.substring(0, 200));
-
-    throw new Error(`Error ${res.status}: El servidor devolvió un formato inesperado (${contentType}).`);
-  }
-
-  if (contentType && contentType.includes('application/json')) {
-    return res.json();
-  }
-  return null;
-};
+const BASE_URL = '/backend-service';
 
 export const api = {
   // Auth
-  async login(username, password) {
-    const res = await fetch(`${API_BASE}/login-user`, {
+  login: async (username, password) => {
+    const res = await fetch(`${BASE_URL}/login-user`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
     });
-    return handleResponse(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    return data;
   },
 
-  async register(username, password, token) {
-    const res = await fetch(`${API_BASE}/signup-user`, {
+  register: async (username, password, token, firstName, lastName) => {
+    const res = await fetch(`${BASE_URL}/signup-user`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password, token })
+      body: JSON.stringify({ username, password, token, firstName, lastName })
     });
-    return handleResponse(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    return data;
   },
 
-  // Steps API
-  async getSteps() {
-    const res = await fetch(`${API_BASE}/steps`);
-    return handleResponse(res);
+  getUsers: async (adminId) => {
+    const res = await fetch(`${BASE_URL}/admin/users?adminId=${adminId}`);
+    return res.json();
   },
 
-  async saveStep(step, userId, username) {
-    const res = await fetch(`${API_BASE}/steps`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ step, userId, username })
-    });
-    return handleResponse(res);
-  },
-
-  async updateStep(step, userId, username) {
-    const res = await fetch(`${API_BASE}/steps`, {
+  updateUser: async (userId, data, adminId) => {
+    const res = await fetch(`${BASE_URL}/admin/users/${userId}?adminId=${adminId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ step, userId, username })
+      body: JSON.stringify(data)
     });
-    return handleResponse(res);
+    return res.json();
   },
 
-  async deleteStep(id, userId) {
-    const res = await fetch(`${API_BASE}/steps/${id}?userId=${userId}`, {
+  deleteUser: async (userId, adminId) => {
+    const res = await fetch(`${BASE_URL}/admin/users/${userId}?adminId=${adminId}`, {
       method: 'DELETE'
     });
-    return handleResponse(res);
+    return res.json();
   },
 
-  // Choreos API
-  async getChoreos() {
-    const res = await fetch(`${API_BASE}/choreos`);
-    return handleResponse(res);
+  // Steps
+  getSteps: async () => {
+    const res = await fetch(`${BASE_URL}/steps`);
+    return res.json();
   },
 
-  async saveChoreo(choreo, userId, username) {
-    const res = await fetch(`${API_BASE}/choreos`, {
+  saveStep: async (step, userId, creatorName) => {
+    const res = await fetch(`${BASE_URL}/steps`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ choreo, userId, username })
+      body: JSON.stringify({ ...step, userId, creatorName })
     });
-    return handleResponse(res);
+    return res.json();
   },
 
-  async deleteChoreo(id, userId) {
-    const res = await fetch(`${API_BASE}/choreos/${id}?userId=${userId}`, {
-      method: 'DELETE'
-    });
-    return handleResponse(res);
-  },
-
-  // Admin API
-  async getUsers(requesterId) {
-    const res = await fetch(`${API_BASE}/admin/users?requesterId=${requesterId}`);
-    return handleResponse(res);
-  },
-
-  async updateUser(userId, data, requesterId) {
-    const res = await fetch(`${API_BASE}/admin/users/${userId}`, {
-      method: 'PATCH',
+  updateStep: async (step, userId, creatorName) => {
+    const res = await fetch(`${BASE_URL}/steps/${step.id}`, {
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...data, requesterId })
+      body: JSON.stringify({ ...step, userId, creatorName })
     });
-    return handleResponse(res);
+    return res.json();
   },
 
-  async deleteUser(userId, requesterId) {
-    const res = await fetch(`${API_BASE}/admin/users/${userId}?requesterId=${requesterId}`, {
+  deleteStep: async (id, userId) => {
+    const res = await fetch(`${BASE_URL}/steps/${id}?userId=${userId}`, {
       method: 'DELETE'
     });
-    return handleResponse(res);
+    return res.json();
   },
 
-  // Videos API
-  async getVideos() {
-    const res = await fetch(`${API_BASE}/videos`);
-    return handleResponse(res);
+  // Choreos
+  getChoreos: async () => {
+    const res = await fetch(`${BASE_URL}/choreos`);
+    return res.json();
   },
 
-  async saveVideo(video, userId, username) {
-    const res = await fetch(`${API_BASE}/videos`, {
+  saveChoreo: async (choreo, userId, creatorName) => {
+    const res = await fetch(`${BASE_URL}/choreos`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ video, userId, username })
+      body: JSON.stringify({ ...choreo, userId, creatorName })
     });
-    return handleResponse(res);
+    return res.json();
   },
 
-  async deleteVideo(id, userId) {
-    const res = await fetch(`${API_BASE}/videos/${id}?userId=${userId}`, {
+  deleteChoreo: async (id, userId) => {
+    const res = await fetch(`${BASE_URL}/choreos/${id}?userId=${userId}`, {
       method: 'DELETE'
     });
-    return handleResponse(res);
+    return res.json();
+  },
+
+  likeChoreo: async (id, userId) => {
+    const res = await fetch(`${BASE_URL}/choreos/${id}/like`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId })
+    });
+    return res.json();
+  },
+
+  favoriteChoreo: async (id, userId) => {
+    const res = await fetch(`${BASE_URL}/choreos/${id}/favorite`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId })
+    });
+    return res.json();
+  },
+
+  // Videos
+  getVideos: async () => {
+    const res = await fetch(`${BASE_URL}/videos`);
+    return res.json();
+  },
+
+  saveVideo: async (video, userId, creatorName) => {
+    const res = await fetch(`${BASE_URL}/videos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...video, userId, creatorName })
+    });
+    return res.json();
+  },
+
+  deleteVideo: async (id, userId) => {
+    const res = await fetch(`${BASE_URL}/videos/${id}?userId=${userId}`, {
+      method: 'DELETE'
+    });
+    return res.json();
+  },
+
+  likeVideo: async (id, userId) => {
+    const res = await fetch(`${BASE_URL}/videos/${id}/like`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId })
+    });
+    return res.json();
+  },
+
+  favoriteVideo: async (id, userId) => {
+    const res = await fetch(`${BASE_URL}/videos/${id}/favorite`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId })
+    });
+    return res.json();
   }
 };
