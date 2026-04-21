@@ -7,7 +7,6 @@ import {
 import Swal from 'sweetalert2';
 
 const VideoThumbnail = ({ video, onClick, onDelete, onLike, onFavorite, userId, role }) => {
-  const videoRef = useRef(null);
   const [poster, setPoster] = useState(null);
   const isLiked = video.likes?.includes(userId);
   const isFavorited = video.favorites?.includes(userId);
@@ -29,14 +28,10 @@ const VideoThumbnail = ({ video, onClick, onDelete, onLike, onFavorite, userId, 
   }, [video.url]);
 
   return (
-    <div className="space-y-1 relative group">
-      <div className="text-[10px] font-black uppercase text-zinc-500 truncate px-1">
-        {video.title}
-      </div>
-
+    <div className="relative group">
       <button
         onClick={onClick}
-        className="aspect-[9/16] w-full bg-surface rounded-xl border border-outline flex flex-col items-center justify-center overflow-hidden relative shadow-lg active:scale-95 transition-all"
+        className="aspect-[9/16] w-full bg-surface rounded-2xl border border-outline flex flex-col items-center justify-center overflow-hidden relative shadow-xl active:scale-95 transition-all"
       >
         {poster ? (
           <img src={poster} className="w-full h-full object-cover" alt="" />
@@ -48,27 +43,35 @@ const VideoThumbnail = ({ video, onClick, onDelete, onLike, onFavorite, userId, 
           <VideoIcon className="text-zinc-700" size={32} />
         )}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 
+        {/* Meta Content Inside Box */}
+        <div className="absolute inset-0 p-2.5 flex flex-col justify-end text-left">
+           <h3 className="text-[11px] font-black uppercase text-white leading-none drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)] line-clamp-2 mb-1">
+             {video.title}
+           </h3>
+           <p className="text-[10px] font-bold text-white/90 italic drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)] line-clamp-1">
+             {video.subtitle || video.creatorName || 'Sin subtítulo'}
+           </p>
+        </div>
+
+        {/* Floating Icons */}
         <div className="absolute top-2 right-2 flex flex-col gap-2">
            <button
              onClick={(e) => { e.stopPropagation(); onLike(); }}
-             className={`p-1.5 rounded-full backdrop-blur-md transition-all ${isLiked ? 'bg-primary text-white shadow-lg scale-110' : 'bg-black/40 text-white/70'}`}
+             className={`p-2 rounded-full backdrop-blur-md transition-all ${isLiked ? 'bg-primary text-white shadow-lg scale-110' : 'bg-black/40 text-white/70'}`}
            >
              <Heart size={14} fill={isLiked ? "currentColor" : "none"} />
            </button>
            <button
              onClick={(e) => { e.stopPropagation(); onFavorite(); }}
-             className={`p-1.5 rounded-full backdrop-blur-md transition-all ${isFavorited ? 'bg-secondary text-white shadow-lg scale-110' : 'bg-black/40 text-white/70'}`}
+             className={`p-2 rounded-full backdrop-blur-md transition-all ${isFavorited ? 'bg-secondary text-white shadow-lg scale-110' : 'bg-black/40 text-white/70'}`}
            >
              <Star size={14} fill={isFavorited ? "currentColor" : "none"} />
            </button>
         </div>
       </button>
-
-      <div className="text-[9px] font-medium text-zinc-400 italic truncate px-1">
-        {video.subtitle || video.creatorName || 'Sin subtítulo'}
-      </div>
 
       {(role === 'master' || (role === 'moderator' && userId === video.userId)) && (
         <button
@@ -104,22 +107,24 @@ const VideoPlayer = ({ video, onBack }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[200] flex flex-col bg-background animate-in fade-in zoom-in-95 duration-300">
-      <div className="p-4 flex items-center gap-3 border-b border-outline bg-background/50 backdrop-blur-md">
-        <button onClick={onBack} className="p-2 -ml-2 text-zinc-400">
+    <div className="fixed inset-0 z-[200] flex flex-col bg-black animate-in fade-in zoom-in-95 duration-300 overflow-hidden">
+      {/* Header */}
+      <div className="shrink-0 p-4 flex items-center gap-3 border-b border-white/10 bg-black/50 backdrop-blur-md z-10">
+        <button onClick={onBack} className="p-2 -ml-2 text-white/70 hover:text-white">
            <ChevronRight size={24} className="rotate-180" />
         </button>
         <div className="flex-1 truncate">
-          <h2 className="text-sm font-black uppercase tracking-tight truncate">{video.title}</h2>
-          <p className="text-[10px] text-zinc-500 truncate">{video.subtitle}</p>
+          <h2 className="text-sm font-black uppercase tracking-tight truncate text-white">{video.title}</h2>
+          <p className="text-[10px] text-white/50 truncate uppercase tracking-widest font-bold">{video.subtitle}</p>
         </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center bg-black relative">
+      {/* Video Content with constrained size */}
+      <div className="flex-1 min-h-0 flex items-center justify-center relative bg-zinc-900/20">
         <video
           ref={videoRef}
           src={video.url}
-          className="max-h-full w-full"
+          className="max-h-full max-w-full w-auto h-auto object-contain"
           playsInline
           autoPlay
           onPlay={() => setIsPlaying(true)}
@@ -129,23 +134,24 @@ const VideoPlayer = ({ video, onBack }) => {
         {!isPlaying && (
           <button
             onClick={togglePlay}
-            className="absolute inset-0 flex items-center justify-center bg-black/20"
+            className="absolute inset-0 flex items-center justify-center bg-black/10"
           >
             <div className="bg-primary p-6 rounded-full shadow-2xl scale-125">
-              <Play size={32} fill="white" />
+              <Play size={32} fill="white" className="text-white" />
             </div>
           </button>
         )}
       </div>
 
-      <div className="p-6 bg-surface border-t border-outline space-y-6">
-        <div className="flex justify-center items-center gap-6">
+      {/* Footer Controls */}
+      <div className="shrink-0 p-6 pb-10 bg-zinc-950 border-t border-white/10 space-y-6">
+        <div className="flex justify-center items-center gap-8">
            <button
              onClick={() => {
                setIsLooping(!isLooping);
                videoRef.current.loop = !isLooping;
              }}
-             className={`p-2 rounded-lg transition-all ${isLooping ? 'bg-primary text-white shadow-lg' : 'text-zinc-500'}`}
+             className={`p-2 rounded-lg transition-all ${isLooping ? 'bg-primary text-white shadow-lg' : 'text-zinc-600'}`}
            >
              <RotateCcw size={24} />
            </button>
@@ -158,17 +164,17 @@ const VideoPlayer = ({ video, onBack }) => {
         </div>
 
         <div className="flex flex-col gap-3">
-          <span className="text-[10px] font-black text-zinc-500 uppercase text-center tracking-widest">Velocidad</span>
+          <span className="text-[10px] font-black text-zinc-500 uppercase text-center tracking-widest">Velocidad de Reproducción</span>
           <div className="flex gap-2">
             {[0.5, 0.75, 1, 1.25, 1.5, 2].map(rate => (
               <button
                 key={rate}
                 onClick={() => changeRate(rate)}
-                className={`flex-1 py-2 rounded-xl font-bold text-xs transition-all ${
-                  playbackRate === rate ? 'bg-primary text-white scale-105 shadow-lg' : 'bg-surface/50 text-zinc-500 border border-outline/30'
+                className={`flex-1 py-2.5 rounded-xl font-black text-[10px] tracking-tighter transition-all ${
+                  playbackRate === rate ? 'bg-primary text-white scale-105 shadow-lg' : 'bg-white/5 bg-zinc-900 text-zinc-500 border border-white/5'
                 }`}
               >
-                {rate}x
+                {rate}X
               </button>
             ))}
           </div>
