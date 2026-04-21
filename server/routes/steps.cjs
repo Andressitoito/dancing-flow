@@ -26,12 +26,13 @@ router.post('/', (req, res) => {
   }
 });
 
-router.put('/', (req, res) => {
+router.put('/:id', (req, res) => {
   try {
     const { step, userId } = req.body;
+    const { id } = req.params;
     const requester = getUserById(userId);
     let steps = readDB('steps.json');
-    const index = steps.findIndex(s => s.id === step.id);
+    const index = steps.findIndex(s => s.id === id || s.id === step.id);
 
     if (index === -1) return res.status(404).json({ error: 'Paso no encontrado' });
 

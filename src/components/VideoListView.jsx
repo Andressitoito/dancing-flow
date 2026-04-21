@@ -15,15 +15,33 @@ const VideoThumbnail = ({ video, onClick, onDelete, onLike, onFavorite, userId, 
     if (video.url && !video.url.startsWith('http')) {
       const v = document.createElement('video');
       v.src = video.url;
-      v.currentTime = 0.5;
-      v.onloadeddata = () => {
+      v.preload = 'metadata';
+      v.muted = true;
+      v.playsInline = true;
+
+      const captureFrame = () => {
         const canvas = document.createElement('canvas');
         canvas.width = v.videoWidth;
         canvas.height = v.videoHeight;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
-        setPoster(canvas.toDataURL());
+        setPoster(canvas.toDataURL('image/jpeg', 0.7));
       };
+
+      v.onloadedmetadata = () => {
+        v.currentTime = 0.5;
+      };
+
+      v.onseeked = () => {
+        captureFrame();
+      };
+
+      // Fallback for some mobile browsers
+      v.onerror = () => {
+        console.error("Video thumbnail load error:", video.url);
+      };
+
+      v.load();
     }
   }, [video.url]);
 
@@ -51,9 +69,15 @@ const VideoThumbnail = ({ video, onClick, onDelete, onLike, onFavorite, userId, 
            <h3 className="text-[11px] font-black uppercase text-white leading-none drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)] line-clamp-2 mb-1">
              {video.title}
            </h3>
-           <p className="text-[10px] font-bold text-white/90 italic drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)] line-clamp-1">
-             {video.subtitle || video.creatorName || 'Sin subtítulo'}
-           </p>
+           <div className="flex items-center justify-between gap-2">
+             <p className="text-[10px] font-bold text-white/90 italic drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)] line-clamp-1">
+               {video.subtitle || video.creatorName || 'Sin subtítulo'}
+             </p>
+             <div className="flex items-center gap-1 bg-black/40 px-1.5 py-0.5 rounded-full shrink-0">
+                <Heart size={8} fill="white" className="text-white" />
+                <span className="text-[8px] font-black text-white">{video.likes?.length || 0}</span>
+             </div>
+           </div>
         </div>
 
         {/* Floating Icons */}
@@ -187,6 +211,7 @@ const VideoPlayer = ({ video, onBack }) => {
 const VideoListView = () => {
   const { user, videos, addVideo, deleteVideo, likeVideo, favoriteVideo } = useStore();
   const [level, setLevel] = useState('principiante');
+  const [sortBy, setSortBy] = useState('recent'); // 'recent', 'likes', 'favorites'
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -201,10 +226,18 @@ const VideoListView = () => {
       return v.title.toLowerCase().includes(term) || (v.subtitle && v.subtitle.toLowerCase().includes(term));
     })
     .sort((a, b) => {
-      const aFav = a.favorites?.includes(user?.id) ? 1 : 0;
-      const bFav = b.favorites?.includes(user?.id) ? 1 : 0;
-      if (aFav !== bFav) return bFav - aFav;
-      return (b.likes?.length || 0) - (a.likes?.length || 0);
+      if (sortBy === 'favorites') {
+        const aFav = a.favorites?.includes(user?.id) ? 1 : 0;
+        const bFav = b.favorites?.includes(user?.id) ? 1 : 0;
+        if (aFav !== bFav) return bFav - aFav;
+      }
+      if (sortBy === 'likes' || sortBy === 'favorites') {
+        const aLikes = a.likes?.length || 0;
+        const bLikes = b.likes?.length || 0;
+        if (aLikes !== bLikes) return bLikes - aLikes;
+      }
+      // Default: recent (newest first)
+      return (b.createdAt || b.id).localeCompare(a.createdAt || a.id);
     });
 
   const handleAdd = async (e) => {
@@ -255,19 +288,40 @@ const VideoListView = () => {
         )}
       </div>
 
-      <div className="flex gap-2 p-1 bg-surface rounded-2xl border border-outline">
-        <button
-          onClick={() => setLevel('principiante')}
-          className={`flex-1 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all ${level === 'principiante' ? 'bg-primary text-white shadow-lg' : 'text-zinc-500'}`}
-        >
-          Principiante
-        </button>
-        <button
-          onClick={() => setLevel('avanzado')}
-          className={`flex-1 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all ${level === 'avanzado' ? 'bg-primary text-white shadow-lg' : 'text-zinc-500'}`}
-        >
-          Int. / Avanzado
-        </button>
+      <div className="flex flex-col gap-3">
+        <div className="flex gap-2 p-1 bg-surface rounded-2xl border border-outline">
+          <button
+            onClick={() => setLevel('principiante')}
+            className={`flex-1 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all ${level === 'principiante' ? 'bg-primary text-white shadow-lg' : 'text-zinc-500'}`}
+          >
+            Principiante
+          </button>
+          <button
+            onClick={() => setLevel('avanzado')}
+            className={`flex-1 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all ${level === 'avanzado' ? 'bg-primary text-white shadow-lg' : 'text-zinc-500'}`}
+          >
+            Int. / Avanzado
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+           <span className="text-[10px] font-black uppercase text-zinc-500 shrink-0 ml-1">Ordenar:</span>
+           {[
+             { id: 'recent', label: 'Recientes' },
+             { id: 'likes', label: 'Más Likes' },
+             { id: 'favorites', label: 'Mis Favoritos' }
+           ].map(opt => (
+             <button
+               key={opt.id}
+               onClick={() => setSortBy(opt.id)}
+               className={`shrink-0 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border ${
+                 sortBy === opt.id ? 'bg-secondary border-secondary text-white shadow-lg' : 'bg-surface border-outline text-zinc-500'
+               }`}
+             >
+               {opt.label}
+             </button>
+           ))}
+        </div>
       </div>
 
       <div className="grid grid-cols-3 gap-x-3 gap-y-6">
