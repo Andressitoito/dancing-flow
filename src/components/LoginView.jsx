@@ -22,7 +22,7 @@ const PalettePicker = () => {
   const { palette, setPalette } = useStore();
 
   return (
-    <div className="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-4">
+    <div className="bg-surface p-4 rounded-2xl border border-zinc-800 space-y-4">
       <div className="flex items-center gap-2">
         <Palette size={18} className="text-secondary" />
         <h3 className="text-sm font-black uppercase tracking-widest">Paleta de Colores</h3>
@@ -107,7 +107,7 @@ const AdminPanel = () => {
 
       <div className="space-y-3">
         {allUsers.filter(u => u.id !== user.id).map(u => (
-          <div key={u.id} className="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3">
+          <div key={u.id} className="bg-surface p-4 rounded-2xl border border-zinc-800 space-y-3">
             <div className="flex justify-between items-start">
               <div>
                 <h4 className="font-bold text-white">{u.username}</h4>
@@ -126,11 +126,11 @@ const AdminPanel = () => {
 
             <div className="flex gap-2">
               {u.status === 'active' ? (
-                <button onClick={() => handleStatus(u, 'paused')} className="flex-1 bg-zinc-800 p-2 rounded-lg text-secondary flex justify-center">
+                <button onClick={() => handleStatus(u, 'paused')} className="flex-1 bg-surface/50 p-2 rounded-lg text-secondary flex justify-center">
                   <Ban size={16} />
                 </button>
               ) : (
-                <button onClick={() => handleStatus(u, 'active')} className="flex-1 bg-zinc-800 p-2 rounded-lg text-accent flex justify-center">
+                <button onClick={() => handleStatus(u, 'active')} className="flex-1 bg-surface/50 p-2 rounded-lg text-accent flex justify-center">
                   <Play size={16} />
                 </button>
               )}
@@ -139,11 +139,11 @@ const AdminPanel = () => {
                 <>
                   <button
                     onClick={() => handleRole(u, u.role === 'student' ? 'moderator' : 'student')}
-                    className="flex-1 bg-zinc-800 p-2 rounded-lg text-secondary flex justify-center"
+                    className="flex-1 bg-surface/50 p-2 rounded-lg text-secondary flex justify-center"
                   >
                     {u.role === 'student' ? <ShieldCheck size={16} /> : <UserCheck size={16} />}
                   </button>
-                  <button onClick={() => handleDelete(u)} className="flex-1 bg-zinc-800 p-2 rounded-lg text-primary flex justify-center">
+                  <button onClick={() => handleDelete(u)} className="flex-1 bg-surface/50 p-2 rounded-lg text-primary flex justify-center">
                     <Trash2 size={16} />
                   </button>
                 </>
@@ -205,7 +205,7 @@ const LoginView = () => {
 
         <button
           onClick={logout}
-          className="flex items-center gap-2 px-8 py-4 bg-zinc-900 border border-zinc-800 rounded-2xl font-bold text-primary hover:bg-zinc-800 transition-all active:scale-95"
+          className="flex items-center gap-2 px-8 py-4 bg-surface border border-zinc-800 rounded-2xl font-bold text-primary hover:bg-surface/50 transition-all active:scale-95"
         >
           <LogOut size={20} />
           Cerrar Sesión
@@ -236,7 +236,7 @@ const LoginView = () => {
               required
               value={formData.username}
               onChange={(e) => setFormData({...formData, username: e.target.value})}
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl py-4 pl-12 pr-4 text-white focus:border-primary outline-none transition-all"
+              className="w-full bg-surface border border-zinc-800 rounded-2xl py-4 pl-12 pr-4 text-white focus:border-primary outline-none transition-all"
               placeholder="Ej. Andresito"
             />
           </div>
@@ -251,7 +251,7 @@ const LoginView = () => {
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl py-4 pl-12 pr-4 text-white focus:border-primary outline-none transition-all"
+              className="w-full bg-surface border border-zinc-800 rounded-2xl py-4 pl-12 pr-4 text-white focus:border-primary outline-none transition-all"
               placeholder="••••••••"
             />
           </div>
@@ -266,7 +266,7 @@ const LoginView = () => {
                 required
                 value={formData.token}
                 onChange={(e) => setFormData({...formData, token: e.target.value})}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl py-4 pl-12 pr-4 text-white focus:border-primary outline-none transition-all"
+                className="w-full bg-surface border border-zinc-800 rounded-2xl py-4 pl-12 pr-4 text-white focus:border-primary outline-none transition-all"
                 placeholder="Token de la Pi"
               />
             </div>

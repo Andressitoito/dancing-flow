@@ -25,15 +25,15 @@ const VideoPlayer = ({ video, onBack }) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-black">
-      <div className="p-4 flex items-center gap-3 border-b border-zinc-800 bg-zinc-950/50">
+    <div className="flex flex-col h-full bg-background">
+      <div className="p-4 flex items-center gap-3 border-b border-zinc-800 bg-background/50">
         <button onClick={onBack} className="p-2 -ml-2 text-zinc-400">
            <ChevronRight size={24} className="rotate-180" />
         </button>
         <h2 className="flex-1 text-lg font-bold truncate">{video.title}</h2>
       </div>
 
-      <div className="flex-1 flex items-center justify-center bg-zinc-950 relative group">
+      <div className="flex-1 flex items-center justify-center bg-background relative group">
         <video
           ref={videoRef}
           src={video.url}
@@ -55,7 +55,7 @@ const VideoPlayer = ({ video, onBack }) => {
         )}
       </div>
 
-      <div className="p-6 bg-zinc-900 border-t border-zinc-800 space-y-6">
+      <div className="p-6 bg-surface border-t border-zinc-800 space-y-6">
         <div className="flex justify-center items-center gap-6">
            <button
              onClick={() => {
@@ -82,7 +82,7 @@ const VideoPlayer = ({ video, onBack }) => {
                 key={rate}
                 onClick={() => changeRate(rate)}
                 className={`flex-1 py-2 rounded-xl font-bold text-xs transition-all ${
-                  playbackRate === rate ? 'bg-primary text-white scale-105 shadow-lg' : 'bg-zinc-800 text-zinc-500'
+                  playbackRate === rate ? 'bg-primary text-white scale-105 shadow-lg' : 'bg-surface/50 text-zinc-500'
                 }`}
               >
                 {rate}x
@@ -138,7 +138,7 @@ const VideoListView = () => {
         )}
       </div>
 
-      <div className="flex gap-2 p-1 bg-zinc-900 rounded-2xl border border-zinc-800">
+      <div className="flex gap-2 p-1 bg-surface rounded-2xl border border-zinc-800">
         <button
           onClick={() => setLevel('principiante')}
           className={`flex-1 py-3 rounded-xl font-black uppercase text-xs transition-all ${level === 'principiante' ? 'bg-primary text-white shadow-lg' : 'text-zinc-500'}`}
@@ -158,7 +158,7 @@ const VideoListView = () => {
           <div key={video.id} className="space-y-2 relative group">
             <button
               onClick={() => setSelectedVideo(video)}
-              className="aspect-[9/16] w-full bg-zinc-900 rounded-xl border border-zinc-800 flex flex-col items-center justify-center overflow-hidden relative"
+              className="aspect-[9/16] w-full bg-surface rounded-xl border border-zinc-800 flex flex-col items-center justify-center overflow-hidden relative"
             >
               <Video className="text-zinc-700" size={32} />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-2">
@@ -197,11 +197,11 @@ const VideoListView = () => {
 
       {isAdding && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
-           <form onSubmit={handleAdd} className="w-full max-w-sm bg-zinc-900 p-6 rounded-3xl border border-zinc-800 space-y-4">
+           <form onSubmit={handleAdd} className="w-full max-w-sm bg-surface p-6 rounded-3xl border border-zinc-800 space-y-4">
               <h3 className="text-lg font-bold">Subir Video</h3>
               <input
                 required placeholder="Título del video"
-                className="w-full bg-zinc-800 p-3 rounded-xl border border-zinc-700"
+                className="w-full bg-surface/50 p-3 rounded-xl border border-zinc-700"
                 value={newVideo.title}
                 onChange={e => setNewVideo({...newVideo, title: e.target.value})}
               />
@@ -209,7 +209,7 @@ const VideoListView = () => {
                 <label className="text-[10px] font-black text-zinc-500 uppercase ml-2">Opción 1: Archivo local</label>
                 <input
                   type="file" accept="video/mp4"
-                  className="w-full bg-zinc-800 p-3 rounded-xl border border-zinc-700 text-xs"
+                  className="w-full bg-surface/50 p-3 rounded-xl border border-zinc-700 text-xs"
                   onChange={e => setNewVideo({...newVideo, videoFile: e.target.files[0], url: ''})}
                 />
               </div>
@@ -218,14 +218,14 @@ const VideoListView = () => {
                 <label className="text-[10px] font-black text-zinc-500 uppercase ml-2">Opción 2: URL externa</label>
                 <input
                   placeholder="URL del video (MP4)"
-                  className="w-full bg-zinc-800 p-3 rounded-xl border border-zinc-700"
+                  className="w-full bg-surface/50 p-3 rounded-xl border border-zinc-700"
                   value={newVideo.url}
                   disabled={!!newVideo.videoFile}
                   onChange={e => setNewVideo({...newVideo, url: e.target.value})}
                 />
               </div>
               <select
-                className="w-full bg-zinc-800 p-3 rounded-xl border border-zinc-700"
+                className="w-full bg-surface/50 p-3 rounded-xl border border-zinc-700"
                 value={newVideo.level}
                 onChange={e => setNewVideo({...newVideo, level: e.target.value})}
               >
@@ -237,7 +237,7 @@ const VideoListView = () => {
                   type="button"
                   disabled={isUploading}
                   onClick={() => setIsAdding(false)}
-                  className="flex-1 py-3 bg-zinc-800 rounded-xl font-bold disabled:opacity-50"
+                  className="flex-1 py-3 bg-surface/50 rounded-xl font-bold disabled:opacity-50"
                 >
                   Cancelar
                 </button>

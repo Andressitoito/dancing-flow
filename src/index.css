@@ -5,13 +5,15 @@
   --color-secondary: var(--df-secondary);
   --color-accent: var(--df-accent);
   --color-background: var(--df-bg);
+  --color-surface: var(--df-surface);
 }
 
 :root {
   --df-primary: #ff0000;
   --df-secondary: #ff9800;
   --df-accent: #ffc340;
-  --df-bg: #1a1a1a;
+  --df-bg: #0a0a0a;
+  --df-surface: #1a1a1a;
 
   background-color: var(--df-bg);
   color: white;

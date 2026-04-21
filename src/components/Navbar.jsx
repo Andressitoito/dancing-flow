@@ -11,7 +11,7 @@ const Navbar = ({ activeTab, onTabChange }) => {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 px-6 py-2 flex justify-between items-center z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-surface border-t border-zinc-800 px-6 py-2 flex justify-between items-center z-50">
       {tabs.map((tab) => (
         <button
           key={tab.id}

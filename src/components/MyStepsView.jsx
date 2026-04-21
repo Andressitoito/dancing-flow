@@ -18,7 +18,7 @@ const StepForm = ({ initialStep, onSave, onCancel }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-zinc-900 p-6 rounded-xl space-y-4 shadow-lg border border-zinc-800">
+    <form onSubmit={handleSubmit} className="bg-surface p-6 rounded-xl space-y-4 shadow-lg border border-zinc-800">
       <h3 className="text-lg font-bold text-white mb-4">
         {initialStep ? 'Editar Paso' : 'Nuevo Paso'}
       </h3>
@@ -30,7 +30,7 @@ const StepForm = ({ initialStep, onSave, onCancel }) => {
           required
           value={step.name}
           onChange={(e) => setStep({ ...step, name: e.target.value })}
-          className="w-full bg-zinc-800 border-zinc-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none"
+          className="w-full bg-surface/50 border-zinc-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none"
           placeholder="Ej. Paso Básico"
         />
       </div>
@@ -46,7 +46,7 @@ const StepForm = ({ initialStep, onSave, onCancel }) => {
               className={`flex-1 py-2 rounded-lg font-bold border-2 transition-all ${
                 step.duration === d
                   ? 'bg-primary border-primary text-white'
-                  : 'bg-zinc-800 border-zinc-700 text-zinc-400'
+                  : 'bg-surface/50 border-zinc-700 text-zinc-400'
               }`}
             >
               {d}
@@ -77,7 +77,7 @@ const StepForm = ({ initialStep, onSave, onCancel }) => {
         <textarea
           value={step.description}
           onChange={(e) => setStep({ ...step, description: e.target.value })}
-          className="w-full bg-zinc-800 border-zinc-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none h-20"
+          className="w-full bg-surface/50 border-zinc-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none h-20"
           placeholder="Opcional: Descripción ontológica..."
         />
       </div>
@@ -86,7 +86,7 @@ const StepForm = ({ initialStep, onSave, onCancel }) => {
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 bg-zinc-800 text-white py-3 rounded-lg font-bold"
+          className="flex-1 bg-surface/50 text-white py-3 rounded-lg font-bold"
         >
           Cancelar
         </button>
@@ -130,13 +130,13 @@ const MyStepsView = () => {
           placeholder="Buscar paso..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-white outline-none focus:ring-2 focus:ring-primary"
+          className="w-full bg-surface border border-zinc-800 rounded-xl p-3 text-white outline-none focus:ring-2 focus:ring-primary"
         />
       </div>
 
       <div className="space-y-3">
         {(filteredSteps || []).map((step) => (
-          <div key={step.id} className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex items-center gap-4">
+          <div key={step.id} className="bg-surface p-4 rounded-xl border border-zinc-800 flex items-center gap-4">
             <div
               className="w-12 h-12 rounded-lg flex items-center justify-center font-bold text-white shadow-inner"
               style={{ backgroundColor: step.color }}

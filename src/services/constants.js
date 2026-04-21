@@ -4,21 +4,24 @@ export const APP_PALETTES = {
     primary: '#ff0000',
     secondary: '#ff9800',
     accent: '#ffc340',
-    background: '#1a1a1a'
+    background: '#0a0a0a',
+    surface: '#121212'
   },
   latina: {
     name: 'Latina (Original)',
     primary: '#e11d48',
     secondary: '#fbbf24',
     accent: '#8b5cf6',
-    background: '#1a1a1a'
+    background: '#120508',
+    surface: '#1f0a0f'
   },
   classic: {
     name: 'Clásico Dark',
     primary: '#e11d48',
     secondary: '#fbbf24',
     accent: '#10b981',
-    background: '#1a1a1a'
+    background: '#1a1a1a',
+    surface: '#27272a'
   }
 };
 

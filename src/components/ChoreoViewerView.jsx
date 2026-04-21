@@ -36,7 +36,7 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
             relative aspect-square border border-zinc-800/30 flex items-center justify-center transition-all shrink-0
             ${isActive ? 'z-40 scale-110 shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'z-10'}
             ${!data && isActive ? 'bg-white' : ''}
-            ${!data && !isActive ? 'bg-zinc-900/20' : ''}
+            ${!data && !isActive ? 'bg-surface/20' : ''}
             ${data ? 'cursor-help' : ''}
           `}
           style={{
@@ -76,7 +76,7 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
     measures.push(
       <div
         key={`measure-centered-${m}`}
-        className="flex transition-all gap-0.5 relative shrink-0 p-2 bg-zinc-900/40 rounded-xl border border-zinc-800/50 mx-4"
+        className="flex transition-all gap-0.5 relative shrink-0 p-2 bg-surface/40 rounded-xl border border-zinc-800/50 mx-4"
       >
         <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-black text-zinc-400 uppercase tracking-tight">
           Compás {m + 1}
@@ -90,7 +90,7 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
     <div
       className={`
         ${playbackMode === 'centered' ? 'flex items-center overflow-x-auto scrollbar-hide py-12' : 'grid grid-cols-8 gap-1'}
-        p-2 bg-zinc-950/20 rounded-2xl border border-zinc-900/50 shadow-inner scroll-smooth
+        p-2 bg-background/20 rounded-2xl border border-zinc-900/50 shadow-inner scroll-smooth
       `}
       id="viewer-scroll-container"
     >
@@ -168,7 +168,7 @@ const ChoreoViewerView = () => {
                    setSelectedChoreo(choreo);
                    loadChoreo(choreo);
                 }}
-                className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex items-center justify-between hover:border-primary transition-all group"
+                className="bg-surface p-4 rounded-xl border border-zinc-800 flex items-center justify-between hover:border-primary transition-all group"
               >
                 <div className="text-left">
                   <h4 className="font-bold text-lg">{choreo.title}</h4>
@@ -189,7 +189,7 @@ const ChoreoViewerView = () => {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-background">
-      <div className="p-4 flex items-center gap-3 border-b border-zinc-800 bg-zinc-950/50">
+      <div className="p-4 flex items-center gap-3 border-b border-zinc-800 bg-background/50">
         <button
           onClick={() => { setSelectedChoreo(null); stopPlayback(); }}
           className="p-2 -ml-2 text-zinc-400 hover:text-white"
@@ -258,7 +258,7 @@ const ChoreoViewerView = () => {
         />
 
         {playbackMode === 'centered' && (
-           <div className="flex flex-col gap-2 mt-4 bg-zinc-900/50 p-4 rounded-xl border border-zinc-800">
+           <div className="flex flex-col gap-2 mt-4 bg-surface/50 p-4 rounded-xl border border-zinc-800">
              <div className="flex justify-between items-center">
                <span className="text-[10px] text-zinc-500 font-bold uppercase">Zoom Modo Lineal</span>
                <span className="text-xs font-bold text-primary">{Math.round(zoom * 100)}%</span>
@@ -275,7 +275,7 @@ const ChoreoViewerView = () => {
       {/* Active Step Indicator - Floating above controls */}
       {activeStep && isPlaying && (
         <div className="fixed bottom-48 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-50 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <div className="bg-zinc-900/95 backdrop-blur-md border border-primary/40 rounded-2xl p-4 shadow-2xl flex items-center gap-4 border-b-4 border-b-primary/30">
+          <div className="bg-surface/95 backdrop-blur-md border border-primary/40 rounded-2xl p-4 shadow-2xl flex items-center gap-4 border-b-4 border-b-primary/30">
             <div className="w-4 h-4 rounded-full animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.5)]" style={{ backgroundColor: activeStep.color }} />
             <div className="flex-1 overflow-hidden">
               <span className="block text-primary/80 text-[10px] font-black uppercase tracking-widest leading-none mb-1">Paso Actual</span>
