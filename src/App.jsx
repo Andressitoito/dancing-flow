@@ -12,6 +12,13 @@ import { AlertCircle } from 'lucide-react';
 function App() {
   const { user, fetchInitialData, loading, stopPlayback, backendStatus } = useStore();
   const [activeTab, setActiveTab] = useState(user ? 'editor' : 'viewer');
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     fetchInitialData();
@@ -61,7 +68,7 @@ function App() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-background text-white">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary"></div>
+        <div className="animate-spin h-12 w-12 border-t-2 border-primary"></div>
       </div>
     );
   }
@@ -95,10 +102,11 @@ function App() {
     <div className="min-h-screen bg-background text-white pb-32 relative">
       {/* Dynamic Background */}
       <div
-        className="fixed inset-0 z-0 transition-all duration-1000 bg-cover bg-center bg-no-repeat"
+        className="fixed inset-0 z-0 transition-opacity duration-1000 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url(${backgrounds[activeTab] || backgrounds.login})`,
-          opacity: 0.15 // Low opacity to keep text readable
+          opacity: 0.6,
+          transform: `translateY(${scrollY * 0.1}px)`
         }}
       />
 

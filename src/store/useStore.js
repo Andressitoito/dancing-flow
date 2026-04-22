@@ -57,8 +57,8 @@ const useStore = create((set, get) => ({
     document.documentElement.style.setProperty('--df-accent', palette.accent);
     document.documentElement.style.setProperty('--df-bg', palette.background || '#1a1a1a');
     document.documentElement.style.setProperty('--df-surface', palette.surface || '#1a1a1a');
-    document.documentElement.style.setProperty('--df-surface-glass', `rgba(${hexToRgb(palette.surface || '#1a1a1a')}, 0.85)`);
-    document.documentElement.style.setProperty('--df-border', palette.border || '#333333');
+    document.documentElement.style.setProperty('--df-surface-glass', `rgba(${hexToRgb(palette.surface || '#1a1a1a')}, 0.6)`);
+    document.documentElement.style.setProperty('--df-border', 'rgba(255, 255, 255, 0.1)');
   },
 
   // Actions

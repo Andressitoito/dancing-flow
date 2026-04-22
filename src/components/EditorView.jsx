@@ -192,8 +192,8 @@ const EditorView = () => {
   };
 
   return (
-    <div className="bg-background min-h-screen flex flex-col" onClick={() => setShowTooltip(null)}>
-      <div className="sticky top-0 p-3 space-y-4 bg-background/95 backdrop-blur-md border-b border-outline/60 z-50 shadow-lg">
+    <div className="min-h-screen flex flex-col" onClick={() => setShowTooltip(null)}>
+      <div className="sticky top-0 p-3 space-y-4 bg-surface backdrop-blur-md border-b border-outline/60 z-50 shadow-lg">
         <div className="flex flex-col gap-3 max-w-lg mx-auto">
           <div className="flex items-center gap-3">
             <input

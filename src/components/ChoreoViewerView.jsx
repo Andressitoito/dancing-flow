@@ -215,8 +215,8 @@ const ChoreoViewerView = () => {
   const isSelectedFavorited = selectedChoreo.favorites?.includes(user?.id);
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-background">
-      <div className="p-4 flex items-center gap-3 border-b border-outline bg-background/50">
+    <div className="h-screen flex flex-col overflow-hidden">
+      <div className="p-4 flex items-center gap-3 border-b border-outline bg-surface backdrop-blur-md">
         <button
           onClick={() => { setSelectedChoreo(null); stopPlayback(); }}
           className="p-2 -ml-2 text-zinc-400 hover:text-white"
