@@ -155,15 +155,15 @@ const ChoreoViewerView = () => {
 
   if (!selectedChoreo) {
     return (
-      <div className="p-4 space-y-6 pb-24">
-        <h2 className="text-2xl font-black uppercase tracking-tighter">Mis Coreografías</h2>
+      <div className="p-4 space-y-5 pb-24">
+        <h2 className="text-xl font-black uppercase tracking-tight text-white drop-shadow-md">Mis Coreografías</h2>
 
         <div className="relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-primary transition-colors" size={18} />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-primary transition-colors" size={16} />
           <input
             type="text"
             placeholder="Buscar coreos..."
-            className="w-full bg-surface border border-outline rounded-2xl py-3 pl-12 pr-4 text-sm outline-none focus:border-primary transition-all"
+            className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2.5 pl-11 pr-4 text-xs outline-none focus:border-primary transition-all placeholder:text-white/20"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />
@@ -186,7 +186,7 @@ const ChoreoViewerView = () => {
                        setSelectedChoreo(choreo);
                        loadChoreo(choreo);
                     }}
-                    className="w-full bg-surface py-2.5 px-4 rounded-xl border border-outline flex items-center justify-between hover:border-primary/50 transition-all active:scale-[0.98]"
+                    className="w-full bg-surface/40 backdrop-blur-md py-2.5 px-4 rounded-xl border border-outline/60 flex items-center justify-between hover:border-primary/50 transition-all active:scale-[0.98]"
                   >
                     <div className="text-left flex-1 truncate">
                       <h4 className="font-bold text-sm truncate uppercase tracking-tight">{choreo.title}</h4>

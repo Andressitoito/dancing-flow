@@ -256,25 +256,25 @@ const VideoListView = () => {
   };
 
   return (
-    <div className="p-4 space-y-6 pb-24">
+    <div className="p-4 space-y-5 pb-24">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-black uppercase tracking-tighter">Tutoriales</h2>
+        <h2 className="text-xl font-black uppercase tracking-tight text-white drop-shadow-md">Tutoriales</h2>
         {(user?.role === 'master' || user?.role === 'moderator') && (
           <button
             onClick={() => setIsAdding(true)}
-            className="bg-primary p-2.5 rounded-full text-white shadow-lg active:scale-90 transition-all"
+            className="bg-primary p-2 rounded-full text-white shadow-lg active:scale-90 transition-all"
           >
-            <Plus size={24} />
+            <Plus size={20} />
           </button>
         )}
       </div>
 
       <div className="relative group">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-primary transition-colors" size={18} />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-primary transition-colors" size={16} />
         <input
           type="text"
           placeholder="Buscar tutoriales..."
-          className="w-full bg-surface border border-outline rounded-2xl py-3 pl-12 pr-4 text-sm outline-none focus:border-primary transition-all"
+          className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2.5 pl-11 pr-4 text-xs outline-none focus:border-primary transition-all placeholder:text-white/20"
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
         />
@@ -288,24 +288,24 @@ const VideoListView = () => {
         )}
       </div>
 
-      <div className="flex flex-col gap-3">
-        <div className="flex gap-2 p-1 bg-surface rounded-2xl border border-outline">
+      <div className="flex flex-col gap-4">
+        <div className="flex gap-2 p-1 bg-surface/40 backdrop-blur-md rounded-2xl border border-outline/60">
           <button
             onClick={() => setLevel('principiante')}
-            className={`flex-1 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all ${level === 'principiante' ? 'bg-primary text-white shadow-lg' : 'text-zinc-500'}`}
+            className={`flex-1 py-2.5 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all ${level === 'principiante' ? 'bg-primary text-white shadow-[0_0_20px_rgba(225,29,72,0.4)]' : 'text-white/40'}`}
           >
             Principiante
           </button>
           <button
             onClick={() => setLevel('avanzado')}
-            className={`flex-1 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all ${level === 'avanzado' ? 'bg-primary text-white shadow-lg' : 'text-zinc-500'}`}
+            className={`flex-1 py-2.5 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all ${level === 'avanzado' ? 'bg-primary text-white shadow-[0_0_20px_rgba(225,29,72,0.4)]' : 'text-white/40'}`}
           >
             Int. / Avanzado
           </button>
         </div>
 
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-           <span className="text-[10px] font-black uppercase text-zinc-500 shrink-0 ml-1">Ordenar:</span>
+           <span className="text-[9px] font-black uppercase text-white/30 shrink-0 ml-1">Ordenar:</span>
            {[
              { id: 'recent', label: 'Recientes' },
              { id: 'likes', label: 'Más Likes' },
@@ -314,8 +314,8 @@ const VideoListView = () => {
              <button
                key={opt.id}
                onClick={() => setSortBy(opt.id)}
-               className={`shrink-0 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border ${
-                 sortBy === opt.id ? 'bg-secondary border-secondary text-white shadow-lg' : 'bg-surface border-outline text-zinc-500'
+               className={`shrink-0 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all border ${
+                 sortBy === opt.id ? 'bg-secondary border-secondary text-white shadow-lg' : 'bg-surface/40 border-outline/60 text-white/40'
                }`}
              >
                {opt.label}

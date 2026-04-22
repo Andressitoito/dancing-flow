@@ -102,11 +102,11 @@ function App() {
     <div className="min-h-screen bg-background text-white pb-32 relative">
       {/* Dynamic Background */}
       <div
-        className="fixed inset-0 z-0 transition-opacity duration-1000 bg-cover bg-center bg-no-repeat"
+        className="fixed inset-0 z-0 transition-opacity duration-1000 bg-cover bg-center bg-no-repeat scale-110"
         style={{
           backgroundImage: `url(${backgrounds[activeTab] || backgrounds.login})`,
           opacity: 0.6,
-          transform: `translateY(${scrollY * 0.1}px)`
+          transform: `translateY(${-scrollY * 0.05}px) scale(1.1)`
         }}
       />
 

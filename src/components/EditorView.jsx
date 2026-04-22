@@ -95,8 +95,8 @@ const EditorView = () => {
       }
 
       gridElements.push(
-        <div key={`measure-${m}`} className="relative mb-8 group">
-          <div className={`grid grid-cols-8 gap-0 shadow-xl border border-outline/60/50 rounded-lg overflow-hidden transition-all duration-300 ${isDeleteMode ? 'scale-[0.98] opacity-60 grayscale-[0.5]' : ''}`}>
+        <div key={`measure-${m}`} className="relative mb-4 group">
+          <div className={`grid grid-cols-8 gap-0 shadow-xl border border-outline/60 rounded-lg overflow-hidden transition-all duration-300 ${isDeleteMode ? 'scale-[0.98] opacity-60 grayscale-[0.5]' : ''}`}>
             {measureSlots}
           </div>
 
@@ -193,13 +193,13 @@ const EditorView = () => {
 
   return (
     <div className="min-h-screen flex flex-col" onClick={() => setShowTooltip(null)}>
-      <div className="sticky top-0 p-3 space-y-4 bg-surface backdrop-blur-md border-b border-outline/60 z-50 shadow-lg">
-        <div className="flex flex-col gap-3 max-w-lg mx-auto">
-          <div className="flex items-center gap-3">
+      <div className="sticky top-0 p-2 space-y-3 bg-surface/80 backdrop-blur-xl border-b border-outline/60 z-50 shadow-lg">
+        <div className="flex flex-col gap-2 max-w-lg mx-auto">
+          <div className="flex items-center gap-2">
             <input
               value={currentChoreo.title}
               onChange={(e) => updateChoreoTitle(e.target.value)}
-              className="flex-1 min-w-0 bg-transparent border-b border-outline/60/60 py-1 text-2xl font-black text-white focus:outline-none focus:border-primary truncate uppercase tracking-tight"
+              className="flex-1 min-w-0 bg-transparent border-b border-outline/60/60 py-0.5 text-xl font-black text-white focus:outline-none focus:border-primary truncate uppercase tracking-tight"
               placeholder="Mi Coreo..."
             />
             <div className="flex shrink-0 gap-1 bg-surface rounded-xl p-1 border border-outline/60 shadow-inner">
@@ -272,7 +272,7 @@ const EditorView = () => {
         </div>
 
         {isQuickAddOpen ? (
-          <div className="bg-surface p-4 rounded-xl border border-outline/60 space-y-3">
+          <div className="bg-surface/90 p-4 rounded-xl border border-outline/60 space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-[10px] font-black text-zinc-400 font-black uppercase tracking-widest">Nuevo Paso Rápido</span>
               <button onClick={() => setIsQuickAddOpen(false)} className="text-zinc-400 font-black"><X size={16} /></button>
@@ -319,18 +319,18 @@ const EditorView = () => {
           </div>
         ) : (
         <div className="overflow-visible">
-          <div className="flex justify-between items-center mb-2 px-1">
-            <h3 className="text-[10px] font-black text-zinc-400 font-black uppercase tracking-widest">Librería Rápida</h3>
+          <div className="flex justify-between items-center mb-1.5 px-1">
+            <h3 className="text-[9px] font-black text-white/40 uppercase tracking-widest">Librería Rápida</h3>
             {selectedStepId && (
               <button
                 onClick={() => setSelectedStepId(null)}
-                className="text-[10px] font-black text-primary uppercase"
+                className="text-[9px] font-black text-primary uppercase"
               >
                 Limpiar
               </button>
             )}
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-4 pt-1 scrollbar-hide px-1">
+          <div className="flex gap-1.5 overflow-x-auto pb-3 pt-0.5 scrollbar-hide px-1">
               {(steps || []).filter(s => s.userId === user?.id || s.userId === 'andresito').map(step => (
                 <button
                   key={step.id}
@@ -339,20 +339,20 @@ const EditorView = () => {
                     setSelectedStepId(selectedStepId === step.id ? null : step.id);
                   }}
                   className={`
-                    shrink-0 h-14 w-14 rounded-xl flex flex-col items-center justify-center transition-all border-2 relative
+                    shrink-0 h-12 w-12 rounded-xl flex flex-col items-center justify-center transition-all border-2 relative
                     ${selectedStepId === step.id ? 'border-white scale-110 shadow-[0_0_15px_rgba(255,255,255,0.4)] z-20 mx-1' : 'border-transparent opacity-90'}
                   `}
                   style={{ backgroundColor: step.color }}
                 >
-                  <span className="text-[10px] font-black text-white leading-none mb-1">{step.duration}T</span>
-                  <span className="text-[8px] font-black text-white text-center leading-tight px-1 line-clamp-2 uppercase">{step.name}</span>
+                  <span className="text-[9px] font-black text-white leading-none mb-0.5">{step.duration}T</span>
+                  <span className="text-[7px] font-black text-white text-center leading-tight px-0.5 line-clamp-2 uppercase">{step.name}</span>
                 </button>
               ))}
               <button
                 onClick={() => setIsQuickAddOpen(true)}
-                className="shrink-0 h-14 w-14 rounded-xl border-2 border-dashed border-outline/60 flex items-center justify-center text-zinc-600 hover:text-primary transition-colors"
+                className="shrink-0 h-12 w-12 rounded-xl border-2 border-dashed border-outline/60 flex items-center justify-center text-zinc-600 hover:text-primary transition-colors"
               >
-                <Plus size={20} />
+                <Plus size={18} />
               </button>
             </div>
 
@@ -375,30 +375,30 @@ const EditorView = () => {
 
       <div
         onClick={() => setSelectedChoreoSlot(null)}
-        className="flex-1 overflow-y-auto p-4 space-y-12"
+        className="flex-1 overflow-y-auto p-4 space-y-6"
       >
         <div className="w-full max-w-lg mx-auto">
           {renderGrid()}
 
-          <div className="flex flex-col gap-3 max-w-xs mx-auto mt-8">
+          <div className="flex flex-col gap-2 max-w-xs mx-auto mt-4">
             <button
               onClick={addMeasure}
               disabled={isDeleteMode}
-              className={`py-4 bg-surface border border-outline/60 text-zinc-300 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-lg active:scale-95 ${isDeleteMode ? 'opacity-50 grayscale' : 'hover:bg-surface'}`}
+              className={`py-3 bg-surface/40 border border-outline/60 text-zinc-300 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-lg active:scale-95 ${isDeleteMode ? 'opacity-50 grayscale' : 'hover:bg-surface/60'}`}
             >
-              <Plus size={20} />
-              <span className="font-black uppercase tracking-widest text-[10px]">Añadir Compás</span>
+              <Plus size={18} />
+              <span className="font-black uppercase tracking-widest text-[9px]">Añadir Compás</span>
             </button>
 
             <button
               onClick={() => setIsDeleteMode(!isDeleteMode)}
-              className={`py-3 rounded-2xl flex items-center justify-center gap-3 transition-all border font-black uppercase tracking-widest text-[10px] ${
+              className={`py-2.5 rounded-2xl flex items-center justify-center gap-3 transition-all border font-black uppercase tracking-widest text-[9px] ${
                 isDeleteMode
                 ? 'bg-primary border-primary/50 text-white shadow-[0_0_20px_rgba(239,68,68,0.3)]'
-                : 'bg-surface border-outline/60 text-zinc-400 font-black'
+                : 'bg-surface/40 border-outline/60 text-zinc-400'
               }`}
             >
-              <Trash2 size={16} />
+              <Trash2 size={14} />
               <span>{isDeleteMode ? 'Finalizar Edición' : 'Gestionar Compases'}</span>
             </button>
           </div>

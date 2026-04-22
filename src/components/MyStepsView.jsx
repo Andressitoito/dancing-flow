@@ -113,30 +113,30 @@ const MyStepsView = () => {
   );
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-4 space-y-5">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Mis Pasos</h2>
+        <h2 className="text-xl font-black uppercase tracking-tight text-white drop-shadow-md">Mis Pasos</h2>
         <button
           onClick={() => setIsAdding(true)}
-          className="bg-primary p-2 rounded-full text-white shadow-lg opacity-90 hover:opacity-100"
+          className="bg-primary p-2 rounded-full text-white shadow-lg active:scale-90 transition-all"
         >
-          <Plus size={24} />
+          <Plus size={20} />
         </button>
       </div>
 
-      <div className="relative">
+      <div className="relative group">
         <input
           type="text"
           placeholder="Buscar paso..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full bg-surface border border-outline rounded-xl p-3 text-white outline-none focus:ring-2 focus:ring-primary"
+          className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2.5 px-4 text-xs outline-none focus:border-primary transition-all placeholder:text-white/20"
         />
       </div>
 
       <div className="space-y-3">
         {(filteredSteps || []).map((step) => (
-          <div key={step.id} className="bg-surface p-4 rounded-xl border border-outline flex items-center gap-4">
+          <div key={step.id} className="bg-surface/40 backdrop-blur-md p-3.5 rounded-2xl border border-outline/60 flex items-center gap-4 transition-all hover:border-primary/40">
             <div
               className="w-12 h-12 rounded-lg flex items-center justify-center font-bold text-white shadow-inner"
               style={{ backgroundColor: step.color }}
