@@ -99,10 +99,10 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-white pb-32 relative">
+    <div className="min-h-screen bg-background text-white pb-32">
       {/* Dynamic Background */}
       <div
-        className="fixed inset-0 z-0 transition-opacity duration-1000 bg-cover bg-center bg-no-repeat scale-110"
+        className="fixed inset-0 z-0 transition-opacity duration-1000 bg-cover bg-center bg-no-repeat scale-110 pointer-events-none"
         style={{
           backgroundImage: `url(${backgrounds[activeTab] || backgrounds.login})`,
           opacity: 0.6,

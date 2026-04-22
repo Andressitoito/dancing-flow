@@ -2,14 +2,21 @@
   {
     "id": "andresito",
     "username": "Andresito",
-    "password": "$2a$10$j6tkZJJE05MWVvgRb9ArQ.hmhzN9xcrLPVwh/Z45aM2UwpO14fmPm",
+    "password": "$2a$10$VigddeFYg8jsWytwYJ7w.e3OLtrh9pr5iGYyTv6gw4DU173uMcggi",
     "role": "master",
+    "status": "active"
+  },
+  {
+    "id": "moderator1",
+    "username": "moderador",
+    "password": "$2a$10$VigddeFYg8jsWytwYJ7w.e3OLtrh9pr5iGYyTv6gw4DU173uMcggi",
+    "role": "moderator",
     "status": "active"
   },
   {
     "id": "1776720474395",
     "username": "final_user",
-    "password": "$2a$10$RZKABPV5EuTCUMYKMSbaSua2tLmDIIjxtl/NmeG8PLkoxjK2SEB1K",
+    "password": "$2a$10$VigddeFYg8jsWytwYJ7w.e3OLtrh9pr5iGYyTv6gw4DU173uMcggi",
     "role": "student",
     "status": "active"
   }
