@@ -31,7 +31,8 @@ const EditorView = () => {
   const [selectedStepId, setSelectedStepId] = useState(null);
   const [bpm, setBpm] = useState(120);
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
-  const [quickStep, setQuickStep] = useState({ name: '', duration: 1, color: APP_COLORS[0] });
+  const [quickStep, setQuickStep] = useState({ name: '', duration: 1, color: APP_COLORS[0], difficulty: 'principiante' });
+  const [visibleDifficulties, setVisibleDifficulties] = useState(['principiante']);
   const [showTooltip, setShowTooltip] = useState(null);
   const [selectedChoreoSlot, setSelectedChoreoSlot] = useState(null);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
@@ -76,6 +77,7 @@ const EditorView = () => {
   };
 
   const getStepAtSlot = (index) => {
+    if (!currentChoreo?.sequence) return null;
     return currentChoreo.sequence.find(item => {
       const step = steps.find(s => s.id === item.stepId);
       if (!step) return false;
@@ -84,7 +86,7 @@ const EditorView = () => {
   };
 
   const renderGrid = () => {
-    const measuresCount = currentChoreo.measures;
+    const measuresCount = currentChoreo.measures || 2;
     const gridElements = [];
 
     for (let m = 0; m < measuresCount; m++) {
@@ -283,17 +285,41 @@ const EditorView = () => {
               value={quickStep.name}
               onChange={e => setQuickStep({...quickStep, name: e.target.value})}
             />
-            <div className="flex gap-2">
-              {[1, 2, 4].map(d => (
-                <button
-                  key={d}
-                  onClick={() => setQuickStep({...quickStep, duration: d})}
-                  className={`flex-1 py-2 rounded-xl text-xs font-black transition-all ${quickStep.duration === d ? 'bg-primary shadow-lg' : 'bg-surface text-zinc-400 font-black'}`}
-                >
-                  {d} TIEMPOS
-                </button>
-              ))}
+
+            <div className="space-y-1.5">
+              <label className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Duración</label>
+              <div className="flex gap-2">
+                {[1, 2, 4].map(d => (
+                  <button
+                    key={d}
+                    onClick={() => setQuickStep({...quickStep, duration: d})}
+                    className={`flex-1 py-2 rounded-xl text-[10px] font-black transition-all ${quickStep.duration === d ? 'bg-primary shadow-lg' : 'bg-surface text-zinc-400'}`}
+                  >
+                    {d}T
+                  </button>
+                ))}
+              </div>
             </div>
+
+            <div className="space-y-1.5">
+              <label className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Dificultad</label>
+              <div className="flex gap-2">
+                {[
+                  { id: 'principiante', label: 'P' },
+                  { id: 'intermedio', label: 'I' },
+                  { id: 'avanzado', label: 'A' }
+                ].map(diff => (
+                  <button
+                    key={diff.id}
+                    onClick={() => setQuickStep({...quickStep, difficulty: diff.id})}
+                    className={`flex-1 py-2 rounded-xl text-[10px] font-black transition-all ${quickStep.difficulty === diff.id ? 'bg-accent text-white shadow-lg' : 'bg-surface text-zinc-400'}`}
+                  >
+                    {diff.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="flex justify-between gap-1 pt-2">
               {APP_COLORS.map(c => (
                 <button
@@ -309,7 +335,7 @@ const EditorView = () => {
                 if (quickStep.name) {
                   await addStep(quickStep);
                   setIsQuickAddOpen(false);
-                  setQuickStep({ name: '', duration: 1, color: APP_COLORS[0] });
+                  setQuickStep({ name: '', duration: 1, color: APP_COLORS[0], difficulty: 'principiante' });
                 }
               }}
               className="w-full bg-primary py-3 rounded-xl text-xs font-black uppercase tracking-widest mt-2 shadow-lg shadow-primary/20"
@@ -321,17 +347,34 @@ const EditorView = () => {
         <div className="overflow-visible">
           <div className="flex justify-between items-center mb-1.5 px-1">
             <h3 className="text-[9px] font-black text-white/40 uppercase tracking-widest">Librería Rápida</h3>
-            {selectedStepId && (
-              <button
-                onClick={() => setSelectedStepId(null)}
-                className="text-[9px] font-black text-primary uppercase"
-              >
-                Limpiar
-              </button>
-            )}
+            <div className="flex gap-1">
+              {[
+                { id: 'principiante', label: 'P', color: '#3b82f6' },
+                { id: 'intermedio', label: 'I', color: '#fbbf24' },
+                { id: 'avanzado', label: 'A', color: '#e11d48' }
+              ].map(d => (
+                <button
+                  key={d.id}
+                  onClick={() => {
+                    setVisibleDifficulties(prev =>
+                      prev.includes(d.id) ? prev.filter(x => x !== d.id) : [...prev, d.id]
+                    );
+                  }}
+                  className={`w-6 h-6 rounded-lg text-[9px] font-black flex items-center justify-center transition-all ${
+                    visibleDifficulties.includes(d.id) ? 'scale-110 ring-1 ring-white' : 'opacity-40 grayscale'
+                  }`}
+                  style={{ backgroundColor: d.color }}
+                >
+                  {d.label}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="flex gap-1.5 overflow-x-auto pb-3 pt-0.5 scrollbar-hide px-1">
-              {(steps || []).filter(s => s.userId === user?.id || s.userId === 'andresito').map(step => (
+              {(steps || []).filter(s =>
+                (s.userId === user?.id || s.is_global) &&
+                visibleDifficulties.includes(s.difficulty || 'principiante')
+              ).map(step => (
                 <button
                   key={step.id}
                   onClick={(e) => {

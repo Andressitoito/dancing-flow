@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import useStore from '../store/useStore';
-import { Play, Pause, ChevronRight, X, Trash2, Heart, Star, Search } from 'lucide-react';
+import { Play, Pause, ChevronRight, X, Trash2, Heart, Star, Search, Copy, Info } from 'lucide-react';
 import PlaybackControls from './PlaybackControls';
 import Swal from 'sweetalert2';
 
@@ -113,7 +113,8 @@ const ChoreoViewerView = () => {
     loadChoreo,
     deleteChoreo,
     likeChoreo,
-    favoriteChoreo
+    favoriteChoreo,
+    copyChoreo
   } = useStore();
   const [selectedChoreo, setSelectedChoreo] = useState(null);
   const [bpm, setBpm] = useState(120);
@@ -130,7 +131,10 @@ const ChoreoViewerView = () => {
   })() : null;
 
   const filteredChoreos = (choreos || [])
-    .filter(c => c.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    .filter(c =>
+      c.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (c.userId === user?.id || c.isPublic)
+    )
     .sort((a, b) => {
        const aFav = a.favorites?.includes(user?.id) ? 1 : 0;
        const bFav = b.favorites?.includes(user?.id) ? 1 : 0;
@@ -232,6 +236,26 @@ const ChoreoViewerView = () => {
 
         <div className="flex items-center gap-1">
           <button
+            onClick={async () => {
+              const res = await Swal.fire({
+                title: '¿Copiar Coreografía?',
+                text: 'Se guardará una copia privada en tu lista.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#fbbf24',
+                background: '#18181b', color: '#fff'
+              });
+              if (res.isConfirmed) {
+                await copyChoreo(selectedChoreo);
+                Swal.fire({ title: 'Copiado', icon: 'success', toast: true, position: 'top-end', timer: 2000, showConfirmButton: false, background: '#18181b', color: '#fff' });
+              }
+            }}
+            className="p-2 text-zinc-400 hover:text-white"
+            title="Copiar a mis coreografías"
+          >
+            <Copy size={20} />
+          </button>
+          <button
             onClick={() => likeChoreo(selectedChoreo.id)}
             className={`p-2 rounded-full transition-all ${isSelectedLiked ? 'text-primary scale-110' : 'text-zinc-600'}`}
           >
@@ -292,6 +316,37 @@ const ChoreoViewerView = () => {
           playbackMode={playbackMode}
           zoom={zoom}
         />
+
+        {activeStep && (
+          <div className="bg-surface/60 border border-outline/40 rounded-3xl p-6 space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-white text-xs font-black" style={{ backgroundColor: activeStep.color }}>
+                {activeStep.duration}T
+              </div>
+              <div>
+                <h4 className="font-black text-white uppercase tracking-tight">{activeStep.name}</h4>
+                <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">{activeStep.difficulty} • {activeStep.category}</p>
+              </div>
+            </div>
+
+            {activeStep.technical_details && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                <div className="space-y-1">
+                  <p className="text-[9px] font-black text-primary uppercase tracking-widest flex items-center gap-1">
+                    <Info size={10} /> Líder
+                  </p>
+                  <p className="text-xs text-zinc-300 leading-relaxed italic">"{activeStep.technical_details.lead || 'Sin detalles'}"</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[9px] font-black text-secondary uppercase tracking-widest flex items-center gap-1">
+                    <Info size={10} /> Follower
+                  </p>
+                  <p className="text-xs text-zinc-300 leading-relaxed italic">"{activeStep.technical_details.follow || 'Sin detalles'}"</p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {playbackMode === 'centered' && (
            <div className="flex flex-col gap-2 mt-4 bg-surface p-4 rounded-xl border border-outline">

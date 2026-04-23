@@ -7,11 +7,12 @@ import Swal from 'sweetalert2';
 const StepEditorModal = ({ step, onSave, onCancel }) => {
   const [editedStep, setEditedStep] = useState({
     ...step,
-    technical_details: step.technical_details || { lead: '', follow: '', connection: '' }
+    technical_details: step.technical_details || { lead: '', follow: '', connection: '' },
+    category: step.category || 'base'
   });
 
   return (
-    <div className="bg-zinc-900 border border-white/10 rounded-3xl p-6 w-full max-w-lg shadow-2xl space-y-6 overflow-y-auto max-h-[90vh] animate-in fade-in zoom-in duration-200">
+    <div className="bg-zinc-900 border border-white/10 rounded-3xl p-6 w-full max-w-xl shadow-2xl space-y-6 overflow-y-auto max-h-[90vh] animate-in fade-in zoom-in duration-200">
       <div className="flex justify-between items-center border-b border-white/5 pb-4">
         <h3 className="text-xl font-black uppercase tracking-tight text-white">Edición de Paso</h3>
         <button onClick={onCancel} className="text-zinc-500 hover:text-white transition-colors">
@@ -47,14 +48,37 @@ const StepEditorModal = ({ step, onSave, onCancel }) => {
 
           <div className="space-y-1.5">
             <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest pl-1">Dificultad</label>
+            <div className="flex gap-1">
+              {[
+                { id: 'principiante', label: 'Básico', color: '#3b82f6' },
+                { id: 'intermedio', label: 'Intermedio', color: '#fbbf24' },
+                { id: 'avanzado', label: 'Avanzado', color: '#e11d48' }
+              ].map(d => (
+                <button
+                  key={d.id}
+                  onClick={() => setEditedStep({...editedStep, difficulty: d.id, color: d.color})}
+                  className={`flex-1 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${
+                    editedStep.difficulty === d.id ? 'text-white' : 'bg-black/20 text-zinc-500'
+                  }`}
+                  style={{ backgroundColor: editedStep.difficulty === d.id ? d.color : undefined }}
+                >
+                  {d.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest pl-1">Categoría</label>
             <select
-              value={editedStep.difficulty || 'principiante'}
-              onChange={e => setEditedStep({...editedStep, difficulty: e.target.value})}
+              value={editedStep.category}
+              onChange={e => setEditedStep({...editedStep, category: e.target.value})}
               className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-sm focus:border-primary outline-none transition-all appearance-none"
             >
-              <option value="principiante">Principiante</option>
-              <option value="intermedio">Intermedio</option>
-              <option value="avanzado">Avanzado</option>
+              <option value="base">Base</option>
+              <option value="giro">Giro</option>
+              <option value="sensual">Sensual</option>
+              <option value="adorno">Adorno</option>
             </select>
           </div>
         </div>

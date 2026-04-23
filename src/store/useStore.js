@@ -219,13 +219,34 @@ const useStore = create((set, get) => ({
     const { currentChoreo, user } = get();
     if (!user) throw new Error('Debes iniciar sesión para guardar');
 
-    const choreoToSave = asNew ? { ...currentChoreo, id: null } : currentChoreo;
+    const choreoToSave = asNew ? { ...currentChoreo, id: null, userId: user.id, creatorName: user.username } : currentChoreo;
     const savedChoreo = await api.saveChoreo(choreoToSave, user.id, user.username);
 
     set((state) => ({
       choreos: [...state.choreos.filter(c => c.id !== savedChoreo.id), savedChoreo],
       currentChoreo: savedChoreo
     }));
+  },
+
+  copyChoreo: async (choreo) => {
+    const { user } = get();
+    if (!user) throw new Error('Inicia sesión para copiar');
+
+    const newChoreo = {
+      ...choreo,
+      id: null,
+      title: `${choreo.title} (Copia)`,
+      userId: user.id,
+      creatorName: user.username,
+      isPublic: false
+    };
+
+    const saved = await api.saveChoreo(newChoreo, user.id, user.username);
+    set(state => ({
+      choreos: [...state.choreos, saved],
+      currentChoreo: saved
+    }));
+    return saved;
   },
 
   loadChoreo: (choreo) => {

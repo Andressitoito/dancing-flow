@@ -1,49 +1,83 @@
 [
   {
-    "id": "basic-1",
-    "userId": "andresito",
-    "name": "Paso Básico",
-    "duration": 1,
-    "description": "El paso fundamental de la bachata (1 tiempo)",
-    "color": "#e11d48",
-    "category": "base"
-  },
-  {
-    "id": "basic-2",
-    "userId": "andresito",
-    "name": "Paso Lateral",
-    "duration": 2,
-    "description": "Desplazamiento lateral de dos tiempos",
-    "color": "#fbbf24",
-    "category": "base"
-  },
-  {
-    "id": "giro-derecha",
-    "userId": "andresito",
-    "name": "Giro Derecha",
+    "id": "m-basic-lat-4",
+    "name": "Básico Lateral",
     "duration": 4,
-    "description": "Giro básico a la derecha en 4 tiempos",
-    "color": "#10b981",
-    "category": "giro"
+    "category": "base",
+    "difficulty": "principiante",
+    "status": "verified",
+    "is_global": true,
+    "color": "#3b82f6",
+    "description": "Desplazamiento de 3 pasos y un tap hacia el lado.",
+    "technical_details": {
+      "lead": "Inicia con pie izquierdo hacia la izquierda (1), cierra (2), abre (3), tap con derecha (4).",
+      "follow": "Espejo: Inicia con pie derecho hacia su derecha, cierra, abre, tap con izquierda.",
+      "connection": "Cerrada o abierta (palma con palma)."
+    },
+    "userId": "andresito",
+    "creatorName": "Andresito"
   },
   {
-    "name": "Paso de Prueba fullstack",
-    "duration": 1,
-    "description": "",
-    "color": "#e11d48",
-    "category": "base",
-    "id": "1776444832149",
-    "userId": "1776444828369",
-    "creatorName": "jules_test"
+    "id": "m-giro-der-4",
+    "name": "Giro a la Derecha",
+    "duration": 4,
+    "category": "giro",
+    "difficulty": "intermedio",
+    "status": "verified",
+    "is_global": true,
+    "color": "#fbbf24",
+    "description": "Giro completo del follower guiado por la mano izquierda del líder.",
+    "technical_details": {
+      "lead": "Eleva mano izquierda sobre la cabeza de la seguidora en el tiempo 1. Marca el círculo.",
+      "follow": "Pivot sobre pie derecho en tiempo 1, completa giro en 3 pasos, tap en el 4.",
+      "connection": "Una mano (Lead L -> Follow R)."
+    },
+    "userId": "andresito",
+    "creatorName": "Andresito"
   },
   {
-    "name": "Giro Final Jules",
+    "id": "m-wave-frontal-4",
+    "name": "Onda Frontal",
+    "duration": 4,
+    "category": "sensual",
+    "difficulty": "intermedio",
+    "status": "verified",
+    "is_global": true,
+    "color": "#fbbf24",
+    "description": "Movimiento ondulatorio del torso en contacto.",
+    "technical_details": {
+      "lead": "Guía desde la parte media de la espalda y presión suave en las manos.",
+      "follow": "Inicia la onda desde el pecho bajando hasta la cadera.",
+      "connection": "Contacto total (cuadro cerrado)."
+    },
+    "userId": "andresito",
+    "creatorName": "Andresito"
+  },
+  {
+    "id": "1776912554609",
+    "userId": "user123"
+  },
+  {
+    "id": "1776912823038",
+    "userId": "user123"
+  },
+  {
+    "id": "1776912994921",
+    "userId": "user123"
+  },
+  {
+    "id": "1776913437902",
+    "userId": "user123",
+    "creatorName": "tester",
+    "name": "Final Test Restart",
     "duration": 1,
-    "description": "",
-    "color": "#e11d48",
     "category": "base",
-    "id": "1776444952836",
-    "userId": "1776444951299",
-    "creatorName": "jules_final"
+    "status": "draft",
+    "is_global": false,
+    "technical_details": {
+      "lead": "",
+      "follow": "",
+      "connection": ""
+    }
   }
 ]

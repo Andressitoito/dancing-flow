@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { readDB, writeDB } = require('./db.cjs');
+const { readDB, writeDB, getUserById } = require('./db.cjs');
 
 router.get('/', (req, res) => {
   res.json(readDB('choreos.json'));
@@ -8,7 +8,8 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
   try {
-    const { id, title, sequence, measures, userId, creatorName } = req.body;
+    const { id, title, sequence, measures, userId, creatorName, isPublic } = req.body;
+    const requester = getUserById(userId);
     const choreos = readDB('choreos.json');
 
     let choreo;
@@ -16,8 +17,15 @@ router.post('/', (req, res) => {
       const index = choreos.findIndex(c => c.id === id);
       if (index !== -1) {
         // Only allow update if same user or admin
-        if (choreos[index].userId === userId || req.body.role === 'master' || req.body.role === 'moderator') {
-          choreos[index] = { ...choreos[index], title, sequence, measures };
+        const canEdit = choreos[index].userId === userId || (requester && (requester.role === 'master' || requester.role === 'moderator'));
+        if (canEdit) {
+          choreos[index] = {
+            ...choreos[index],
+            title,
+            sequence,
+            measures,
+            isPublic: isPublic !== undefined ? isPublic : choreos[index].isPublic
+          };
           choreo = choreos[index];
         } else {
           return res.status(403).json({ error: 'No tienes permiso para editar' });
@@ -33,6 +41,7 @@ router.post('/', (req, res) => {
         measures,
         userId,
         creatorName,
+        isPublic: isPublic !== undefined ? isPublic : true,
         likes: [],
         favorites: [],
         createdAt: new Date().toISOString()
@@ -50,12 +59,14 @@ router.post('/', (req, res) => {
 router.delete('/:id', (req, res) => {
   try {
     const { id } = req.params;
-    const { userId, role } = req.query;
+    const { userId } = req.query;
+    const requester = getUserById(userId);
     let choreos = readDB('choreos.json');
     const choreo = choreos.find(c => c.id === id);
 
     if (!choreo) return res.status(404).json({ error: 'No encontrado' });
-    if (choreo.userId !== userId && role !== 'master' && role !== 'moderator') {
+    const canDelete = choreo.userId === userId || (requester && (requester.role === 'master' || requester.role === 'moderator'));
+    if (!canDelete) {
       return res.status(403).json({ error: 'No tienes permiso' });
     }
 

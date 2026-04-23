@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { readDB, writeDB } = require('./db.cjs');
+const { readDB, writeDB, getUserById } = require('./db.cjs');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -61,12 +61,14 @@ router.post('/', upload.single('videoFile'), (req, res) => {
 router.delete('/:id', (req, res) => {
   try {
     const { id } = req.params;
-    const { userId, role } = req.query;
+    const { userId } = req.query;
+    const requester = getUserById(userId);
     let videos = readDB('videos.json');
     const video = videos.find(v => v.id === id);
 
     if (!video) return res.status(404).json({ error: 'Video no encontrado' });
-    if (video.userId !== userId && role !== 'master' && role !== 'moderator') {
+    const canDelete = video.userId === userId || (requester && (requester.role === 'master' || requester.role === 'moderator'));
+    if (!canDelete) {
       return res.status(403).json({ error: 'No tienes permiso' });
     }
 

@@ -13,11 +13,21 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
   try {
-    const { step, userId, username } = req.body;
+    const { userId, creatorName, ...stepData } = req.body;
     if (!userId) return res.status(400).json({ error: 'Falta userId' });
+    const requester = getUserById(userId);
+    const isAdmin = requester && (requester.role === 'master' || requester.role === 'moderator');
 
     const steps = readDB('steps.json');
-    const newStep = { ...step, id: Date.now().toString(), userId, creatorName: username };
+    const newStep = {
+      id: Date.now().toString(),
+      userId,
+      creatorName: creatorName || 'Anónimo',
+      ...stepData,
+      status: isAdmin ? (stepData.status || 'draft') : 'draft',
+      is_global: isAdmin ? (stepData.is_global || false) : false,
+      technical_details: stepData.technical_details || { lead: '', follow: '', connection: '' }
+    };
     steps.push(newStep);
     writeDB('steps.json', steps);
     res.json(newStep);
@@ -28,19 +38,31 @@ router.post('/', (req, res) => {
 
 router.put('/:id', (req, res) => {
   try {
-    const { step, userId } = req.body;
+    const { userId, creatorName, ...stepData } = req.body;
     const { id } = req.params;
     const requester = getUserById(userId);
+    const isAdmin = requester && (requester.role === 'master' || requester.role === 'moderator');
     let steps = readDB('steps.json');
-    const index = steps.findIndex(s => s.id === id || s.id === step.id);
+    const index = steps.findIndex(s => s.id === id);
 
     if (index === -1) return res.status(404).json({ error: 'Paso no encontrado' });
 
-    const canEdit = steps[index].userId === userId || (requester && (requester.role === 'master' || requester.role === 'moderator'));
+    const isOwner = steps[index].userId === userId;
+    const canEdit = isOwner || isAdmin;
 
     if (!canEdit) return res.status(403).json({ error: 'No tienes permiso para editar este paso' });
 
-    steps[index] = { ...step, userId: steps[index].userId, creatorName: steps[index].creatorName };
+    const finalStatus = isAdmin ? (stepData.status || steps[index].status) : steps[index].status;
+    const finalIsGlobal = isAdmin ? (stepData.is_global !== undefined ? stepData.is_global : steps[index].is_global) : steps[index].is_global;
+
+    steps[index] = {
+      ...steps[index],
+      ...stepData,
+      status: finalStatus,
+      is_global: finalIsGlobal,
+      userId: steps[index].userId,
+      creatorName: steps[index].creatorName
+    };
     writeDB('steps.json', steps);
     res.json(steps[index]);
   } catch (e) {
