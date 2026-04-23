@@ -1,16 +1,19 @@
-# React + Vite
+# Dancing Flow - Mobile Choreography Sequencer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Dancing Flow is a specialized Progressive Web App (PWA) designed for dance students to map and learn choreographies.
 
-Currently, two official plugins are available:
+## Features
+- **Visual Sequencer:** Drag and drop steps onto a timeline (1, 2, 4 beats).
+- **Step Library:** Comprehensive database of dance steps with technical details for Leaders and Followers.
+- **Tutorials:** Integrated video player with speed control and looping.
+- **RBAC:** Role-based access control (Master, Moderator, Pro, Student).
+- **Theming:** Dynamic theme switching (Tropical, Latina, Rose).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech Stack
+- **Frontend:** React + Vite + Tailwind CSS + Zustand.
+- **Backend:** Node.js + Express.
+- **Storage:** JSON-based database for portability.
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Getting Started
+1. Install dependencies: \`npm install\`
+2. Start development: \`npm run dev\` (Starts both frontend and backend)

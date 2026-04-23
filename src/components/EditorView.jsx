@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import useStore from '../store/useStore';
-import { Plus, Play, Pause, Save, Trash2, X, Info, FilePlus, Copy } from 'lucide-react';
+import { Plus, Play, Pause, Save, Trash2, X, Info, FilePlus, Copy, LayoutGrid, List } from 'lucide-react';
 import { APP_COLORS } from '../services/constants';
 import PlaybackControls from './PlaybackControls';
 import Swal from 'sweetalert2';
@@ -31,6 +31,7 @@ const EditorView = () => {
   const [selectedStepId, setSelectedStepId] = useState(null);
   const [bpm, setBpm] = useState(120);
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
+  const [libraryLayout, setLibraryLayout] = useState('scroll'); // 'scroll', 'grid'
   const [quickStep, setQuickStep] = useState({ name: '', duration: 1, color: APP_COLORS[0], difficulty: 'principiante' });
   const [visibleDifficulties, setVisibleDifficulties] = useState(['principiante']);
   const [showTooltip, setShowTooltip] = useState(null);
@@ -45,7 +46,7 @@ const EditorView = () => {
 
   const handleSlotClick = (index) => {
     const isOwner = currentChoreo.userId === user?.id || !currentChoreo.id;
-    const isPrivileged = user?.role === 'master' || user?.role === 'moderator';
+    const isPrivileged = ['master', 'moderator', 'pro'].includes(user?.role);
 
     if (!isOwner && !isPrivileged && currentChoreo.id) {
        Swal.fire({
@@ -157,7 +158,7 @@ const EditorView = () => {
           onTouchEnd={clearLongPress}
           className={`
             relative aspect-square border-outline/60 border flex items-center justify-center text-[10px] font-bold transition-all shrink-0
-            ${isGroupEnd ? 'border-r-zinc-600 mr-1' : ''}
+            ${isGroupEnd ? 'border-r-zinc-500/50 mr-1.5' : ''}
             ${isActive ? 'ring-2 ring-primary z-10 scale-105 bg-primary/20' : 'bg-surface'}
             ${!step ? 'hover:bg-surface' : ''}
           `}
@@ -225,7 +226,7 @@ const EditorView = () => {
               <button
                 onClick={async () => {
                   const isOwner = currentChoreo.userId === user?.id || !currentChoreo.id;
-                  const isPrivileged = user?.role === 'master' || user?.role === 'moderator';
+                  const isPrivileged = ['master', 'moderator', 'pro'].includes(user?.role);
 
                   if (!isOwner && !isPrivileged && currentChoreo.id) {
                     Swal.fire({ title: 'Acceso Denegado', text: 'No tienes permiso.', icon: 'error', background: '#18181b', color: '#fff' });
@@ -332,6 +333,11 @@ const EditorView = () => {
             </div>
             <button
               onClick={async () => {
+                const isPrivileged = ['master', 'moderator', 'pro'].includes(user?.role);
+                if (!isPrivileged) {
+                  Swal.fire({ title: 'Acceso Pro', text: 'Solo usuarios Master, Moderator o Pro pueden crear pasos.', icon: 'info', background: '#18181b', color: '#fff' });
+                  return;
+                }
                 if (quickStep.name) {
                   await addStep(quickStep);
                   setIsQuickAddOpen(false);
@@ -346,7 +352,15 @@ const EditorView = () => {
         ) : (
         <div className="overflow-visible">
           <div className="flex justify-between items-center mb-1.5 px-1">
-            <h3 className="text-[9px] font-black text-white/40 uppercase tracking-widest">Librería Rápida</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-[9px] font-black text-white/40 uppercase tracking-widest">Librería Rápida</h3>
+              <button
+                onClick={() => setLibraryLayout(l => l === 'scroll' ? 'grid' : 'scroll')}
+                className="text-zinc-500 hover:text-white transition-colors"
+              >
+                {libraryLayout === 'scroll' ? <LayoutGrid size={12} /> : <List size={12} />}
+              </button>
+            </div>
             <div className="flex gap-1">
               {[
                 { id: 'principiante', label: 'P', color: '#3b82f6' },
@@ -370,7 +384,10 @@ const EditorView = () => {
               ))}
             </div>
           </div>
-          <div className="flex gap-1.5 overflow-x-auto pb-3 pt-0.5 scrollbar-hide px-1">
+          <div className={`
+            ${libraryLayout === 'grid' ? 'grid grid-cols-5 gap-2 max-h-40 overflow-y-auto' : 'flex gap-1.5 overflow-x-auto scrollbar-hide'}
+            pb-3 pt-0.5 px-1
+          `}>
               {(steps || []).filter(s =>
                 (s.userId === user?.id || s.is_global) &&
                 visibleDifficulties.includes(s.difficulty || 'principiante')
@@ -382,7 +399,8 @@ const EditorView = () => {
                     setSelectedStepId(selectedStepId === step.id ? null : step.id);
                   }}
                   className={`
-                    shrink-0 h-12 w-12 rounded-xl flex flex-col items-center justify-center transition-all border-2 relative
+                    ${libraryLayout === 'grid' ? 'w-full' : 'shrink-0 w-12'}
+                    h-12 rounded-xl flex flex-col items-center justify-center transition-all border-2 relative
                     ${selectedStepId === step.id ? 'border-white scale-110 shadow-[0_0_15px_rgba(255,255,255,0.4)] z-20 mx-1' : 'border-transparent opacity-90'}
                   `}
                   style={{ backgroundColor: step.color }}
@@ -393,7 +411,10 @@ const EditorView = () => {
               ))}
               <button
                 onClick={() => setIsQuickAddOpen(true)}
-                className="shrink-0 h-12 w-12 rounded-xl border-2 border-dashed border-outline/60 flex items-center justify-center text-zinc-600 hover:text-primary transition-colors"
+                className={`
+                  ${libraryLayout === 'grid' ? 'w-full' : 'shrink-0 w-12'}
+                  h-12 rounded-xl border-2 border-dashed border-outline/60 flex items-center justify-center text-zinc-600 hover:text-primary transition-colors
+                `}
               >
                 <Plus size={18} />
               </button>

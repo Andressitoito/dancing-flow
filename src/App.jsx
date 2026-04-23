@@ -68,7 +68,7 @@ function App() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-background text-white">
-        <div className="animate-spin h-12 w-12 border-t-2 border-primary"></div>
+        <div className="animate-spin h-12 w-12 border-t-2 border-primary rounded-full"></div>
       </div>
     );
   }

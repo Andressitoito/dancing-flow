@@ -25,6 +25,7 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
       const globalIdx = m * 8 + i;
       const data = getStepData(globalIdx);
       const isActive = activeSlot === globalIdx;
+      const isGroupEnd = (i + 1) % 4 === 0 && (i + 1) % 8 !== 0;
 
       const slot = (
         <div
@@ -33,6 +34,7 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
           onDoubleClick={data ? () => onStepDoubleClick(data.step) : undefined}
           className={`
             relative aspect-square border border-outline/40 flex items-center justify-center transition-all shrink-0
+            ${isGroupEnd ? 'mr-1.5 border-r-zinc-500/50' : ''}
             ${isActive ? 'z-40 scale-110 shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'z-10'}
             ${!data && isActive ? 'bg-white' : ''}
             ${!data && !isActive ? 'bg-surface' : ''}
@@ -75,10 +77,10 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
     measures.push(
       <div
         key={`measure-centered-${m}`}
-        className="flex transition-all gap-0.5 relative shrink-0 p-2 bg-surface/40 rounded-xl border border-outline/50 mx-4"
+        className="flex transition-all gap-0.5 relative shrink-0 p-1.5 bg-surface/40 rounded-xl border border-outline/50 mx-2"
       >
-        <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-black text-zinc-400 uppercase tracking-tight">
-          Compás {m + 1}
+        <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] font-black text-zinc-500 uppercase tracking-tight">
+          Comp {m + 1}
         </span>
         {measureSlots}
       </div>
@@ -88,8 +90,8 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
   return (
     <div
       className={`
-        ${playbackMode === 'centered' ? 'flex items-center overflow-x-auto scrollbar-hide py-12' : 'grid grid-cols-8 gap-1'}
-        p-2 bg-background/20 rounded-2xl border border-zinc-900/50 shadow-inner scroll-smooth
+        ${playbackMode === 'centered' ? 'flex items-center overflow-x-auto scrollbar-hide py-8' : 'grid grid-cols-8 gap-1'}
+        p-1.5 bg-background/20 rounded-2xl border border-zinc-900/50 shadow-inner scroll-smooth
       `}
       id="viewer-scroll-container"
     >
@@ -120,6 +122,7 @@ const ChoreoViewerView = () => {
   const [bpm, setBpm] = useState(120);
   const [zoom, setZoom] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterMode, setFilterMode] = useState('all'); // 'all', 'mine', 'favorites'
 
   const activeStep = (activeSlot >= 0 && selectedChoreo) ? (() => {
     const item = selectedChoreo.sequence.find(it => {
@@ -131,10 +134,15 @@ const ChoreoViewerView = () => {
   })() : null;
 
   const filteredChoreos = (choreos || [])
-    .filter(c =>
-      c.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (c.userId === user?.id || c.isPublic)
-    )
+    .filter(c => {
+      const matchesSearch = c.title.toLowerCase().includes(searchTerm.toLowerCase());
+      const isMine = c.userId === user?.id;
+      const isFavorite = c.favorites?.includes(user?.id);
+
+      if (filterMode === 'mine') return matchesSearch && isMine;
+      if (filterMode === 'favorites') return matchesSearch && isFavorite;
+      return matchesSearch && (isMine || c.isPublic);
+    })
     .sort((a, b) => {
        const aFav = a.favorites?.includes(user?.id) ? 1 : 0;
        const bFav = b.favorites?.includes(user?.id) ? 1 : 0;
@@ -159,15 +167,32 @@ const ChoreoViewerView = () => {
 
   if (!selectedChoreo) {
     return (
-      <div className="p-4 space-y-5 pb-24">
-        <h2 className="text-xl font-black uppercase tracking-tight text-white drop-shadow-md">Mis Coreografías</h2>
+      <div className="p-4 space-y-5 pb-24 max-w-lg mx-auto w-full">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-black uppercase tracking-tight text-white drop-shadow-md">Explorar</h2>
+          <div className="flex bg-surface/60 p-1 rounded-xl border border-outline/40">
+            {[
+              { id: 'all', label: 'Todo' },
+              { id: 'mine', label: 'Mías' },
+              { id: 'favorites', label: 'Favs' }
+            ].map(m => (
+              <button
+                key={m.id}
+                onClick={() => setFilterMode(m.id)}
+                className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${filterMode === m.id ? 'bg-primary text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-300'}`}
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="relative group">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-primary transition-colors" size={16} />
           <input
             type="text"
-            placeholder="Buscar coreos..."
-            className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2.5 pl-11 pr-4 text-xs outline-none focus:border-primary transition-all placeholder:text-white/20"
+            placeholder={`Buscar en ${filterMode === 'all' ? 'todas' : filterMode === 'mine' ? 'mis coreos' : 'favoritos'}...`}
+            className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-3 pl-11 pr-4 text-xs outline-none focus:border-primary transition-all placeholder:text-white/20 shadow-inner"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />
@@ -318,19 +343,18 @@ const ChoreoViewerView = () => {
         />
 
         {activeStep && (
-          <div className="bg-surface/60 border border-outline/40 rounded-3xl p-6 space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-white text-xs font-black" style={{ backgroundColor: activeStep.color }}>
+          <div className="bg-surface/60 border border-outline/40 rounded-2xl p-4 space-y-3 animate-in fade-in slide-in-from-top-4 duration-300">
+            <div className="flex items-center gap-3 border-b border-outline/30 pb-2">
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-[10px] font-black shrink-0" style={{ backgroundColor: activeStep.color }}>
                 {activeStep.duration}T
               </div>
               <div>
-                <h4 className="font-black text-white uppercase tracking-tight">{activeStep.name}</h4>
                 <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">{activeStep.difficulty} • {activeStep.category}</p>
               </div>
             </div>
 
             {activeStep.technical_details && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
                 <div className="space-y-1">
                   <p className="text-[9px] font-black text-primary uppercase tracking-widest flex items-center gap-1">
                     <Info size={10} /> Líder

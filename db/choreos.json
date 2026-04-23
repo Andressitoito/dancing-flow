@@ -2,27 +2,15 @@
   {
     "id": "choreo-public-1",
     "userId": "andresito",
-    "title": "Básico y Giro (Andresito)",
+    "title": "B\u00e1sico y Giro (Oficial)",
     "measures": 2,
     "sequence": [
       {
-        "stepId": "basic-1",
+        "stepId": "m-basic-lat-4",
         "slotIndex": 0
       },
       {
-        "stepId": "basic-1",
-        "slotIndex": 1
-      },
-      {
-        "stepId": "basic-1",
-        "slotIndex": 2
-      },
-      {
-        "stepId": "basic-1",
-        "slotIndex": 3
-      },
-      {
-        "stepId": "giro-derecha",
+        "stepId": "m-giro-der-4",
         "slotIndex": 4
       }
     ]
@@ -30,14 +18,55 @@
   {
     "id": "1776444955494",
     "title": "Coreo de Jules",
+    "sequence": [],
+    "measures": 2,
+    "userId": "1776444951299",
+    "creatorName": "jules_final"
+  },
+  {
+    "id": "1776942089001",
+    "title": "B\u00e1sico y Giro (Andresito) (Copia)",
+    "sequence": [],
+    "measures": 2,
+    "userId": "test_user",
+    "creatorName": "Test User",
+    "isPublic": false,
+    "likes": [],
+    "favorites": [],
+    "createdAt": "2026-04-23T11:01:29.002Z"
+  },
+  {
+    "id": "1776942515227",
+    "title": "Original Choreo",
     "sequence": [
       {
-        "stepId": "1776444952836",
+        "stepId": "m-basic-lat-4",
         "slotIndex": 0
       }
     ],
     "measures": 2,
-    "userId": "1776444951299",
-    "creatorName": "jules_final"
+    "userId": "other_user",
+    "creatorName": "Other",
+    "isPublic": true,
+    "likes": [],
+    "favorites": [],
+    "createdAt": "2026-04-23T11:08:35.227Z"
+  },
+  {
+    "id": "1776942515261",
+    "title": "Original Choreo (Copia)",
+    "sequence": [
+      {
+        "stepId": "m-basic-lat-4",
+        "slotIndex": 0
+      }
+    ],
+    "measures": 2,
+    "userId": "test_user",
+    "creatorName": "test_user",
+    "isPublic": false,
+    "likes": [],
+    "favorites": [],
+    "createdAt": "2026-04-23T11:08:35.261Z"
   }
 ]

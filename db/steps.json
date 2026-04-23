@@ -54,18 +54,6 @@
     "creatorName": "Andresito"
   },
   {
-    "id": "1776912554609",
-    "userId": "user123"
-  },
-  {
-    "id": "1776912823038",
-    "userId": "user123"
-  },
-  {
-    "id": "1776912994921",
-    "userId": "user123"
-  },
-  {
     "id": "1776913437902",
     "userId": "user123",
     "creatorName": "tester",
@@ -79,5 +67,131 @@
       "follow": "",
       "connection": ""
     }
+  },
+  {
+    "id": "m-basico-fwd-4",
+    "name": "Básico Adelante",
+    "duration": 4,
+    "category": "base",
+    "difficulty": "principiante",
+    "status": "verified",
+    "is_global": true,
+    "color": "#3b82f6",
+    "description": "Básico moviéndose hacia adelante y atrás.",
+    "technical_details": {
+      "lead": "Paso adelante con IZQ (1), paso en el sitio con DER (2), paso atrás con IZQ (3), TAP con DER (4).",
+      "follow": "Paso atrás con DER (1), paso en el sitio con IZQ (2), paso adelante con DER (3), TAP con IZQ (4).",
+      "connection": "Abierta o Cerrada."
+    },
+    "userId": "master",
+    "creatorName": "Master"
+  },
+  {
+    "id": "m-enchufla-4",
+    "name": "Enchufla",
+    "duration": 4,
+    "category": "giro",
+    "difficulty": "intermedio",
+    "status": "verified",
+    "is_global": true,
+    "color": "#fbbf24",
+    "description": "Cambio de posición cruzando al follower.",
+    "technical_details": {
+      "lead": "Jala suavemente la mano de la seguidora para que pase por delante de ti.",
+      "follow": "Camina hacia adelante pasando al líder y gira para quedar frente a él.",
+      "connection": "Una mano."
+    },
+    "userId": "master",
+    "creatorName": "Master"
+  },
+  {
+    "id": "m-martillo-4",
+    "name": "Martillo",
+    "duration": 4,
+    "category": "giro",
+    "difficulty": "intermedio",
+    "status": "verified",
+    "is_global": true,
+    "color": "#fbbf24",
+    "description": "Giro que termina con el brazo del follower en su espalda.",
+    "technical_details": {
+      "lead": "Guía un giro a la derecha pero mantén la mano baja al final.",
+      "follow": "Gira y permite que tu brazo derecho se apoye suavemente en tu zona lumbar.",
+      "connection": "Doble mano."
+    },
+    "userId": "master",
+    "creatorName": "Master"
+  },
+  {
+    "id": "m-onda-lat-4",
+    "name": "Onda Lateral",
+    "duration": 4,
+    "category": "sensual",
+    "difficulty": "intermedio",
+    "status": "verified",
+    "is_global": true,
+    "color": "#fbbf24",
+    "description": "Onda lateral de cadera y torso.",
+    "technical_details": {
+      "lead": "Transfiere el peso lateralmente y guía la onda con el marco.",
+      "follow": "Sigue el movimiento lateral fluyendo desde la cadera hacia arriba.",
+      "connection": "Marco cerrado."
+    },
+    "userId": "master",
+    "creatorName": "Master"
+  },
+  {
+    "id": "m-70-cubano-4",
+    "name": "Setenta",
+    "duration": 4,
+    "category": "giro",
+    "difficulty": "avanzado",
+    "status": "verified",
+    "is_global": true,
+    "color": "#e11d48",
+    "description": "Nudo complejo de brazos estilo cubano adaptado.",
+    "technical_details": {
+      "lead": "Cruza brazos, levanta ambos y gira al follower mientras mantienes el agarre.",
+      "follow": "Mantén los brazos relajados para permitir el nudo sin tensión.",
+      "connection": "Doble mano cruzada."
+    },
+    "userId": "master",
+    "creatorName": "Master"
+  },
+  {
+    "id": "m-caida-4",
+    "name": "Caída Suave",
+    "duration": 4,
+    "category": "adorno",
+    "difficulty": "avanzado",
+    "status": "verified",
+    "is_global": true,
+    "color": "#e11d48",
+    "description": "Inclinación controlada del seguidor.",
+    "technical_details": {
+      "lead": "Asegura una base sólida, guía la inclinación manteniendo el peso del follower.",
+      "follow": "Mantén el core firme y no dejes caer todo el peso; usa tus piernas.",
+      "connection": "Abrazo total."
+    },
+    "userId": "master",
+    "creatorName": "Master"
+  },
+  {
+    "id": "m-basico-box-4",
+    "name": "Básico Cuadrado",
+    "duration": 4,
+    "category": "base",
+    "difficulty": "principiante",
+    "status": "verified",
+    "is_global": true,
+    "color": "#3b82f6",
+    "description": "Pasos formando un cuadrado en el suelo.",
+    "technical_details": {
+      "lead": "Adelante, lado, atrás, lado (TAP).",
+      "follow": "Atrás, lado, adelante, lado (TAP).",
+      "connection": "Abierta."
+    },
+    "userId": "master",
+    "creatorName": "Master"
   }
 ]
