@@ -13,6 +13,11 @@ build
 dist-ssr
 *.local
 
+# Application Data
+db/*.json
+uploads/*
+!db/README.md
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
