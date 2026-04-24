@@ -4,7 +4,7 @@ import { Play, Pause, ChevronRight, X, Trash2, Heart, Star, Search, Copy, Info }
 import PlaybackControls from './PlaybackControls';
 import Swal from 'sweetalert2';
 
-const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode, zoom = 1 }) => {
+const ViewerGrid = ({ choreo, steps, activeSlot, onSlotDoubleClick, playbackMode, zoom = 1 }) => {
   const getStepData = (index) => {
     const item = choreo.sequence.find(it => {
       const step = steps.find(s => s.id === it.stepId);
@@ -31,7 +31,7 @@ const ViewerGrid = ({ choreo, steps, activeSlot, onStepDoubleClick, playbackMode
         <div
           key={`slot-comp-${globalIdx}`}
           id={`vslot-${globalIdx}`}
-          onDoubleClick={data ? () => onStepDoubleClick(data.step) : undefined}
+          onDoubleClick={() => onSlotDoubleClick(globalIdx)}
           className={`
             relative aspect-square border border-outline/40 flex items-center justify-center transition-all shrink-0
             ${isGroupEnd ? 'mr-1.5 border-r-zinc-500/50' : ''}
@@ -108,6 +108,7 @@ const ChoreoViewerView = () => {
     playbackMode,
     setPlaybackMode,
     activeSlot,
+    setActiveSlot,
     isPlaying,
     startPlayback,
     pausePlayback,
@@ -316,27 +317,12 @@ const ChoreoViewerView = () => {
       </div>
 
       <div className="flex-1 overflow-auto p-4 space-y-6">
-        <div className="flex items-center justify-between mb-2">
-           <h3 className="text-xs font-black text-zinc-500 uppercase tracking-widest">Secuencia</h3>
-           <span className="text-[9px] text-zinc-600 uppercase font-bold">Doble tap para ayuda</span>
-        </div>
         <ViewerGrid
           choreo={selectedChoreo}
           steps={steps}
           activeSlot={activeSlot}
-          onStepDoubleClick={(step) => {
-             Swal.fire({
-               title: step.name,
-               text: step.description || 'No hay descripción para este paso.',
-               iconHtml: `<div class="w-12 h-12 rounded-lg" style="background-color: ${step.color}"></div>`,
-               confirmButtonText: 'Entendido',
-               confirmButtonColor: '#e11d48',
-               background: '#18181b',
-               color: '#fff',
-               customClass: {
-                 icon: 'border-none'
-               }
-             });
+          onSlotDoubleClick={(idx) => {
+             setActiveSlot(idx);
           }}
           playbackMode={playbackMode}
           zoom={zoom}
@@ -345,11 +331,12 @@ const ChoreoViewerView = () => {
         {activeStep && (
           <div className="bg-surface/60 border border-outline/40 rounded-2xl p-4 space-y-3 animate-in fade-in slide-in-from-top-4 duration-300">
             <div className="flex items-center gap-3 border-b border-outline/30 pb-2">
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-[10px] font-black shrink-0" style={{ backgroundColor: activeStep.color }}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-xs font-black shrink-0 shadow-lg" style={{ backgroundColor: activeStep.color }}>
                 {activeStep.duration}T
               </div>
-              <div>
-                <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">{activeStep.difficulty} • {activeStep.category}</p>
+              <div className="flex-1 min-w-0">
+                <h4 className="text-sm font-black text-white uppercase tracking-tight leading-none mb-1 truncate">{activeStep.name}</h4>
+                <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest leading-none truncate">{activeStep.difficulty} • {activeStep.category}</p>
               </div>
             </div>
 
@@ -359,13 +346,13 @@ const ChoreoViewerView = () => {
                   <p className="text-[9px] font-black text-primary uppercase tracking-widest flex items-center gap-1">
                     <Info size={10} /> Líder
                   </p>
-                  <p className="text-xs text-zinc-300 leading-relaxed italic">"{activeStep.technical_details.lead || 'Sin detalles'}"</p>
+                  <p className="text-sm text-zinc-300 leading-relaxed italic">"{activeStep.technical_details.lead || 'Sin detalles'}"</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-[9px] font-black text-secondary uppercase tracking-widest flex items-center gap-1">
                     <Info size={10} /> Follower
                   </p>
-                  <p className="text-xs text-zinc-300 leading-relaxed italic">"{activeStep.technical_details.follow || 'Sin detalles'}"</p>
+                  <p className="text-sm text-zinc-300 leading-relaxed italic">"{activeStep.technical_details.follow || 'Sin detalles'}"</p>
                 </div>
               </div>
             )}
@@ -386,18 +373,6 @@ const ChoreoViewerView = () => {
            </div>
         )}
       </div>
-
-      {activeStep && isPlaying && (
-        <div className="fixed bottom-48 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-50 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <div className="bg-surface/95 backdrop-blur-md border border-primary/40 rounded-2xl p-4 shadow-2xl flex items-center gap-4 border-b-4 border-b-primary/30">
-            <div className="w-4 h-4 rounded-full animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.5)]" style={{ backgroundColor: activeStep.color }} />
-            <div className="flex-1 overflow-hidden">
-              <span className="block text-primary/80 text-[10px] font-black uppercase tracking-widest leading-none mb-1">Paso Actual</span>
-              <span className="block text-white font-bold text-lg truncate leading-none uppercase">{activeStep.name}</span>
-            </div>
-          </div>
-        </div>
-      )}
 
       <PlaybackControls
         isPlaying={isPlaying}

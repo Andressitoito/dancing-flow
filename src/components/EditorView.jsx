@@ -202,7 +202,7 @@ const EditorView = () => {
             <input
               value={currentChoreo.title}
               onChange={(e) => updateChoreoTitle(e.target.value)}
-              className="flex-1 min-w-0 bg-transparent border-b border-outline/60/60 py-0.5 text-xl font-black text-white focus:outline-none focus:border-primary truncate uppercase tracking-tight"
+              className="flex-1 min-w-0 bg-transparent border-b border-outline/60 py-0.5 text-xl font-black text-white focus:outline-none focus:border-primary truncate uppercase tracking-tight"
               placeholder="Mi Coreo..."
             />
             <div className="flex shrink-0 gap-1 bg-surface rounded-xl p-1 border border-outline/60 shadow-inner">
@@ -282,7 +282,7 @@ const EditorView = () => {
             </div>
             <input
               placeholder="Nombre del paso"
-              className="w-full bg-surface text-sm p-3 rounded-xl border border-outline/60/60 outline-none focus:border-primary"
+              className="w-full bg-surface text-sm p-3 rounded-xl border border-outline/60 outline-none focus:border-primary"
               value={quickStep.name}
               onChange={e => setQuickStep({...quickStep, name: e.target.value})}
             />
@@ -356,7 +356,10 @@ const EditorView = () => {
               <h3 className="text-[9px] font-black text-white/40 uppercase tracking-widest">Librería Rápida</h3>
               <button
                 onClick={() => setLibraryLayout(l => l === 'scroll' ? 'grid' : 'scroll')}
-                className="text-zinc-500 hover:text-white transition-colors"
+                className={`
+                  w-6 h-6 rounded-lg flex items-center justify-center transition-all
+                  ${libraryLayout === 'grid' ? 'bg-primary text-white' : 'bg-surface border border-outline text-zinc-500'}
+                `}
               >
                 {libraryLayout === 'scroll' ? <LayoutGrid size={12} /> : <List size={12} />}
               </button>
@@ -468,7 +471,7 @@ const EditorView = () => {
           </div>
         </div>
 
-        <div className="w-full max-w-lg mx-auto pb-32 border-t border-outline/60/50 pt-8">
+        <div className="w-full max-w-lg mx-auto pb-32 border-t border-outline/60 pt-8">
           <h3 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-4 px-2">Mis Coreografías</h3>
           <div className="flex flex-wrap gap-2 px-2">
             {(choreos || []).map(choreo => (
