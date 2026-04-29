@@ -1,72 +1,127 @@
 [
   {
-    "id": "choreo-public-1",
-    "userId": "andresito",
-    "title": "B\u00e1sico y Giro (Oficial)",
-    "measures": 2,
+    "id": "1777381766964",
+    "title": "COREO DE PRUEBA",
     "sequence": [
       {
-        "stepId": "m-basic-lat-4",
-        "slotIndex": 0
-      },
-      {
-        "stepId": "m-giro-der-4",
-        "slotIndex": 4
-      }
-    ]
-  },
-  {
-    "id": "1776444955494",
-    "title": "Coreo de Jules",
-    "sequence": [],
-    "measures": 2,
-    "userId": "1776444951299",
-    "creatorName": "jules_final"
-  },
-  {
-    "id": "1776942089001",
-    "title": "B\u00e1sico y Giro (Andresito) (Copia)",
-    "sequence": [],
-    "measures": 2,
-    "userId": "test_user",
-    "creatorName": "Test User",
-    "isPublic": false,
-    "likes": [],
-    "favorites": [],
-    "createdAt": "2026-04-23T11:01:29.002Z"
-  },
-  {
-    "id": "1776942515227",
-    "title": "Original Choreo",
-    "sequence": [
-      {
-        "stepId": "m-basic-lat-4",
+        "id": "lirfd59gy",
+        "name": "Giro Simple",
+        "duration": 4,
+        "color": "#e11d48",
+        "description": "Un giro elegante",
+        "leadInstructions": "Llevar la mano arriba",
+        "followerInstructions": "Girar sobre el eje",
         "slotIndex": 0
       }
     ],
     "measures": 2,
-    "userId": "other_user",
-    "creatorName": "Other",
+    "difficulty": "principiante",
+    "color": "#3b82f6",
+    "userId": "1777381756450",
+    "creatorName": "testuser_1777381755",
     "isPublic": true,
     "likes": [],
     "favorites": [],
-    "createdAt": "2026-04-23T11:08:35.227Z"
+    "createdAt": "2026-04-28T13:09:26.964Z"
   },
   {
-    "id": "1776942515261",
-    "title": "Original Choreo (Copia)",
+    "id": "1777428640633",
+    "title": "Coreo Verificacion",
     "sequence": [
       {
-        "stepId": "m-basic-lat-4",
+        "id": "wxdteczpm",
+        "name": "Paso",
+        "duration": 4,
+        "color": "#e11d48",
+        "description": "",
+        "leadInstructions": "",
+        "followerInstructions": "",
         "slotIndex": 0
       }
     ],
     "measures": 2,
-    "userId": "test_user",
-    "creatorName": "test_user",
-    "isPublic": false,
+    "difficulty": "principiante",
+    "color": "#3b82f6",
+    "userId": "1777428634159",
+    "creatorName": "testuser_1777428633",
+    "isPublic": true,
     "likes": [],
     "favorites": [],
-    "createdAt": "2026-04-23T11:08:35.261Z"
+    "createdAt": "2026-04-29T02:10:40.633Z"
+  },
+  {
+    "id": "1777429973111",
+    "title": "Coreo de Prueba",
+    "sequence": [
+      {
+        "id": "w2fs71y79",
+        "name": "Paso de Prueba",
+        "duration": 4,
+        "color": "#e11d48",
+        "description": "",
+        "leadInstructions": "Lead move",
+        "followerInstructions": "Follower move",
+        "slotIndex": 0
+      }
+    ],
+    "measures": 2,
+    "difficulty": "principiante",
+    "color": "#3b82f6",
+    "userId": "1777429970677",
+    "creatorName": "testuser1777429970395",
+    "isPublic": true,
+    "likes": [],
+    "favorites": [],
+    "createdAt": "2026-04-29T02:32:53.111Z"
+  },
+  {
+    "id": "1777430140150",
+    "title": "Coreo de Prueba",
+    "sequence": [
+      {
+        "id": "z19f1j41d",
+        "name": "Paso de Prueba",
+        "duration": 4,
+        "color": "#e11d48",
+        "description": "",
+        "leadInstructions": "Lead move",
+        "followerInstructions": "Follower move",
+        "slotIndex": 0
+      }
+    ],
+    "measures": 2,
+    "difficulty": "principiante",
+    "color": "#3b82f6",
+    "userId": "1777430138357",
+    "creatorName": "testuser1777430138087",
+    "isPublic": true,
+    "likes": [],
+    "favorites": [],
+    "createdAt": "2026-04-29T02:35:40.150Z"
+  },
+  {
+    "id": "1777430457586",
+    "title": "Coreo de Prueba",
+    "sequence": [
+      {
+        "id": "ae77l16jm",
+        "name": "Paso de Prueba",
+        "duration": 4,
+        "color": "#e11d48",
+        "description": "",
+        "leadInstructions": "Lead move",
+        "followerInstructions": "Follower move",
+        "slotIndex": 0
+      }
+    ],
+    "measures": 2,
+    "difficulty": "principiante",
+    "color": "#3b82f6",
+    "userId": "1777430455889",
+    "creatorName": "testuser1777430455591",
+    "isPublic": true,
+    "likes": [],
+    "favorites": [],
+    "createdAt": "2026-04-29T02:40:57.586Z"
   }
 ]

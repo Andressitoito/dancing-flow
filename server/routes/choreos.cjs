@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
   try {
-    const { id, title, sequence, measures, userId, creatorName, isPublic } = req.body;
+    const { id, title, sequence, measures, difficulty, color, userId, creatorName, isPublic } = req.body;
     const requester = getUserById(userId);
     const choreos = readDB('choreos.json');
 
@@ -24,6 +24,8 @@ router.post('/', (req, res) => {
             title,
             sequence,
             measures,
+            difficulty,
+            color,
             isPublic: isPublic !== undefined ? isPublic : choreos[index].isPublic
           };
           choreo = choreos[index];
@@ -39,6 +41,8 @@ router.post('/', (req, res) => {
         title,
         sequence,
         measures,
+        difficulty: difficulty || 'principiante',
+        color: color || '#3b82f6',
         userId,
         creatorName,
         isPublic: isPublic !== undefined ? isPublic : true,

@@ -9,7 +9,6 @@ const PORT = process.env.PORT || 3001;
 
 // Routes
 const authRoutes = require('./routes/auth.cjs');
-const stepsRoutes = require('./routes/steps.cjs');
 const choreosRoutes = require('./routes/choreos.cjs');
 const adminRoutes = require('./routes/admin.cjs');
 const videoRoutes = require('./routes/videos.cjs');
@@ -29,16 +28,6 @@ app.use((req, res, next) => {
 
 const { readDB, writeDB } = require('./routes/db.cjs');
 
-// Seed Initial Steps
-const seedSteps = [
-  { id: 'basic-1', userId: 'andresito', name: 'Paso Básico', duration: 1, description: 'El paso fundamental de la bachata (1 tiempo)', color: '#e11d48', category: 'base' },
-  { id: 'basic-2', userId: 'andresito', name: 'Paso Lateral', duration: 2, description: 'Desplazamiento lateral de dos tiempos', color: '#fbbf24', category: 'base' },
-  { id: 'giro-derecha', userId: 'andresito', name: 'Giro Derecha', duration: 4, description: 'Giro básico a la derecha en 4 tiempos', color: '#10b981', category: 'giro' }
-];
-
-if (readDB('steps.json').length === 0) {
-  writeDB('steps.json', seedSteps);
-}
 
 if (readDB('videos.json').length === 0) {
   writeDB('videos.json', [
@@ -66,7 +55,6 @@ apiRouter.get('/ping', (req, res) => {
 
 // API Routes
 apiRouter.use('/', authRoutes);
-apiRouter.use('/steps', stepsRoutes);
 apiRouter.use('/choreos', choreosRoutes);
 apiRouter.use('/admin', adminRoutes);
 apiRouter.use('/videos', videoRoutes);

@@ -8,6 +8,9 @@ export default defineConfig({
     outDir: 'build'
   },
   server: {
+    watch: {
+      ignored: ['**/db/**', '**/uploads/**']
+    },
     proxy: {
       '/backend-service': {
         target: 'http://localhost:3001',

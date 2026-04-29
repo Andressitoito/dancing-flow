@@ -1,396 +1,376 @@
 import React, { useState, useRef, useEffect } from 'react';
 import useStore from '../store/useStore';
-import { Play, Pause, ChevronRight, X, Trash2, Heart, Star, Search, Copy, Info } from 'lucide-react';
-import PlaybackControls from './PlaybackControls';
+import {
+  Play, Pause, SkipBack, Search, Heart, Star,
+  ChevronRight, ArrowLeft, Clock, Info, User,
+  AlignJustify, LayoutGrid, Zap, Filter, Edit3,
+  Copy
+} from 'lucide-react';
 import Swal from 'sweetalert2';
 
-const ViewerGrid = ({ choreo, steps, activeSlot, onSlotDoubleClick, playbackMode, zoom = 1 }) => {
-  const getStepData = (index) => {
-    const item = choreo.sequence.find(it => {
-      const step = steps.find(s => s.id === it.stepId);
-      if (!step) return false;
-      return index >= it.slotIndex && index < it.slotIndex + step.duration;
-    });
-    if (!item) return null;
-    return { item, step: steps.find(s => s.id === item.stepId) };
-  };
-
-  const measuresCount = choreo.measures || 2;
-  const gridItems = [];
-  const measures = [];
-
-  for (let m = 0; m < measuresCount; m++) {
-    const measureSlots = [];
-    for (let i = 0; i < 8; i++) {
-      const globalIdx = m * 8 + i;
-      const data = getStepData(globalIdx);
-      const isActive = activeSlot === globalIdx;
-      const isGroupEnd = (i + 1) % 4 === 0 && (i + 1) % 8 !== 0;
-
-      const slot = (
-        <div
-          key={`slot-comp-${globalIdx}`}
-          id={`vslot-${globalIdx}`}
-          onDoubleClick={() => onSlotDoubleClick(globalIdx)}
-          className={`
-            relative aspect-square border border-outline/40 flex items-center justify-center transition-all shrink-0
-            ${isGroupEnd ? 'mr-1.5 border-r-zinc-500/50' : ''}
-            ${isActive ? 'z-40 scale-110 shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'z-10'}
-            ${!data && isActive ? 'bg-white' : ''}
-            ${!data && !isActive ? 'bg-surface' : ''}
-            ${data ? 'cursor-help' : ''}
-          `}
-          style={{
-            backgroundColor: data ? data.step.color : undefined,
-            borderTopLeftRadius: data && data.item.slotIndex === globalIdx ? '8px' : '0',
-            borderBottomLeftRadius: data && data.item.slotIndex === globalIdx ? '8px' : '0',
-            borderTopRightRadius: data && data.item.slotIndex + data.step.duration - 1 === globalIdx ? '8px' : '0',
-            borderBottomRightRadius: data && data.item.slotIndex + data.step.duration - 1 === globalIdx ? '8px' : '0',
-            opacity: isActive ? 1 : 0.9,
-            width: playbackMode === 'centered' ? `${64 * zoom}px` : 'auto'
-          }}
-        >
-          {data && data.item.slotIndex === globalIdx && (
-             <div className="absolute inset-0 flex items-center justify-center p-1 overflow-hidden pointer-events-none z-20">
-               <span className="truncate text-white font-bold text-[8px] drop-shadow-md uppercase">
-                 {data.step.name}
-               </span>
-             </div>
-          )}
-          {!data && (
-            <span className={isActive ? 'text-black text-[12px] font-black' : 'text-zinc-400 text-[10px] font-black'}>
-              {(globalIdx % 8) + 1}
-            </span>
-          )}
-          {isActive && (
-            <>
-              <div className={`absolute inset-0 bg-white z-40 rounded opacity-70 ${data ? 'animate-pulse' : ''}`} />
-              <div className="absolute inset-[-4px] border-[4px] border-white z-50 rounded-xl pointer-events-none shadow-[0_0_20px_white]" />
-            </>
-          )}
-        </div>
-      );
-      measureSlots.push(slot);
-      gridItems.push(slot);
-    }
-
-    measures.push(
-      <div
-        key={`measure-centered-${m}`}
-        className="flex transition-all gap-0.5 relative shrink-0 p-1.5 bg-surface/40 rounded-xl border border-outline/50 mx-2"
-      >
-        <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] font-black text-zinc-500 uppercase tracking-tight">
-          Comp {m + 1}
-        </span>
-        {measureSlots}
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className={`
-        ${playbackMode === 'centered' ? 'flex items-center overflow-x-auto scrollbar-hide py-8' : 'grid grid-cols-8 gap-1'}
-        p-1.5 bg-background/20 rounded-2xl border border-zinc-900/50 shadow-inner scroll-smooth
-      `}
-      id="viewer-scroll-container"
-    >
-      {playbackMode === 'centered' ? measures : gridItems}
-    </div>
-  );
-};
-
-const ChoreoViewerView = () => {
+const ChoreoViewerView = ({ onTabChange }) => {
   const {
-    user,
-    choreos,
-    steps,
-    playbackMode,
-    setPlaybackMode,
-    activeSlot,
-    setActiveSlot,
-    isPlaying,
-    startPlayback,
-    pausePlayback,
-    stopPlayback,
-    loadChoreo,
-    deleteChoreo,
-    likeChoreo,
-    favoriteChoreo,
-    copyChoreo
+    choreos, user, loadChoreo, currentChoreo, resetChoreo,
+    activeSlot, setActiveSlot, isPlaying, startPlayback, pausePlayback, stopPlayback,
+    likeChoreo, favoriteChoreo
   } = useStore();
-  const [selectedChoreo, setSelectedChoreo] = useState(null);
+
+  const [view, setView] = useState('explorer'); // explorer, player
   const [bpm, setBpm] = useState(120);
-  const [zoom, setZoom] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterMode, setFilterMode] = useState('all'); // 'all', 'mine', 'favorites'
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterDifficulty, setFilterDifficulty] = useState('all');
+  const [displayMode, setDisplayMode] = useState('linear'); // linear, grid
+  const [tooltip, setTooltip] = useState(null); // { block, x, y }
 
-  const activeStep = (activeSlot >= 0 && selectedChoreo) ? (() => {
-    const item = selectedChoreo.sequence.find(it => {
-      const step = steps.find(s => s.id === it.stepId);
-      if (!step) return false;
-      return activeSlot >= it.slotIndex && activeSlot < it.slotIndex + step.duration;
-    });
-    return item ? steps.find(s => s.id === item.stepId) : null;
-  })() : null;
-
-  const filteredChoreos = (choreos || [])
-    .filter(c => {
-      const matchesSearch = c.title.toLowerCase().includes(searchTerm.toLowerCase());
-      const isMine = c.userId === user?.id;
-      const isFavorite = c.favorites?.includes(user?.id);
-
-      if (filterMode === 'mine') return matchesSearch && isMine;
-      if (filterMode === 'favorites') return matchesSearch && isFavorite;
-      return matchesSearch && (isMine || c.isPublic);
-    })
-    .sort((a, b) => {
-       const aFav = a.favorites?.includes(user?.id) ? 1 : 0;
-       const bFav = b.favorites?.includes(user?.id) ? 1 : 0;
-       if (aFav !== bFav) return bFav - aFav;
-       return (b.likes?.length || 0) - (a.likes?.length || 0);
-    });
+  const scrollContainerRef = useRef(null);
+  const longPressTimer = useRef(null);
 
   useEffect(() => {
-    if (playbackMode === 'centered' && activeSlot >= 0) {
-      const slotElement = document.getElementById(`vslot-${activeSlot}`);
-      const container = document.getElementById('viewer-scroll-container');
-
-      if (slotElement && container) {
-        const containerRect = container.getBoundingClientRect();
-        const slotRect = slotElement.getBoundingClientRect();
-        const scrollLeft = container.scrollLeft + (slotRect.left - containerRect.left) - (containerRect.width / 2) + (slotRect.width / 2);
-
-        container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+    if (view === 'player' && displayMode === 'linear' && activeSlot !== -1 && scrollContainerRef.current) {
+      const activeEl = scrollContainerRef.current.querySelector(`[data-slot="${activeSlot}"]`);
+      if (activeEl) {
+        activeEl.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
       }
     }
-  }, [activeSlot, playbackMode]);
+  }, [activeSlot, view, displayMode]);
 
-  if (!selectedChoreo) {
+  const filteredChoreos = choreos.filter(c => {
+    const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          c.creatorName?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesDiff = filterDifficulty === 'all' || c.difficulty === filterDifficulty;
+    return matchesSearch && matchesDiff;
+  });
+
+  const handleOpenChoreo = (choreo) => {
+    loadChoreo(choreo);
+    setView('player');
+    stopPlayback();
+  };
+
+  const renderExplorer = () => (
+    <div className="p-4 space-y-6">
+      <div className="space-y-1">
+        <h2 className="text-3xl font-black uppercase tracking-tighter text-white">Explorar</h2>
+        <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Coreografías de la Comunidad</p>
+      </div>
+
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={18} />
+          <input
+            placeholder="Buscar por nombre o autor..."
+            className="w-full bg-surface/50 border border-outline/60 rounded-2xl py-3 pl-10 pr-4 text-xs focus:border-primary outline-none"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <div className="flex gap-1 bg-surface/50 p-1 rounded-2xl border border-outline/60">
+           {['all', 'principiante', 'intermedio', 'avanzado'].map(d => (
+             <button
+               key={d}
+               onClick={() => setFilterDifficulty(d)}
+               className={`w-8 h-8 rounded-xl flex items-center justify-center text-[10px] font-black uppercase transition-all ${
+                 filterDifficulty === d ? 'bg-primary text-white' : 'text-zinc-500'
+               }`}
+             >
+               {d === 'all' ? <Filter size={14} /> : d.charAt(0).toUpperCase()}
+             </button>
+           ))}
+        </div>
+      </div>
+
+      <div className="grid gap-3">
+        {filteredChoreos.map(choreo => (
+          <div
+            key={choreo.id}
+            onClick={() => handleOpenChoreo(choreo)}
+            className="bg-surface/40 backdrop-blur-xl border border-outline/60 p-4 rounded-3xl flex items-center gap-4 group active:scale-95 transition-all"
+          >
+            <div
+              className="w-14 h-14 rounded-2xl flex flex-col items-center justify-center text-white shadow-xl shrink-0"
+              style={{ backgroundColor: choreo.color }}
+            >
+              <span className="text-[10px] font-black uppercase">{choreo.difficulty?.substring(0, 3)}</span>
+              <Zap size={14} className="mt-0.5 opacity-60" />
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <h4 className="font-black text-sm text-white truncate uppercase tracking-tight">{choreo.title}</h4>
+              <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-tighter truncate mt-0.5">
+                Por {choreo.creatorName || 'Usuario'} • {choreo.measures} Compases
+              </p>
+              <div className="flex gap-3 mt-2">
+                 <span className="flex items-center gap-1 text-[9px] font-black text-zinc-400">
+                    <Heart size={10} className={choreo.likes?.includes(user?.id) ? 'text-primary fill-primary' : ''} />
+                    {choreo.likes?.length || 0}
+                 </span>
+                 <span className="flex items-center gap-1 text-[9px] font-black text-zinc-400">
+                    <Star size={10} className={choreo.favorites?.includes(user?.id) ? 'text-amber-500 fill-amber-500' : ''} />
+                    {choreo.favorites?.length || 0}
+                 </span>
+              </div>
+            </div>
+
+            <ChevronRight className="text-zinc-700 group-hover:text-primary transition-colors" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const handleLongPressStart = (e, block) => {
+    if (!block || !block.description) return;
+
+    // Get touch/mouse coordinates
+    const touch = e.touches ? e.touches[0] : e;
+    const { clientX, clientY } = touch;
+
+    longPressTimer.current = setTimeout(() => {
+      setTooltip({
+        text: block.description,
+        name: block.name,
+        x: clientX,
+        y: clientY
+      });
+      // Vibrate if mobile
+      if (window.navigator.vibrate) window.navigator.vibrate(50);
+    }, 500);
+  };
+
+  const handleLongPressEnd = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+    }
+    setTooltip(null);
+  };
+
+  const renderPlayer = () => {
+    // Robust active block finding
+    const activeBlock = (currentChoreo.sequence || []).find(b => {
+      const s = parseInt(b.slotIndex);
+      const d = parseInt(b.duration);
+      const a = parseInt(activeSlot);
+      return a >= s && a < s + d;
+    });
+
+    const currentMeasure = Math.max(0, Math.floor(activeSlot / 8));
+    const measureSlots = Array.from({ length: 8 }, (_, i) => currentMeasure * 8 + i);
+
     return (
-      <div className="p-4 space-y-5 pb-24 max-w-lg mx-auto w-full">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-black uppercase tracking-tight text-white drop-shadow-md">Explorar</h2>
-          <div className="flex bg-surface/60 p-1 rounded-xl border border-outline/40">
-            {[
-              { id: 'all', label: 'Todo' },
-              { id: 'mine', label: 'Mías' },
-              { id: 'favorites', label: 'Favs' }
-            ].map(m => (
-              <button
-                key={m.id}
-                onClick={() => setFilterMode(m.id)}
-                className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${filterMode === m.id ? 'bg-primary text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-300'}`}
-              >
-                {m.label}
-              </button>
+      <div className="flex flex-col min-h-screen bg-black/20 backdrop-blur-sm pb-40">
+        {/* Header */}
+        <div className="p-6 pt-10 flex items-center justify-between">
+          <button
+            onClick={() => { setView('explorer'); stopPlayback(); }}
+            className="p-2 text-white/70 hover:text-white transition-colors"
+          >
+            <ChevronRight size={28} className="rotate-180" />
+          </button>
+          <div className="text-center flex-1 truncate px-4">
+            <h2 className="text-xl font-black uppercase tracking-tight text-white truncate">{currentChoreo.title}</h2>
+            <p className="text-[10px] font-black uppercase tracking-widest mt-0.5">
+              <span className="text-rose-500">AUTOR:</span> <span className="text-white opacity-80">{currentChoreo.creatorName || 'DESCONOCIDO'}</span>
+            </p>
+          </div>
+          <div className="flex gap-4">
+             <button
+               onClick={() => {
+                 api.saveChoreo({ ...currentChoreo, id: null, title: `${currentChoreo.title} (Copia)` }, user?.id, user?.username)
+                    .then(() => Swal.fire({ title: 'Copiado', icon: 'success', timer: 1500, showConfirmButton: false, background: '#18181b', color: '#fff' }));
+               }}
+               className="text-white/70 hover:text-white transition-colors"
+             >
+               <Copy size={20} />
+             </button>
+             <button onClick={() => likeChoreo(currentChoreo.id)} className={currentChoreo.likes?.includes(user?.id) ? 'text-rose-500' : 'text-white/70 hover:text-white'}>
+               <Heart size={20} fill={currentChoreo.likes?.includes(user?.id) ? 'currentColor' : 'none'} />
+             </button>
+             <button onClick={() => favoriteChoreo(currentChoreo.id)} className={currentChoreo.favorites?.includes(user?.id) ? 'text-amber-500' : 'text-white/70 hover:text-white'}>
+               <Star size={20} fill={currentChoreo.favorites?.includes(user?.id) ? 'currentColor' : 'none'} />
+             </button>
+          </div>
+        </div>
+
+        {/* Visualizer (Grid 2x8) */}
+        <div className="px-4 py-8 space-y-3">
+          {/* Blocks Row */}
+          <div className="flex gap-2">
+            {[0, 4].map(startOffset => (
+               <div key={startOffset} className="grid grid-cols-4 gap-1.5 flex-1">
+                 {Array.from({ length: 4 }).map((_, i) => {
+                   const slotIdx = measureSlots[startOffset + i];
+                   const block = currentChoreo.sequence.find(b => b.slotIndex === slotIdx);
+                   const isPart = currentChoreo.sequence.some(b => slotIdx > b.slotIndex && slotIdx < b.slotIndex + b.duration);
+                   if (isPart) return null;
+
+                   const isActive = activeSlot >= slotIdx && activeSlot < (block ? slotIdx + block.duration : slotIdx + 1);
+
+                   return (
+                     <div
+                       key={slotIdx}
+                       onMouseDown={(e) => handleLongPressStart(e, block)}
+                       onMouseUp={handleLongPressEnd}
+                       onMouseLeave={handleLongPressEnd}
+                       onTouchStart={(e) => handleLongPressStart(e, block)}
+                       onTouchEnd={handleLongPressEnd}
+                       style={{
+                         gridColumn: block ? `span ${Math.min(block.duration, 4 - i)}` : 'span 1',
+                         backgroundColor: block ? block.color : 'rgba(255,255,255,0.06)'
+                       }}
+                       className={`
+                         h-20 rounded-xl flex items-center justify-center transition-all duration-150 relative border
+                         ${isActive ? 'border-primary shadow-[0_0_40px_rgba(225,29,72,0.4)] z-10' : 'border-white/5'}
+                       `}
+                     >
+                       {block && (
+                         <span className="text-[7px] font-black text-white uppercase truncate px-1 text-center drop-shadow-md leading-tight">
+                           {block.name}
+                         </span>
+                       )}
+                       {isActive && (
+                         <div className="absolute inset-0 bg-primary/20 animate-pulse rounded-xl" />
+                       )}
+                     </div>
+                   );
+                 })}
+               </div>
+            ))}
+          </div>
+
+          {/* Numbers Row */}
+          <div className="flex gap-2">
+            {[0, 4].map(startOffset => (
+               <div key={startOffset} className="grid grid-cols-4 gap-1.5 flex-1">
+                 {Array.from({ length: 4 }).map((_, i) => {
+                   const slotIdx = measureSlots[startOffset + i];
+                   const isActive = activeSlot === slotIdx;
+                   return (
+                     <div
+                       key={slotIdx}
+                       className={`h-14 flex items-center justify-center rounded-xl border transition-all duration-150
+                         ${isActive ? 'bg-primary/40 border-primary shadow-[0_0_20px_rgba(225,29,72,0.3)]' : 'bg-white/5 border-white/5'}
+                       `}
+                     >
+                       <span className={`text-base font-black ${isActive ? 'text-white' : 'text-white/20'}`}>{(slotIdx % 8) + 1}</span>
+                     </div>
+                   );
+                 })}
+               </div>
             ))}
           </div>
         </div>
 
-        <div className="relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-primary transition-colors" size={16} />
-          <input
-            type="text"
-            placeholder={`Buscar en ${filterMode === 'all' ? 'todas' : filterMode === 'mine' ? 'mis coreos' : 'favoritos'}...`}
-            className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-3 pl-11 pr-4 text-xs outline-none focus:border-primary transition-all placeholder:text-white/20 shadow-inner"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-          />
-        </div>
-
-        {filteredChoreos.length === 0 ? (
-          <div className="text-center py-20 text-zinc-500 italic">
-            No se encontraron coreografías.
-          </div>
-        ) : (
-          <div className="grid gap-2">
-            {filteredChoreos.map(choreo => {
-              const isLiked = choreo.likes?.includes(user?.id);
-              const isFavorited = choreo.favorites?.includes(user?.id);
-
-              return (
-                <div key={choreo.id} className="relative group">
-                  <button
-                    onClick={() => {
-                       setSelectedChoreo(choreo);
-                       loadChoreo(choreo);
-                    }}
-                    className="w-full bg-surface/40 backdrop-blur-md py-2.5 px-4 rounded-xl border border-outline/60 flex items-center justify-between hover:border-primary/50 transition-all active:scale-[0.98]"
+        {/* Detail Card */}
+        <div className="flex-1 px-4 mb-4">
+          <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-8 space-y-8 shadow-2xl min-h-[340px] flex flex-col">
+            {activeBlock ? (
+              <>
+                <div className="flex items-center gap-5">
+                  <div
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-2xl shrink-0"
+                    style={{ backgroundColor: activeBlock.color }}
                   >
-                    <div className="text-left flex-1 truncate">
-                      <h4 className="font-bold text-sm truncate uppercase tracking-tight">{choreo.title}</h4>
-                      <p className="text-[10px] text-zinc-500 font-bold uppercase truncate">
-                        Por <span className="text-primary">{choreo.creatorName || 'Andresito'}</span> • {choreo.measures}c
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-3 ml-4">
-                       <div className="flex gap-1.5">
-                          {isLiked && <Heart size={12} className="text-primary" fill="currentColor" />}
-                          {isFavorited && <Star size={12} className="text-secondary" fill="currentColor" />}
-                       </div>
-                       <ChevronRight size={18} className="text-zinc-600" />
-                    </div>
-                  </button>
+                    {activeBlock.duration}T
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="text-2xl font-black uppercase text-white tracking-tight leading-none truncate">{activeBlock.name}</h3>
+                    <p className="text-xs font-bold text-zinc-500 uppercase tracking-[0.2em] mt-2">
+                      {currentChoreo.difficulty || 'PRINCIPIANTE'} • BASE
+                    </p>
+                  </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    );
-  }
 
-  const isSelectedLiked = selectedChoreo.likes?.includes(user?.id);
-  const isSelectedFavorited = selectedChoreo.favorites?.includes(user?.id);
+                <div className="space-y-8 flex-1">
+                  <div className="space-y-3">
+                     <div className="flex items-center gap-2 text-rose-500">
+                        <Info size={14} className="shrink-0" />
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">Líder</span>
+                     </div>
+                     <p className="text-sm text-white font-medium italic leading-relaxed opacity-95">
+                       "{activeBlock.leadInstructions || 'Inicia con pie izquierdo hacia la izquierda (1), cierra (2), abre (3), tap con derecha (4).'}"
+                     </p>
+                  </div>
 
-  return (
-    <div className="h-screen flex flex-col overflow-hidden">
-      <div className="p-4 flex items-center gap-3 border-b border-outline bg-surface backdrop-blur-md">
-        <button
-          onClick={() => { setSelectedChoreo(null); stopPlayback(); }}
-          className="p-2 -ml-2 text-zinc-400 hover:text-white"
-        >
-          <ChevronRight size={24} className="rotate-180" />
-        </button>
-        <div className="flex-1 min-w-0">
-          <h2 className="text-lg font-bold truncate leading-tight uppercase tracking-tight">{selectedChoreo.title}</h2>
-          <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">
-            Autor: <span className="text-primary">{selectedChoreo.creatorName || 'Andresito'}</span>
-          </p>
-        </div>
-
-        <div className="flex items-center gap-1">
-          <button
-            onClick={async () => {
-              const res = await Swal.fire({
-                title: '¿Copiar Coreografía?',
-                text: 'Se guardará una copia privada en tu lista.',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#fbbf24',
-                background: '#18181b', color: '#fff'
-              });
-              if (res.isConfirmed) {
-                await copyChoreo(selectedChoreo);
-                Swal.fire({ title: 'Copiado', icon: 'success', toast: true, position: 'top-end', timer: 2000, showConfirmButton: false, background: '#18181b', color: '#fff' });
-              }
-            }}
-            className="p-2 text-zinc-400 hover:text-white"
-            title="Copiar a mis coreografías"
-          >
-            <Copy size={20} />
-          </button>
-          <button
-            onClick={() => likeChoreo(selectedChoreo.id)}
-            className={`p-2 rounded-full transition-all ${isSelectedLiked ? 'text-primary scale-110' : 'text-zinc-600'}`}
-          >
-            <Heart size={20} fill={isSelectedLiked ? "currentColor" : "none"} />
-          </button>
-          <button
-            onClick={() => favoriteChoreo(selectedChoreo.id)}
-            className={`p-2 rounded-full transition-all ${isSelectedFavorited ? 'text-secondary scale-110' : 'text-zinc-600'}`}
-          >
-            <Star size={20} fill={isSelectedFavorited ? "currentColor" : "none"} />
-          </button>
-          {(user?.id === selectedChoreo.userId || user?.role === 'master' || user?.role === 'moderator') && (
-            <button
-              onClick={async () => {
-                const result = await Swal.fire({
-                  title: '¿Eliminar Coreografía?',
-                  icon: 'warning',
-                  showCancelButton: true,
-                  confirmButtonColor: '#e11d48',
-                  background: '#18181b', color: '#fff'
-                });
-                if (result.isConfirmed) {
-                  await deleteChoreo(selectedChoreo.id);
-                  setSelectedChoreo(null);
-                }
-              }}
-              className="p-2 text-zinc-600 hover:text-primary transition-colors"
-            >
-              <Trash2 size={20} />
-            </button>
-          )}
-        </div>
-      </div>
-
-      <div className="flex-1 overflow-auto p-4 space-y-6">
-        <ViewerGrid
-          choreo={selectedChoreo}
-          steps={steps}
-          activeSlot={activeSlot}
-          onSlotDoubleClick={(idx) => {
-             setActiveSlot(idx);
-          }}
-          playbackMode={playbackMode}
-          zoom={zoom}
-        />
-
-        {activeStep && (
-          <div className="bg-surface/60 border border-outline/40 rounded-2xl p-4 space-y-3 animate-in fade-in slide-in-from-top-4 duration-300">
-            <div className="flex items-center gap-3 border-b border-outline/30 pb-2">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-xs font-black shrink-0 shadow-lg" style={{ backgroundColor: activeStep.color }}>
-                {activeStep.duration}T
-              </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-black text-white uppercase tracking-tight leading-none mb-1 truncate">{activeStep.name}</h4>
-                <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest leading-none truncate">{activeStep.difficulty} • {activeStep.category}</p>
-              </div>
-            </div>
-
-            {activeStep.technical_details && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-                <div className="space-y-1">
-                  <p className="text-[9px] font-black text-primary uppercase tracking-widest flex items-center gap-1">
-                    <Info size={10} /> Líder
-                  </p>
-                  <p className="text-sm text-zinc-300 leading-relaxed italic">"{activeStep.technical_details.lead || 'Sin detalles'}"</p>
+                  <div className="space-y-3">
+                     <div className="flex items-center gap-2 text-amber-400">
+                        <Info size={14} className="shrink-0" />
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">Follower</span>
+                     </div>
+                     <p className="text-sm text-white font-medium italic leading-relaxed opacity-95">
+                       "{activeBlock.followerInstructions || 'Espejo: Inicia con pie derecho hacia su derecha, cierra, abre, tap con izquierda.'}"
+                     </p>
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-[9px] font-black text-secondary uppercase tracking-widest flex items-center gap-1">
-                    <Info size={10} /> Follower
-                  </p>
-                  <p className="text-sm text-zinc-300 leading-relaxed italic">"{activeStep.technical_details.follow || 'Sin detalles'}"</p>
-                </div>
-              </div>
+              </>
+            ) : (
+               <div className="flex-1 flex items-center justify-center text-zinc-400 italic text-base text-center px-10 leading-relaxed">
+                  Escucha el ritmo... El próximo paso aparecerá aquí.
+               </div>
             )}
           </div>
-        )}
+        </div>
 
-        {playbackMode === 'centered' && (
-           <div className="flex flex-col gap-2 mt-4 bg-surface p-4 rounded-xl border border-outline">
-             <div className="flex justify-between items-center">
-               <span className="text-[10px] text-zinc-500 font-bold uppercase">Zoom Modo Lineal</span>
-               <span className="text-xs font-bold text-primary">{Math.round(zoom * 100)}%</span>
-             </div>
-             <input
-               type="range" min="0.5" max="2" step="0.1" value={zoom}
-               onChange={(e) => setZoom(parseFloat(e.target.value))}
-               className="w-full accent-primary h-1 bg-zinc-700 rounded-lg appearance-none"
-             />
+        {/* Playback Controls */}
+        <div className="fixed bottom-24 left-4 right-4 z-40">
+           <div className="bg-black/60 backdrop-blur-3xl border border-white/10 rounded-full p-4 flex items-center justify-between shadow-2xl">
+              <div className="flex items-center gap-4">
+                 <button
+                   onClick={isPlaying ? pausePlayback : () => startPlayback(bpm)}
+                   className="w-14 h-14 rounded-full bg-rose-500 flex items-center justify-center text-white shadow-lg shadow-rose-500/30 active:scale-90 transition-all"
+                 >
+                   {isPlaying ? <Pause size={30} fill="white" /> : <Play size={30} fill="white" className="ml-1" />}
+                 </button>
+                 <button
+                   onClick={stopPlayback}
+                   className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-black active:scale-90 transition-all shadow-lg"
+                 >
+                   <div className="w-3.5 h-3.5 bg-black rounded-sm" />
+                 </button>
+              </div>
+
+              <div className="flex flex-col items-center flex-1 px-8 min-w-0">
+                 <div className="flex items-center justify-between w-full mb-1 px-1">
+                    <span className="text-[10px] font-black text-white/50 uppercase tracking-widest">BPM: {bpm}</span>
+                 </div>
+                 <input
+                   type="range" min="60" max="180" value={bpm}
+                   onChange={(e) => setBpm(parseInt(e.target.value))}
+                   className="w-full accent-rose-500 h-1 bg-white/10 rounded-full appearance-none cursor-pointer"
+                 />
+              </div>
+
+              <button
+                onClick={() => setDisplayMode(prev => prev === 'linear' ? 'grid' : 'linear')}
+                className="bg-zinc-800/80 text-white/90 px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-white/10 active:scale-95 transition-all shadow-xl whitespace-nowrap mr-1"
+              >
+                MODO REJILLA
+              </button>
            </div>
-        )}
+        </div>
       </div>
+    );
+  };
 
-      <PlaybackControls
-        isPlaying={isPlaying}
-        onTogglePlay={() => isPlaying ? pausePlayback() : startPlayback(bpm)}
-        onStop={stopPlayback}
-        bpm={bpm}
-        onBpmChange={(newBpm) => {
-           setBpm(newBpm);
-           if (isPlaying) {
-             pausePlayback();
-             startPlayback(newBpm);
-           }
-        }}
-        playbackMode={playbackMode}
-        onToggleMode={() => setPlaybackMode(playbackMode === 'scroll' ? 'centered' : 'scroll')}
-        showModeToggle={true}
-      />
+  return (
+    <div className="min-h-screen bg-background text-white pb-24">
+      {view === 'explorer' ? renderExplorer() : renderPlayer()}
 
+        {/* Tooltip Overlay */}
+        {tooltip && (
+          <div
+            className="fixed z-[100] pointer-events-none animate-in fade-in zoom-in duration-150"
+            style={{
+              left: Math.min(tooltip.x, window.innerWidth - 180),
+              top: tooltip.y - 100
+            }}
+          >
+            <div className="bg-zinc-900 border border-white/20 p-4 rounded-2xl shadow-2xl max-w-[180px]">
+              <p className="text-[10px] font-black text-primary uppercase mb-1">{tooltip.name}</p>
+              <p className="text-xs text-white/90 leading-tight italic">"{tooltip.text}"</p>
+              <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-zinc-900 border-r border-b border-white/20 rotate-45" />
+            </div>
+          </div>
+        )}
     </div>
   );
 };

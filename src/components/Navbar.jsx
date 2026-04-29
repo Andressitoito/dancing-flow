@@ -11,7 +11,6 @@ const Navbar = ({ activeTab, onTabChange }) => {
     { id: 'viewer', name: 'Visor', icon: PlayCircle },
     { id: 'videos', name: 'Clases', icon: Video },
     ...(user ? [{ id: 'editor', name: 'Editor', icon: LayoutGrid }] : []),
-    ...(isPrivileged ? [{ id: 'steps', name: 'Mis Pasos', icon: Settings }] : []),
     { id: 'login', name: 'Cuenta', icon: User },
   ];
 

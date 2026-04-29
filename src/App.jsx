@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import useStore from './store/useStore';
-import MyStepsView from './components/MyStepsView';
 import EditorView from './components/EditorView';
 import ChoreoViewerView from './components/ChoreoViewerView';
 import LoginView from './components/LoginView';
@@ -11,7 +10,7 @@ import { AlertCircle } from 'lucide-react';
 
 function App() {
   const { user, fetchInitialData, loading, stopPlayback, backendStatus } = useStore();
-  const [activeTab, setActiveTab] = useState(user ? 'editor' : 'viewer');
+  const [activeTab, setActiveTab] = useState('videos');
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -77,10 +76,8 @@ function App() {
     switch (activeTab) {
       case 'editor':
         return <EditorView />;
-      case 'steps':
-        return <MyStepsView />;
       case 'viewer':
-        return <ChoreoViewerView />;
+        return <ChoreoViewerView onTabChange={handleTabChange} />;
       case 'videos':
         return <VideoListView />;
       case 'login':
@@ -92,7 +89,6 @@ function App() {
 
   const backgrounds = {
     editor: '/assets/backgrounds/bg-editor.jpg',
-    steps: '/assets/backgrounds/bg-steps.jpg',
     viewer: '/assets/backgrounds/bg-viewer.jpg',
     videos: '/assets/backgrounds/bg-videos.jpg',
     login: '/assets/backgrounds/bg-account.jpg'

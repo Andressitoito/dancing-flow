@@ -5,13 +5,14 @@ import { APP_PALETTES } from '../services/constants';
 const useStore = create((set, get) => ({
   user: JSON.parse(localStorage.getItem('dancingflow_user')) || JSON.parse(localStorage.getItem('bachataflow_user')) || null,
   palette: JSON.parse(localStorage.getItem('dancingflow_palette')) || APP_PALETTES.tropical,
-  steps: [],
   choreos: [],
   videos: [],
   allUsers: [],
   currentChoreo: {
     id: null,
     title: 'Nueva Coreografía',
+    difficulty: 'principiante',
+    color: '#3b82f6',
     sequence: [],
     measures: 2,
   },
@@ -22,6 +23,8 @@ const useStore = create((set, get) => ({
   playbackMode: 'scroll',
   isPlaying: false,
   playbackIntervalId: null,
+  paintingDuration: null, // null, 1, 2, 4
+  isMetronomeEnabled: false,
 
   // Auth Actions
   login: async (username, password) => {
@@ -84,13 +87,11 @@ const useStore = create((set, get) => ({
     set({ loading: true });
     try {
       await get().checkBackend();
-      const [steps, choreos, videos] = await Promise.all([
-        api.getSteps(),
+      const [choreos, videos] = await Promise.all([
         api.getChoreos(),
         api.getVideos()
       ]);
       set({
-        steps: steps || [],
         choreos: choreos || [],
         videos: videos || [],
         loading: false
@@ -108,31 +109,6 @@ const useStore = create((set, get) => ({
     }
   },
 
-  // Step Actions
-  addStep: async (step) => {
-    const { user } = get();
-    if (!user) throw new Error('Debes iniciar sesión');
-    const newStep = await api.saveStep(step, user.id, user.username);
-    set((state) => ({ steps: [...state.steps, newStep] }));
-  },
-
-  updateStep: async (step) => {
-    const { user } = get();
-    if (!user) throw new Error('Debes iniciar sesión');
-    const updatedStep = await api.updateStep(step, user.id, user.username);
-    set((state) => ({
-      steps: state.steps.map((s) => (s.id === updatedStep.id ? updatedStep : s))
-    }));
-  },
-
-  deleteStep: async (id) => {
-    const { user } = get();
-    if (!user) throw new Error('Debes iniciar sesión');
-    await api.deleteStep(id, user.id);
-    set((state) => ({
-      steps: state.steps.filter((s) => s.id !== id)
-    }));
-  },
 
   // Admin Actions
   fetchUsers: async () => {
@@ -287,6 +263,8 @@ const useStore = create((set, get) => ({
       currentChoreo: {
         id: null,
         title: 'Nueva Coreografía',
+        difficulty: 'principiante',
+        color: '#3b82f6',
         sequence: [],
         measures: 2,
       }
@@ -296,6 +274,21 @@ const useStore = create((set, get) => ({
   updateChoreoTitle: (title) => {
     set((state) => ({
       currentChoreo: { ...state.currentChoreo, title }
+    }));
+  },
+
+  updateChoreoDifficulty: (difficulty) => {
+    const colors = {
+      'principiante': '#3b82f6',
+      'intermedio': '#fbbf24',
+      'avanzado': '#e11d48'
+    };
+    set((state) => ({
+      currentChoreo: {
+        ...state.currentChoreo,
+        difficulty,
+        color: colors[difficulty] || '#3b82f6'
+      }
     }));
   },
 
@@ -340,6 +333,8 @@ const useStore = create((set, get) => ({
   })),
   setPlaybackMode: (mode) => set({ playbackMode: mode }),
   setIsPlaying: (isPlaying) => set({ isPlaying }),
+  setPaintingDuration: (duration) => set({ paintingDuration: duration }),
+  setMetronomeEnabled: (enabled) => set({ isMetronomeEnabled: enabled }),
 
   startPlayback: (bpm) => {
     const { playbackIntervalId } = get();
@@ -349,11 +344,37 @@ const useStore = create((set, get) => ({
       set({ activeSlot: 0 });
     }
 
+    // Prepare metronome sound
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    const playTick = (freq) => {
+      if (!get().isMetronomeEnabled) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.1);
+    };
+
     const intervalId = setInterval(() => {
       set((state) => {
         const totalSlots = state.currentChoreo.measures * 8;
         if (totalSlots === 0) return { activeSlot: -1 };
         const nextSlot = (state.activeSlot + 1) % totalSlots;
+
+        // Metronome sound logic
+        const beatInMeasure = (nextSlot % 8) + 1;
+        if (beatInMeasure === 1) {
+          playTick(880); // Higher pitch for beat 1
+        } else {
+          playTick(440); // Standard pitch
+        }
+
         return { activeSlot: nextSlot };
       });
     }, (60 / Math.max(bpm, 1)) * 1000);
@@ -373,38 +394,57 @@ const useStore = create((set, get) => ({
     set({ isPlaying: false, playbackIntervalId: null });
   },
 
-  addStepToChoreo: (stepId, slotIndex) => {
-    const { currentChoreo, steps } = get();
-    const step = steps.find(s => s.id === stepId);
-    if (!step) return;
-
+  addBlockToChoreo: (blockData, slotIndex) => {
+    const { currentChoreo } = get();
+    const duration = blockData.duration || 1;
     const totalSlots = currentChoreo.measures * 8;
-    if (slotIndex + step.duration > totalSlots) return;
 
-    const relativeSlot = slotIndex % 8;
-    if (relativeSlot % step.duration !== 0) return;
+    // Check overflow
+    if (slotIndex + duration > totalSlots) return;
 
-    const measureStart = Math.floor(slotIndex / 8) * 8;
-    const measureEnd = measureStart + 8;
-    if (slotIndex + step.duration > measureEnd) return;
+    // Check measure overflow (blocks can't cross 4-beat boundaries: 1-4 and 5-8)
+    const halfMeasureStart = Math.floor(slotIndex / 4) * 4;
+    const halfMeasureEnd = halfMeasureStart + 4;
+    if (slotIndex + duration > halfMeasureEnd) return;
 
+    // Remove overlapping blocks
     const newSequence = currentChoreo.sequence.filter(item => {
-      const itemStep = steps.find(s => s.id === item.stepId);
-      if (!itemStep) return false;
-      const itemEnd = item.slotIndex + itemStep.duration;
-      const newEnd = slotIndex + step.duration;
+      const itemEnd = item.slotIndex + item.duration;
+      const newEnd = slotIndex + duration;
       return !(slotIndex < itemEnd && newEnd > item.slotIndex);
     });
+
+    const newBlock = {
+      id: Math.random().toString(36).substr(2, 9),
+      name: blockData.name || 'Paso',
+      duration: duration,
+      color: blockData.color || '#e11d48', // Default Bachata Rose
+      description: blockData.description || '',
+      leadInstructions: blockData.leadInstructions || '',
+      followerInstructions: blockData.followerInstructions || '',
+      slotIndex
+    };
 
     set({
       currentChoreo: {
         ...currentChoreo,
-        sequence: [...newSequence, { stepId, slotIndex }]
+        sequence: [...newSequence, newBlock]
       }
     });
   },
 
-  removeStepFromChoreo: (slotIndex) => {
+  updateBlockInChoreo: (slotIndex, data) => {
+    set((state) => ({
+      currentChoreo: {
+        ...state.currentChoreo,
+        sequence: state.currentChoreo.sequence.map(item =>
+          item.slotIndex === slotIndex ? { ...item, ...data } : item
+        )
+      }
+    }));
+  },
+
+  removeBlockFromChoreo: (slotIndex) => {
     const { currentChoreo } = get();
     set({
       currentChoreo: {

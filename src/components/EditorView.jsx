@@ -1,496 +1,396 @@
 import React, { useState, useRef, useEffect } from 'react';
 import useStore from '../store/useStore';
-import { Plus, Play, Pause, Save, Trash2, X, Info, FilePlus, Copy, LayoutGrid, List } from 'lucide-react';
-import { APP_COLORS } from '../services/constants';
-import PlaybackControls from './PlaybackControls';
+import {
+  Plus, Save, Trash2, ChevronRight, X, Play, Volume2, VolumeX, Music
+} from 'lucide-react';
 import Swal from 'sweetalert2';
 
-const EditorView = () => {
-  const {
-    user,
-    steps,
-    addStep,
-    currentChoreo,
-    choreos,
-    addStepToChoreo,
-    removeStepFromChoreo,
-    addMeasure,
-    saveCurrentChoreo,
-    updateChoreoTitle,
-    loadChoreo,
-    resetChoreo,
-    activeSlot,
-    setActiveSlot,
-    isPlaying,
-    setIsPlaying,
-    playbackMode,
-    setPlaybackMode,
-    removeMeasure
-  } = useStore();
+const BlockEditorModal = ({ block, onSave, onCancel }) => {
+  const [edited, setEdited] = useState({
+    name: block.name || '',
+    description: block.description || '',
+    leadInstructions: block.leadInstructions || '',
+    followerInstructions: block.followerInstructions || '',
+    color: block.color || '#e11d48'
+  });
 
-  const [selectedStepId, setSelectedStepId] = useState(null);
-  const [bpm, setBpm] = useState(120);
-  const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
-  const [libraryLayout, setLibraryLayout] = useState('scroll'); // 'scroll', 'grid'
-  const [quickStep, setQuickStep] = useState({ name: '', duration: 1, color: APP_COLORS[0], difficulty: 'principiante' });
-  const [visibleDifficulties, setVisibleDifficulties] = useState(['principiante']);
-  const [showTooltip, setShowTooltip] = useState(null);
-  const [selectedChoreoSlot, setSelectedChoreoSlot] = useState(null);
-  const [isDeleteMode, setIsDeleteMode] = useState(false);
-  const longPressTimer = useRef(null);
-  const scrollContainerRef = useRef(null);
-
-  useEffect(() => {
-    setIsPlaying(false);
-  }, []);
-
-  const handleSlotClick = (index) => {
-    const isOwner = currentChoreo.userId === user?.id || !currentChoreo.id;
-    const isPrivileged = ['master', 'moderator', 'pro'].includes(user?.role);
-
-    if (!isOwner && !isPrivileged && currentChoreo.id) {
-       Swal.fire({
-         title: 'Solo Lectura',
-         text: 'No puedes editar la coreografía de otro usuario.',
-         icon: 'info',
-         background: '#18181b', color: '#fff'
-       });
-       return;
-    }
-
-    if (selectedStepId) {
-      addStepToChoreo(selectedStepId, index);
-    }
-  };
-
-  const handleLongPress = (e, index) => {
-    e.preventDefault();
-    setSelectedChoreoSlot(null);
-    setShowTooltip(null);
-
-    longPressTimer.current = setTimeout(() => {
-      setSelectedChoreoSlot(index);
-    }, 800);
-  };
-
-  const clearLongPress = () => {
-    clearTimeout(longPressTimer.current);
-  };
-
-  const getStepAtSlot = (index) => {
-    if (!currentChoreo?.sequence) return null;
-    return currentChoreo.sequence.find(item => {
-      const step = steps.find(s => s.id === item.stepId);
-      if (!step) return false;
-      return index >= item.slotIndex && index < item.slotIndex + step.duration;
-    });
-  };
-
-  const renderGrid = () => {
-    const measuresCount = currentChoreo.measures || 2;
-    const gridElements = [];
-
-    for (let m = 0; m < measuresCount; m++) {
-      const measureSlots = [];
-      for (let i = 0; i < 8; i++) {
-        const globalSlotIndex = m * 8 + i;
-        measureSlots.push(renderSlot(globalSlotIndex));
-      }
-
-      gridElements.push(
-        <div key={`measure-${m}`} className="relative mb-4 group">
-          <div className={`grid grid-cols-8 gap-0 shadow-xl border border-outline/60 rounded-lg overflow-hidden transition-all duration-300 ${isDeleteMode ? 'scale-[0.98] opacity-60 grayscale-[0.5]' : ''}`}>
-            {measureSlots}
-          </div>
-
-          {isDeleteMode && (
-            <button
-              onClick={async () => {
-                const result = await Swal.fire({
-                  title: `¿Eliminar Compás ${m+1}?`,
-                  text: "Se borrarán los pasos de este compás y los siguientes se desplazarán.",
-                  icon: 'warning',
-                  showCancelButton: true,
-                  confirmButtonColor: '#ef4444',
-                  confirmButtonText: 'Eliminar',
-                  background: '#18181b', color: '#fff'
-                });
-                if (result.isConfirmed) removeMeasure(m);
-              }}
-              className="absolute inset-0 z-30 flex items-center justify-center bg-primary/20 backdrop-blur-[1px] rounded-lg border-2 border-dashed border-primary animate-in fade-in zoom-in duration-200"
-            >
-              <div className="bg-primary text-white p-3 rounded-full shadow-2xl">
-                <Trash2 size={24} strokeWidth={3} />
-              </div>
-            </button>
-          )}
-
-          <div className="absolute -left-8 top-1/2 -translate-y-1/2 text-[10px] text-zinc-600 font-black uppercase -rotate-90 tracking-tighter">
-            COMPÁS {m+1}
-          </div>
-        </div>
-      );
-    }
-    return gridElements;
-  };
-
-  const renderSlot = (i) => {
-      const item = getStepAtSlot(i);
-      const step = item ? steps.find(s => s.id === item.stepId) : null;
-      const isStart = item && item.slotIndex === i;
-      const isEnd = item && item.slotIndex + step.duration - 1 === i;
-      const isActive = activeSlot === i;
-
-      const isGroupEnd = (i + 1) % 4 === 0 && (i + 1) % 8 !== 0;
-
-      return (
-        <div
-          key={i}
-          id={`slot-${i}`}
-          onClick={() => {
-            handleSlotClick(i);
-            setSelectedChoreoSlot(null);
-          }}
-          onMouseDown={(e) => handleLongPress(e, i)}
-          onMouseUp={clearLongPress}
-          onMouseLeave={clearLongPress}
-          onTouchStart={(e) => handleLongPress(e, i)}
-          onTouchEnd={clearLongPress}
-          className={`
-            relative aspect-square border-outline/60 border flex items-center justify-center text-[10px] font-bold transition-all shrink-0
-            ${isGroupEnd ? 'border-r-zinc-500/50 mr-1.5' : ''}
-            ${isActive ? 'ring-2 ring-primary z-10 scale-105 bg-primary/20' : 'bg-surface'}
-            ${!step ? 'hover:bg-surface' : ''}
-          `}
-          style={{
-            backgroundColor: step ? step.color : undefined,
-            borderTopLeftRadius: isStart ? '8px' : '0',
-            borderBottomLeftRadius: isStart ? '8px' : '0',
-            borderTopRightRadius: isEnd ? '8px' : '0',
-            borderBottomRightRadius: isEnd ? '8px' : '0',
-            opacity: step && !isStart && !isEnd ? 0.9 : 1,
-            marginLeft: isStart && i % 8 !== 0 && i % 4 !== 0 ? '2px' : '0',
-          }}
-        >
-          {!step && <span className="text-zinc-400 font-black">{(i % 8) + 1}</span>}
-          {isStart && (
-            <div className="absolute inset-0 flex items-center justify-center p-1 overflow-hidden pointer-events-none">
-              <span className="truncate text-white drop-shadow-md leading-none uppercase text-[8px]">{step.name}</span>
-            </div>
-          )}
-          {isStart && selectedChoreoSlot === i && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                removeStepFromChoreo(i);
-                setSelectedChoreoSlot(null);
-              }}
-              className="absolute -top-1 -right-1 bg-primary rounded-full p-1 text-white shadow-lg z-20"
-            >
-              <Trash2 size={12} />
-            </button>
-          )}
-        </div>
-      );
-  };
+  const colors = [
+    '#e11d48', // Rose
+    '#fbbf24', // Amber
+    '#3b82f6', // Blue
+    '#10b981', // Emerald
+    '#8b5cf6', // Violet
+    '#f97316', // Orange
+    '#64748b'  // Slate
+  ];
 
   return (
-    <div className="min-h-screen flex flex-col" onClick={() => setShowTooltip(null)}>
-      <div className="sticky top-0 p-2 space-y-3 bg-surface/80 backdrop-blur-xl border-b border-outline/60 z-50 shadow-lg">
-        <div className="flex flex-col gap-2 max-w-lg mx-auto">
-          <div className="flex items-center gap-2">
-            <input
-              value={currentChoreo.title}
-              onChange={(e) => updateChoreoTitle(e.target.value)}
-              className="flex-1 min-w-0 bg-transparent border-b border-outline/60 py-0.5 text-xl font-black text-white focus:outline-none focus:border-primary truncate uppercase tracking-tight"
-              placeholder="Mi Coreo..."
-            />
-            <div className="flex shrink-0 gap-1 bg-surface rounded-xl p-1 border border-outline/60 shadow-inner">
-              <button
-                onClick={async () => {
-                  const result = await Swal.fire({
-                    title: '¿Nueva?',
-                    text: "Se perderán cambios.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#e11d48',
-                    confirmButtonText: 'Sí',
-                    background: '#18181b', color: '#fff'
-                  });
-                  if (result.isConfirmed) resetChoreo();
-                }}
-                className="p-2 text-primary hover:bg-surface rounded-lg transition-colors"
-              >
-                <Plus size={20} />
-              </button>
-              <button
-                onClick={async () => {
-                  const isOwner = currentChoreo.userId === user?.id || !currentChoreo.id;
-                  const isPrivileged = ['master', 'moderator', 'pro'].includes(user?.role);
-
-                  if (!isOwner && !isPrivileged && currentChoreo.id) {
-                    Swal.fire({ title: 'Acceso Denegado', text: 'No tienes permiso.', icon: 'error', background: '#18181b', color: '#fff' });
-                    return;
-                  }
-
-                  const result = await Swal.fire({
-                    title: '¿Guardar?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#fbbf24',
-                    background: '#18181b', color: '#fff'
-                  });
-                  if (result.isConfirmed) {
-                    try {
-                      await saveCurrentChoreo(false);
-                      Swal.fire({ title: 'Guardado', icon: 'success', toast: true, position: 'top-end', timer: 2000, showConfirmButton: false, background: '#18181b', color: '#fff' });
-                    } catch (e) {
-                      Swal.fire({ title: 'Error', text: e.message, icon: 'error', background: '#18181b', color: '#fff' });
-                    }
-                  }
-                }}
-                className="p-2 text-secondary hover:bg-surface rounded-lg transition-colors"
-              >
-                <Save size={20} />
-              </button>
-              <button
-                onClick={async () => {
-                  const result = await Swal.fire({
-                    title: '¿Copiar?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#10b981',
-                    background: '#18181b', color: '#fff'
-                  });
-                  if (result.isConfirmed) {
-                    await saveCurrentChoreo(true);
-                  }
-                }}
-                className="p-2 text-accent hover:bg-surface rounded-lg transition-colors"
-              >
-                <Copy size={20} />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {isQuickAddOpen ? (
-          <div className="bg-surface/90 p-4 rounded-xl border border-outline/60 space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-[10px] font-black text-zinc-400 font-black uppercase tracking-widest">Nuevo Paso Rápido</span>
-              <button onClick={() => setIsQuickAddOpen(false)} className="text-zinc-400 font-black"><X size={16} /></button>
-            </div>
-            <input
-              placeholder="Nombre del paso"
-              className="w-full bg-surface text-sm p-3 rounded-xl border border-outline/60 outline-none focus:border-primary"
-              value={quickStep.name}
-              onChange={e => setQuickStep({...quickStep, name: e.target.value})}
-            />
-
-            <div className="space-y-1.5">
-              <label className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Duración</label>
-              <div className="flex gap-2">
-                {[1, 2, 4].map(d => (
-                  <button
-                    key={d}
-                    onClick={() => setQuickStep({...quickStep, duration: d})}
-                    className={`flex-1 py-2 rounded-xl text-[10px] font-black transition-all ${quickStep.duration === d ? 'bg-primary shadow-lg' : 'bg-surface text-zinc-400'}`}
-                  >
-                    {d}T
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Dificultad</label>
-              <div className="flex gap-2">
-                {[
-                  { id: 'principiante', label: 'P' },
-                  { id: 'intermedio', label: 'I' },
-                  { id: 'avanzado', label: 'A' }
-                ].map(diff => (
-                  <button
-                    key={diff.id}
-                    onClick={() => setQuickStep({...quickStep, difficulty: diff.id})}
-                    className={`flex-1 py-2 rounded-xl text-[10px] font-black transition-all ${quickStep.difficulty === diff.id ? 'bg-accent text-white shadow-lg' : 'bg-surface text-zinc-400'}`}
-                  >
-                    {diff.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex justify-between gap-1 pt-2">
-              {APP_COLORS.map(c => (
-                <button
-                  key={c}
-                  onClick={() => setQuickStep({...quickStep, color: c})}
-                  className={`w-7 h-7 rounded-full border-2 ${quickStep.color === c ? 'border-white scale-110' : 'border-transparent'}`}
-                  style={{ backgroundColor: c }}
-                />
-              ))}
-            </div>
-            <button
-              onClick={async () => {
-                const isPrivileged = ['master', 'moderator', 'pro'].includes(user?.role);
-                if (!isPrivileged) {
-                  Swal.fire({ title: 'Acceso Pro', text: 'Solo usuarios Master, Moderator o Pro pueden crear pasos.', icon: 'info', background: '#18181b', color: '#fff' });
-                  return;
-                }
-                if (quickStep.name) {
-                  await addStep(quickStep);
-                  setIsQuickAddOpen(false);
-                  setQuickStep({ name: '', duration: 1, color: APP_COLORS[0], difficulty: 'principiante' });
-                }
-              }}
-              className="w-full bg-primary py-3 rounded-xl text-xs font-black uppercase tracking-widest mt-2 shadow-lg shadow-primary/20"
-            >
-              Añadir a Librería
-            </button>
-          </div>
-        ) : (
-        <div className="overflow-visible">
-          <div className="flex justify-between items-center mb-1.5 px-1">
-            <div className="flex items-center gap-2">
-              <h3 className="text-[9px] font-black text-white/40 uppercase tracking-widest">Librería Rápida</h3>
-              <button
-                onClick={() => setLibraryLayout(l => l === 'scroll' ? 'grid' : 'scroll')}
-                className={`
-                  w-6 h-6 rounded-lg flex items-center justify-center transition-all
-                  ${libraryLayout === 'grid' ? 'bg-primary text-white' : 'bg-surface border border-outline text-zinc-500'}
-                `}
-              >
-                {libraryLayout === 'scroll' ? <LayoutGrid size={12} /> : <List size={12} />}
-              </button>
-            </div>
-            <div className="flex gap-1">
-              {[
-                { id: 'principiante', label: 'P', color: '#3b82f6' },
-                { id: 'intermedio', label: 'I', color: '#fbbf24' },
-                { id: 'avanzado', label: 'A', color: '#e11d48' }
-              ].map(d => (
-                <button
-                  key={d.id}
-                  onClick={() => {
-                    setVisibleDifficulties(prev =>
-                      prev.includes(d.id) ? prev.filter(x => x !== d.id) : [...prev, d.id]
-                    );
-                  }}
-                  className={`w-6 h-6 rounded-lg text-[9px] font-black flex items-center justify-center transition-all ${
-                    visibleDifficulties.includes(d.id) ? 'scale-110 ring-1 ring-white' : 'opacity-40 grayscale'
-                  }`}
-                  style={{ backgroundColor: d.color }}
-                >
-                  {d.label}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className={`
-            ${libraryLayout === 'grid' ? 'grid grid-cols-5 gap-2 max-h-40 overflow-y-auto' : 'flex gap-1.5 overflow-x-auto scrollbar-hide'}
-            pb-3 pt-0.5 px-1
-          `}>
-              {(steps || []).filter(s =>
-                (s.userId === user?.id || s.is_global) &&
-                visibleDifficulties.includes(s.difficulty || 'principiante')
-              ).map(step => (
-                <button
-                  key={step.id}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedStepId(selectedStepId === step.id ? null : step.id);
-                  }}
-                  className={`
-                    ${libraryLayout === 'grid' ? 'w-full' : 'shrink-0 w-12'}
-                    h-12 rounded-xl flex flex-col items-center justify-center transition-all border-2 relative
-                    ${selectedStepId === step.id ? 'border-white scale-110 shadow-[0_0_15px_rgba(255,255,255,0.4)] z-20 mx-1' : 'border-transparent opacity-90'}
-                  `}
-                  style={{ backgroundColor: step.color }}
-                >
-                  <span className="text-[9px] font-black text-white leading-none mb-0.5">{step.duration}T</span>
-                  <span className="text-[7px] font-black text-white text-center leading-tight px-0.5 line-clamp-2 uppercase">{step.name}</span>
-                </button>
-              ))}
-              <button
-                onClick={() => setIsQuickAddOpen(true)}
-                className={`
-                  ${libraryLayout === 'grid' ? 'w-full' : 'shrink-0 w-12'}
-                  h-12 rounded-xl border-2 border-dashed border-outline/60 flex items-center justify-center text-zinc-600 hover:text-primary transition-colors
-                `}
-              >
-                <Plus size={18} />
-              </button>
-            </div>
-
-            {selectedStepId && (
-              <div className="mt-2 animate-in fade-in slide-in-from-top-1 duration-200">
-                <div className="bg-primary/10 border border-primary/20 rounded-xl p-3 flex items-center gap-3">
-                  <div
-                    className="w-4 h-4 rounded-full shadow-sm"
-                    style={{ backgroundColor: steps.find(s => s.id === selectedStepId)?.color }}
-                  />
-                  <span className="text-xs font-black text-white uppercase tracking-tight">
-                    {steps.find(s => s.id === selectedStepId)?.name}
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
+    <div className="bg-zinc-900 border border-white/10 rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-6 animate-in fade-in zoom-in duration-200">
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-black uppercase tracking-tight text-white">Editar Bloque</h3>
+        <button onClick={onCancel} className="text-zinc-500 hover:text-white"><X size={24} /></button>
       </div>
 
-      <div
-        onClick={() => setSelectedChoreoSlot(null)}
-        className="flex-1 overflow-y-auto p-4 space-y-6"
-      >
-        <div className="w-full max-w-lg mx-auto">
-          {renderGrid()}
-
-          <div className="flex flex-col gap-2 max-w-xs mx-auto mt-4">
-            <button
-              onClick={addMeasure}
-              disabled={isDeleteMode}
-              className={`py-3 bg-surface/40 border border-outline/60 text-zinc-300 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-lg active:scale-95 ${isDeleteMode ? 'opacity-50 grayscale' : 'hover:bg-surface/60'}`}
-            >
-              <Plus size={18} />
-              <span className="font-black uppercase tracking-widest text-[9px]">Añadir Compás</span>
-            </button>
-
-            <button
-              onClick={() => setIsDeleteMode(!isDeleteMode)}
-              className={`py-2.5 rounded-2xl flex items-center justify-center gap-3 transition-all border font-black uppercase tracking-widest text-[9px] ${
-                isDeleteMode
-                ? 'bg-primary border-primary/50 text-white shadow-[0_0_20px_rgba(239,68,68,0.3)]'
-                : 'bg-surface/40 border-outline/60 text-zinc-400'
-              }`}
-            >
-              <Trash2 size={14} />
-              <span>{isDeleteMode ? 'Finalizar Edición' : 'Gestionar Compases'}</span>
-            </button>
-          </div>
+      <div className="space-y-4">
+        <div className="space-y-1">
+          <label className="text-[10px] font-black text-zinc-500 uppercase">Nombre del Paso</label>
+          <input
+            value={edited.name}
+            onChange={e => setEdited({...edited, name: e.target.value})}
+            className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-sm focus:border-primary outline-none"
+            placeholder="Ej: Básico con giro"
+          />
         </div>
 
-        <div className="w-full max-w-lg mx-auto pb-32 border-t border-outline/60 pt-8">
-          <h3 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-4 px-2">Mis Coreografías</h3>
-          <div className="flex flex-wrap gap-2 px-2">
-            {(choreos || []).map(choreo => (
+        <div className="space-y-1">
+          <label className="text-[10px] font-black text-zinc-500 uppercase">Colores</label>
+          <div className="flex gap-2 py-1 overflow-x-auto">
+            {colors.map(c => (
               <button
-                key={choreo.id}
-                onClick={() => loadChoreo(choreo)}
-                className={`
-                  px-4 py-2.5 rounded-xl border font-black text-[10px] tracking-widest uppercase transition-all active:scale-95
-                  ${currentChoreo.id === choreo.id
-                    ? 'bg-primary/10 border-primary text-primary shadow-[0_0_15px_rgba(225,29,72,0.2)]'
-                    : 'bg-surface border-outline/60 text-zinc-400 font-black'}
-                `}
-              >
-                {choreo.title}
-              </button>
+                key={c}
+                onClick={() => setEdited({...edited, color: c})}
+                className={`w-8 h-8 rounded-full border-2 shrink-0 transition-transform ${edited.color === c ? 'border-white scale-110' : 'border-transparent'}`}
+                style={{ backgroundColor: c }}
+              />
             ))}
           </div>
         </div>
+
+        <div className="space-y-1">
+          <label className="text-[10px] font-black text-zinc-500 uppercase">Descripción / Adorno</label>
+          <textarea
+            value={edited.description}
+            onChange={e => setEdited({...edited, description: e.target.value})}
+            className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs h-16 resize-none outline-none"
+            placeholder="¿Qué pasa en este tiempo?"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <label className="text-[10px] font-black text-zinc-500 uppercase">Instrucciones Líder</label>
+            <textarea
+              value={edited.leadInstructions}
+              onChange={e => setEdited({...edited, leadInstructions: e.target.value})}
+              className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-[10px] h-20 resize-none outline-none"
+              placeholder="Guía para él..."
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] font-black text-zinc-500 uppercase">Instrucciones Follower</label>
+            <textarea
+              value={edited.followerInstructions}
+              onChange={e => setEdited({...edited, followerInstructions: e.target.value})}
+              className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-[10px] h-20 resize-none outline-none"
+              placeholder="Guía para ella..."
+            />
+          </div>
+        </div>
       </div>
+
+      <button
+        onClick={() => onSave(edited)}
+        className="w-full bg-primary text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20"
+      >
+        Guardar Bloque
+      </button>
+    </div>
+  );
+};
+
+const EditorView = () => {
+  const {
+    currentChoreo, updateChoreoTitle, updateChoreoDifficulty, addMeasure, removeMeasure,
+    addBlockToChoreo, updateBlockInChoreo, removeBlockFromChoreo,
+    saveCurrentChoreo, resetChoreo, choreos, loadChoreo, deleteChoreo,
+    paintingDuration, setPaintingDuration, isMetronomeEnabled, setMetronomeEnabled
+  } = useStore();
+
+  const [editingBlockSlot, setEditingBlockSlot] = useState(null);
+
+  const getDifficultyColor = (diff) => {
+    if (diff === 'principiante') return '#3b82f6';
+    if (diff === 'intermedio') return '#fbbf24';
+    if (diff === 'avanzado') return '#e11d48';
+    return '#3b82f6';
+  };
+
+  const handleSlotClick = (slotIndex) => {
+    if (!paintingDuration) {
+       // If not painting, try to edit if block exists
+       const block = currentChoreo.sequence.find(b => b.slotIndex === slotIndex);
+       if (block) setEditingBlockSlot(slotIndex);
+       return;
+    }
+
+    addBlockToChoreo({
+      duration: paintingDuration,
+      color: '#e11d48'
+    }, slotIndex);
+  };
+
+  const handleSlotLongPress = (slotIndex) => {
+    const block = currentChoreo.sequence.find(b => b.slotIndex === slotIndex);
+    if (block) {
+       removeBlockFromChoreo(slotIndex);
+    }
+  };
+
+  const renderGrid = () => {
+    const rows = [];
+    for (let m = 0; m < currentChoreo.measures; m++) {
+      const slots = [];
+      for (let s = 0; s < 8; s++) {
+        const slotIndex = m * 8 + s;
+        const block = currentChoreo.sequence.find(b => b.slotIndex === slotIndex);
+        const isOccupiedByPrevious = currentChoreo.sequence.some(b =>
+          slotIndex > b.slotIndex && slotIndex < b.slotIndex + b.duration
+        );
+
+        if (isOccupiedByPrevious) continue;
+
+        slots.push(
+          <div
+            key={slotIndex}
+            onClick={() => handleSlotClick(slotIndex)}
+            onContextMenu={(e) => { e.preventDefault(); handleSlotLongPress(slotIndex); }}
+            style={{ gridColumn: `span ${block ? block.duration : 1}` }}
+            className={`
+              relative h-16 rounded-xl border flex items-center justify-center transition-all duration-200 cursor-pointer overflow-hidden
+              ${block
+                ? 'border-transparent shadow-lg text-white font-black'
+                : 'border-outline/40 bg-black/10 hover:bg-black/20 text-zinc-700'
+              }
+            `}
+          >
+            {block ? (
+              <div
+                className="absolute inset-0 flex flex-col items-center justify-center p-1 text-center"
+                style={{ backgroundColor: block.color }}
+              >
+                <span className="text-[10px] leading-tight uppercase truncate w-full px-1">
+                  {block.name || `Paso ${block.duration}T`}
+                </span>
+                {block.description && (
+                  <span className="text-[7px] opacity-70 truncate w-full px-1">{block.description}</span>
+                )}
+              </div>
+            ) : (
+              <span className="text-xs font-bold opacity-30">{s + 1}</span>
+            )}
+          </div>
+        );
+      }
+      rows.push(
+        <div key={m} className="space-y-2">
+          <div className="flex justify-between items-center px-1">
+            <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Compás {m + 1}</span>
+            <button
+              onClick={(e) => { e.stopPropagation(); removeMeasure(m); }}
+              className="text-zinc-700 hover:text-red-500 p-1"
+            >
+              <Trash2 size={12} />
+            </button>
+          </div>
+          <div className="grid grid-cols-8 gap-1 bg-surface/30 p-1.5 rounded-2xl border border-outline/60 shadow-inner">
+            {slots}
+          </div>
+        </div>
+      );
+    }
+    return rows;
+  };
+
+  const handleSave = async () => {
+    try {
+      await saveCurrentChoreo();
+      Swal.fire({
+        title: '¡Guardado!',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false,
+        background: '#1a1a1a',
+        color: '#fff'
+      });
+    } catch (e) {
+      Swal.fire('Error', e.message, 'error');
+    }
+  };
+
+  return (
+    <div className="flex flex-col min-h-screen bg-background text-white pb-48">
+      {/* Header Fijo */}
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-outline/60 px-4 py-4 space-y-4 shadow-xl">
+        <div className="flex items-center gap-3">
+          <div className="relative flex-1">
+            <input
+              value={currentChoreo.title}
+              onChange={(e) => updateChoreoTitle(e.target.value)}
+              className="w-full bg-transparent border-b border-outline/60 py-1 text-lg font-black text-white focus:outline-none focus:border-primary uppercase tracking-tight"
+              placeholder="Nombre de la coreo..."
+            />
+          </div>
+          <button
+            onClick={() => {
+               Swal.fire({
+                 title: '¿Nueva coreografía?',
+                 text: 'Perderás los cambios no guardados.',
+                 icon: 'warning',
+                 showCancelButton: true,
+                 confirmButtonText: 'Sí, nueva',
+                 confirmButtonColor: '#e11d48',
+                 background: '#1a1a1a',
+                 color: '#fff'
+               }).then(result => {
+                 if (result.isConfirmed) resetChoreo();
+               });
+            }}
+            className="p-2.5 bg-zinc-800 rounded-xl text-zinc-400 hover:text-white"
+          >
+            <Plus size={20} />
+          </button>
+          <button
+            onClick={handleSave}
+            className="bg-primary p-2.5 rounded-xl text-white shadow-lg shadow-primary/30 active:scale-95 transition-all"
+          >
+            <Save size={20} strokeWidth={2.5} />
+          </button>
+        </div>
+
+        <div className="flex gap-2 items-center">
+          <div className="flex flex-1 gap-2">
+            {['principiante', 'intermedio', 'avanzado'].map((d) => (
+              <button
+                key={d}
+                onClick={() => updateChoreoDifficulty(d)}
+                className={`flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
+                  currentChoreo.difficulty === d
+                    ? 'bg-primary border-primary text-white scale-105 shadow-lg'
+                    : 'bg-surface border-outline/60 text-zinc-500'
+                }`}
+                style={{
+                  backgroundColor: currentChoreo.difficulty === d ? getDifficultyColor(d) : undefined,
+                  borderColor: currentChoreo.difficulty === d ? getDifficultyColor(d) : undefined
+                }}
+              >
+                {d.charAt(0)}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={() => setMetronomeEnabled(!isMetronomeEnabled)}
+            className={`p-3 rounded-xl border transition-all ${isMetronomeEnabled ? 'bg-amber-500 border-amber-500 text-white' : 'bg-surface border-outline/60 text-zinc-500'}`}
+          >
+            {isMetronomeEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Sequencer Scrollable Area */}
+      <div className="flex-1 p-4 overflow-y-auto space-y-6">
+        <div className="space-y-4">
+          {renderGrid()}
+
+          <button
+            onClick={addMeasure}
+            className="w-full h-16 rounded-3xl border-2 border-dashed border-outline/60 flex items-center justify-center gap-2 text-zinc-500 hover:text-white hover:border-primary transition-all"
+          >
+            <Plus size={20} />
+            <span className="text-xs font-black uppercase tracking-widest">Agregar Compás</span>
+          </button>
+        </div>
+
+        {/* Mis Coreografías List */}
+        <div className="pt-8 border-t border-outline/60">
+           <h3 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+             <Music size={14} className="text-primary" /> Mis Coreografías
+           </h3>
+           <div className="grid gap-2">
+              {choreos.length === 0 && (
+                <p className="text-[10px] text-zinc-500 text-center py-4 uppercase font-bold">No tienes coreos guardadas</p>
+              )}
+              {choreos.map(choreo => (
+                <div key={choreo.id} className="bg-surface/50 border border-outline/60 rounded-2xl p-3 flex items-center gap-3">
+                  <div
+                    className="w-10 h-10 rounded-xl shrink-0 flex items-center justify-center text-[10px] font-black text-white"
+                    style={{ backgroundColor: choreo.color }}
+                  >
+                    {choreo.difficulty?.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-black uppercase truncate">{choreo.title}</p>
+                    <p className="text-[10px] text-zinc-500 font-bold uppercase">{choreo.measures} Compases</p>
+                  </div>
+                  <div className="flex gap-1">
+                    <button onClick={() => loadChoreo(choreo)} className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"><ChevronRight size={20} /></button>
+                    <button
+                      onClick={() => {
+                        Swal.fire({
+                          title: '¿Eliminar?',
+                          icon: 'error',
+                          showCancelButton: true,
+                          confirmButtonText: 'Eliminar',
+                          background: '#1a1a1a',
+                          color: '#fff'
+                        }).then(r => r.isConfirmed && deleteChoreo(choreo.id));
+                      }}
+                      className="p-2 text-zinc-600 hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+           </div>
+        </div>
+      </div>
+
+      {/* Floating Toolbar (Painting Mode) */}
+      <div className="fixed bottom-24 left-4 right-4 z-50">
+        <div className="bg-zinc-900/90 backdrop-blur-2xl border border-white/10 rounded-full p-2 flex items-center justify-between shadow-2xl">
+          <div className="flex gap-1">
+            {[null, 1, 2, 4].map(d => (
+              <button
+                key={d || 'none'}
+                onClick={() => setPaintingDuration(d)}
+                className={`w-12 h-12 rounded-full flex flex-col items-center justify-center transition-all ${
+                  paintingDuration === d
+                    ? 'bg-primary text-white scale-110 shadow-lg'
+                    : 'bg-white/5 text-zinc-500 hover:text-zinc-300'
+                }`}
+              >
+                {d ? (
+                  <span className="text-xs font-black">{d}T</span>
+                ) : (
+                  <Plus size={18} />
+                )}
+              </button>
+            ))}
+          </div>
+          <div className="px-6 text-right">
+            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-tight">
+              {paintingDuration ? 'MODO PINTAR ACTIVO' : 'MODO EDICIÓN'}
+            </p>
+            <p className="text-[8px] text-primary font-bold uppercase">
+              {paintingDuration ? `Toca slots para añadir ${paintingDuration}T` : 'Toca bloques para editar'}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Block Editor Modal */}
+      {editingBlockSlot !== null && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+          <BlockEditorModal
+            block={currentChoreo.sequence.find(b => b.slotIndex === editingBlockSlot)}
+            onSave={(data) => {
+              updateBlockInChoreo(editingBlockSlot, data);
+              setEditingBlockSlot(null);
+            }}
+            onCancel={() => setEditingBlockSlot(null)}
+          />
+        </div>
+      )}
     </div>
   );
 };
