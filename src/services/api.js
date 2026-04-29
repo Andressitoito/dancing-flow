@@ -124,5 +124,27 @@ export const api = {
       body: JSON.stringify({ userId })
     });
     return res.json();
+  },
+
+  // Steps
+  getSteps: async () => {
+    const res = await fetch(`${BASE_URL}/steps`);
+    return res.json();
+  },
+
+  saveStep: async (step, userId) => {
+    const res = await fetch(`${BASE_URL}/steps`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...step, userId })
+    });
+    return res.json();
+  },
+
+  deleteStep: async (id, userId) => {
+    const res = await fetch(`${BASE_URL}/steps/${id}?userId=${userId}`, {
+      method: 'DELETE'
+    });
+    return res.json();
   }
 };

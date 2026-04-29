@@ -25,6 +25,15 @@ export const APP_PALETTES = {
     background: '#111111',
     surface: '#1f1f1f',
     border: '#333333'
+  },
+  bachataflow: {
+    name: 'BachataFlow MVP',
+    primary: '#e11d48',
+    secondary: '#fbbf24',
+    accent: '#8b5cf6',
+    background: '#1a1a1a',
+    surface: '#262626',
+    border: '#333333'
   }
 };
 

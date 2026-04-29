@@ -123,5 +123,180 @@
     "likes": [],
     "favorites": [],
     "createdAt": "2026-04-29T02:40:57.586Z"
+  },
+  {
+    "id": "1777484728747",
+    "title": "Coreo de Prueba",
+    "sequence": [
+      {
+        "id": "yda8v8d3b",
+        "name": "Paso de Prueba",
+        "duration": 4,
+        "color": "#8b5cf6",
+        "description": "",
+        "leadInstructions": "Lead move",
+        "followerInstructions": "Follower move",
+        "slotIndex": 0
+      }
+    ],
+    "measures": 2,
+    "difficulty": "principiante",
+    "color": "#3b82f6",
+    "userId": "1777484726842",
+    "creatorName": "testuser1777484726577",
+    "isPublic": true,
+    "likes": [],
+    "favorites": [],
+    "createdAt": "2026-04-29T17:45:28.747Z"
+  },
+  {
+    "id": "1777484929923",
+    "title": "Coreo de Prueba",
+    "sequence": [
+      {
+        "id": "0z7z8ncb6",
+        "name": "Paso de Prueba",
+        "duration": 4,
+        "color": "#8b5cf6",
+        "description": "",
+        "leadInstructions": "Lead move",
+        "followerInstructions": "Follower move",
+        "slotIndex": 0
+      }
+    ],
+    "measures": 2,
+    "difficulty": "principiante",
+    "color": "#3b82f6",
+    "userId": "1777484927913",
+    "creatorName": "testuser1777484927628",
+    "isPublic": true,
+    "likes": [],
+    "favorites": [],
+    "createdAt": "2026-04-29T17:48:49.923Z"
+  },
+  {
+    "id": "1777485278265",
+    "title": "Coreo de Prueba",
+    "sequence": [
+      {
+        "id": "k66wky2r8",
+        "name": "Paso de Prueba",
+        "duration": 4,
+        "color": "#8b5cf6",
+        "description": "",
+        "leadInstructions": "Lead move",
+        "followerInstructions": "Follower move",
+        "slotIndex": 0
+      }
+    ],
+    "measures": 2,
+    "difficulty": "principiante",
+    "color": "#3b82f6",
+    "userId": "1777485276165",
+    "creatorName": "testuser1777485275898",
+    "isPublic": true,
+    "likes": [],
+    "favorites": [],
+    "createdAt": "2026-04-29T17:54:38.265Z"
+  },
+  {
+    "id": "1777485660447",
+    "title": "Coreo de Prueba",
+    "sequence": [
+      {
+        "id": "mfpwz58wq",
+        "name": "Paso de Prueba",
+        "duration": 4,
+        "color": "#8b5cf6",
+        "description": "",
+        "leadInstructions": "Lead move",
+        "followerInstructions": "Follower move",
+        "slotIndex": 0
+      }
+    ],
+    "measures": 2,
+    "difficulty": "principiante",
+    "color": "#3b82f6",
+    "userId": "1777485658654",
+    "creatorName": "testuser1777485658366",
+    "isPublic": true,
+    "likes": [],
+    "favorites": [],
+    "createdAt": "2026-04-29T18:01:00.447Z"
+  },
+  {
+    "id": "1777486011120",
+    "title": "Coreo de Prueba",
+    "sequence": [
+      {
+        "id": "1j2z02vmv",
+        "name": "Paso de Prueba",
+        "duration": 4,
+        "color": "#8b5cf6",
+        "description": "",
+        "leadInstructions": "Lead move",
+        "followerInstructions": "Follower move",
+        "slotIndex": 0
+      }
+    ],
+    "measures": 2,
+    "difficulty": "principiante",
+    "color": "#3b82f6",
+    "userId": "1777486009067",
+    "creatorName": "testuser1777486008814",
+    "isPublic": true,
+    "likes": [],
+    "favorites": [],
+    "createdAt": "2026-04-29T18:06:51.121Z"
+  },
+  {
+    "id": "1777487203859",
+    "title": "Coreo de Prueba",
+    "sequence": [
+      {
+        "id": "85gwkauer",
+        "name": "Paso de Prueba",
+        "duration": 4,
+        "color": "#8b5cf6",
+        "description": "",
+        "leadInstructions": "Lead move",
+        "followerInstructions": "Follower move",
+        "slotIndex": 0
+      }
+    ],
+    "measures": 2,
+    "difficulty": "principiante",
+    "color": "#3b82f6",
+    "userId": "1777487202132",
+    "creatorName": "testuser1777487201784",
+    "isPublic": true,
+    "likes": [],
+    "favorites": [],
+    "createdAt": "2026-04-29T18:26:43.859Z"
+  },
+  {
+    "id": "1777487372754",
+    "title": "Coreo de Prueba",
+    "sequence": [
+      {
+        "id": "g68p2jrwk",
+        "name": "Paso de Prueba",
+        "duration": 4,
+        "color": "#8b5cf6",
+        "description": "",
+        "leadInstructions": "Lead move",
+        "followerInstructions": "Follower move",
+        "slotIndex": 0
+      }
+    ],
+    "measures": 2,
+    "difficulty": "principiante",
+    "color": "#3b82f6",
+    "userId": "1777487370820",
+    "creatorName": "testuser1777487370557",
+    "isPublic": true,
+    "likes": [],
+    "favorites": [],
+    "createdAt": "2026-04-29T18:29:32.754Z"
   }
 ]

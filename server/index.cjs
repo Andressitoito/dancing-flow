@@ -12,6 +12,7 @@ const authRoutes = require('./routes/auth.cjs');
 const choreosRoutes = require('./routes/choreos.cjs');
 const adminRoutes = require('./routes/admin.cjs');
 const videoRoutes = require('./routes/videos.cjs');
+const stepsRoutes = require('./routes/steps.cjs');
 
 app.use(cors());
 app.use(bodyParser.json({ limit: '100mb' }));
@@ -58,6 +59,7 @@ apiRouter.use('/', authRoutes);
 apiRouter.use('/choreos', choreosRoutes);
 apiRouter.use('/admin', adminRoutes);
 apiRouter.use('/videos', videoRoutes);
+apiRouter.use('/steps', stepsRoutes);
 
 // Mount the router on both the prefix and the root
 app.use('/backend-service', apiRouter);

@@ -208,5 +208,95 @@
     "lastName": "User",
     "role": "student",
     "status": "active"
+  },
+  {
+    "id": "1777484182699",
+    "username": "testuser1777484182389",
+    "password": "$2a$10$0TnsZ3ONvoyMIHAz8gja8uFIZiHa50e2qCP2dfc/zCA1CsuqBpboG",
+    "firstName": "Test",
+    "lastName": "User",
+    "role": "student",
+    "status": "active"
+  },
+  {
+    "id": "1777484359144",
+    "username": "testuser1777484358874",
+    "password": "$2a$10$bX9D.9J7RtgXXHUqsFXljeGMj/M7.caki.jkpA5LAxW23buDeGpMa",
+    "firstName": "Test",
+    "lastName": "User",
+    "role": "student",
+    "status": "active"
+  },
+  {
+    "id": "1777484554733",
+    "username": "testuser1777484554488",
+    "password": "$2a$10$3/roqJ3kjxcikuKw2AwE8.wc0OWwAVa43ELYwEeIiohpu36QdYajK",
+    "firstName": "Test",
+    "lastName": "User",
+    "role": "student",
+    "status": "active"
+  },
+  {
+    "id": "1777484726842",
+    "username": "testuser1777484726577",
+    "password": "$2a$10$QidwEvTIErn.SkIdC/NNweAt1t5g7LACYl.I9M6lEYw4GlGkCsv2K",
+    "firstName": "Test",
+    "lastName": "User",
+    "role": "student",
+    "status": "active"
+  },
+  {
+    "id": "1777484927913",
+    "username": "testuser1777484927628",
+    "password": "$2a$10$X/.SEjKTo5mj7ykUBs8LR.pOlVAArB4Kv5vaIMYZrrnK8b269/CAq",
+    "firstName": "Test",
+    "lastName": "User",
+    "role": "student",
+    "status": "active"
+  },
+  {
+    "id": "1777485276165",
+    "username": "testuser1777485275898",
+    "password": "$2a$10$SMpj/uPLRE2FtS5mUzFjAOJuwUwCb9TY0DwNITvfqiivCdKi1SvWi",
+    "firstName": "Test",
+    "lastName": "User",
+    "role": "student",
+    "status": "active"
+  },
+  {
+    "id": "1777485658654",
+    "username": "testuser1777485658366",
+    "password": "$2a$10$sM4Xe43Fei7CspZxuNbSruFRlGFUQLiem5njcsxmdr0gEvafGGG6m",
+    "firstName": "Test",
+    "lastName": "User",
+    "role": "student",
+    "status": "active"
+  },
+  {
+    "id": "1777486009067",
+    "username": "testuser1777486008814",
+    "password": "$2a$10$Jedx4zX/0qbcjCbyz.IJ9.wCNnPMiilxscjfOuoEACqirL7jbl/aq",
+    "firstName": "Test",
+    "lastName": "User",
+    "role": "student",
+    "status": "active"
+  },
+  {
+    "id": "1777487202132",
+    "username": "testuser1777487201784",
+    "password": "$2a$10$M1kEMPP6lHgDIWXQ/XqsDu3YmzZ0pHk1xXLnvuyL6swDrwHtYG8S6",
+    "firstName": "Test",
+    "lastName": "User",
+    "role": "student",
+    "status": "active"
+  },
+  {
+    "id": "1777487370820",
+    "username": "testuser1777487370557",
+    "password": "$2a$10$AEuq63iFM2LD..X0GdP9Mui.LgNmL1EKQnaHt9ZDsqow9cIcbb356",
+    "firstName": "Test",
+    "lastName": "User",
+    "role": "student",
+    "status": "active"
   }
 ]

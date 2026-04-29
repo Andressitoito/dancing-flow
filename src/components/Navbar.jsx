@@ -10,7 +10,10 @@ const Navbar = ({ activeTab, onTabChange }) => {
   const tabs = [
     { id: 'viewer', name: 'Visor', icon: PlayCircle },
     { id: 'videos', name: 'Clases', icon: Video },
-    ...(user ? [{ id: 'editor', name: 'Editor', icon: LayoutGrid }] : []),
+    ...(user ? [
+      { id: 'editor', name: 'Creador', icon: LayoutGrid },
+      { id: 'steps', name: 'Pasos', icon: Settings }
+    ] : []),
     { id: 'login', name: 'Cuenta', icon: User },
   ];
 

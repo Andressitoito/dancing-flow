@@ -5,6 +5,7 @@ import EditorView from './components/EditorView';
 import ChoreoViewerView from './components/ChoreoViewerView';
 import LoginView from './components/LoginView';
 import VideoListView from './components/VideoListView';
+import StepsManagementView from './components/StepsManagementView';
 
 import { AlertCircle } from 'lucide-react';
 
@@ -76,6 +77,8 @@ function App() {
     switch (activeTab) {
       case 'editor':
         return <EditorView />;
+      case 'steps':
+        return <StepsManagementView />;
       case 'viewer':
         return <ChoreoViewerView onTabChange={handleTabChange} />;
       case 'videos':

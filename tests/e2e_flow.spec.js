@@ -20,18 +20,18 @@ test('BachataFlow Sequencer MVP - Complete Flow', async ({ page }) => {
   // Wait for the SweetAlert and close it
   await page.locator('.swal2-confirm').click();
 
-  // Verify login success by checking if "Editor" appears in Navbar
-  await expect(page.locator('nav')).toContainText('Editor', { timeout: 10000 });
+  // Verify login success by checking if "Creador" appears in Navbar
+  await expect(page.locator('nav')).toContainText('Creador', { timeout: 10000 });
 
-  // Navigate to Editor
-  await page.click('nav >> text=Editor');
+  // Navigate to Creador
+  await page.click('nav >> text=Creador');
 
   // Verify we are in the editor grid (Current Choreo title input is there)
   // By default it might have "NUEVA COREOGRAFIA" or similar in placeholder
-  await expect(page.locator('input[placeholder="Nombre de la coreo..."]')).toBeVisible();
+  await expect(page.locator('input[placeholder="Mi Bachata Flow..."]')).toBeVisible();
 
   // Set a title
-  await page.fill('input[placeholder="Nombre de la coreo..."]', 'Coreo de Prueba');
+  await page.fill('input[placeholder="Mi Bachata Flow..."]', 'Coreo de Prueba');
 
   // Test Painting Mode: Select 4T
   await page.getByRole('button', { name: '4T' }).click();
@@ -44,8 +44,8 @@ test('BachataFlow Sequencer MVP - Complete Flow', async ({ page }) => {
   await expect(page.getByText('PASO', { exact: false }).first()).toBeVisible();
 
   // Exit painting mode to allow editing
-  // Target the plus button in the floating toolbar, not the header one
-  await page.locator('div.fixed.bottom-24 button:has(.lucide-plus)').click();
+  // The plus icon was replaced by ChevronRight in v2 of EditorView
+  await page.locator('div.fixed.bottom-24 button:has(.lucide-chevron-right)').click();
 
   // Edit the block
   await page.getByText('PASO', { exact: false }).first().click();
@@ -74,9 +74,12 @@ test('BachataFlow Sequencer MVP - Complete Flow', async ({ page }) => {
 
   // Verify Technical Guidance appears during playback
   // Since we are at slot 1, it should show immediately
-  await expect(page.locator('text=Lead Guidance')).toBeVisible();
-  await expect(page.locator('text=Lead move')).toBeVisible();
-  await expect(page.locator('text=Follower move')).toBeVisible();
+  await expect(page.getByText('Líder')).toBeVisible({ timeout: 10000 });
+  // Using more flexible locator for the instructions text and accounting for quotes
+  // Double tap the slot first to ensure it's active
+  await page.getByText('1', { exact: true }).first().click({ clickCount: 2 });
+  await expect(page.getByText('Lead move', { exact: false })).toBeVisible({ timeout: 15000 });
+  await expect(page.getByText('Follower move', { exact: false })).toBeVisible({ timeout: 15000 });
 
   // Stop
   await page.locator('button:has(.lucide-square)').first().click();

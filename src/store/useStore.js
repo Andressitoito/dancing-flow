@@ -4,9 +4,10 @@ import { APP_PALETTES } from '../services/constants';
 
 const useStore = create((set, get) => ({
   user: JSON.parse(localStorage.getItem('dancingflow_user')) || JSON.parse(localStorage.getItem('bachataflow_user')) || null,
-  palette: JSON.parse(localStorage.getItem('dancingflow_palette')) || APP_PALETTES.tropical,
+  palette: JSON.parse(localStorage.getItem('dancingflow_palette')) || APP_PALETTES.bachataflow,
   choreos: [],
   videos: [],
+  steps: [],
   allUsers: [],
   currentChoreo: {
     id: null,
@@ -87,13 +88,15 @@ const useStore = create((set, get) => ({
     set({ loading: true });
     try {
       await get().checkBackend();
-      const [choreos, videos] = await Promise.all([
+      const [choreos, videos, steps] = await Promise.all([
         api.getChoreos(),
-        api.getVideos()
+        api.getVideos(),
+        api.getSteps()
       ]);
       set({
         choreos: choreos || [],
         videos: videos || [],
+        steps: steps || [],
         loading: false
       });
       // Apply initial palette
@@ -256,6 +259,32 @@ const useStore = create((set, get) => ({
     if (!user) return;
     const updated = await api.favoriteChoreo(id, user.id);
     set(state => ({ choreos: state.choreos.map(c => c.id === id ? updated : c) }));
+  },
+
+  // Step Actions
+  addStep: async (stepData) => {
+    const { user } = get();
+    if (!user) throw new Error('Inicia sesión');
+    const newStep = await api.saveStep(stepData, user.id);
+    set(state => ({ steps: [...state.steps, newStep] }));
+    return newStep;
+  },
+
+  updateStep: async (id, data) => {
+    const { user } = get();
+    if (!user) throw new Error('Inicia sesión');
+    const updated = await api.saveStep({ ...data, id }, user.id);
+    set(state => ({
+      steps: state.steps.map(s => s.id === id ? updated : s)
+    }));
+    return updated;
+  },
+
+  deleteStep: async (id) => {
+    const { user } = get();
+    if (!user) throw new Error('Inicia sesión');
+    await api.deleteStep(id, user.id);
+    set(state => ({ steps: state.steps.filter(s => s.id !== id) }));
   },
 
   resetChoreo: () => {

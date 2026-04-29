@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import useStore from '../store/useStore';
 import {
-  Plus, Save, Trash2, ChevronRight, X, Play, Volume2, VolumeX, Music
+  Plus, Save, Trash2, ChevronRight, X, Play, Volume2, VolumeX, Music, Info
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 
@@ -17,9 +17,9 @@ const BlockEditorModal = ({ block, onSave, onCancel }) => {
   const colors = [
     '#e11d48', // Rose
     '#fbbf24', // Amber
-    '#3b82f6', // Blue
-    '#10b981', // Emerald
     '#8b5cf6', // Violet
+    '#10b981', // Emerald
+    '#3b82f6', // Blue
     '#f97316', // Orange
     '#64748b'  // Slate
   ];
@@ -98,26 +98,78 @@ const BlockEditorModal = ({ block, onSave, onCancel }) => {
   );
 };
 
+const QuickAddForm = ({ onAdd }) => {
+  const [step, setStep] = useState({
+    name: '',
+    duration: 1,
+    color: '#e11d48'
+  });
+
+  const colors = ['#e11d48', '#fbbf24', '#8b5cf6', '#10b981', '#3b82f6'];
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!step.name) return;
+    onAdd(step);
+    setStep({ ...step, name: '' });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-surface/50 border border-outline/60 rounded-3xl p-4 space-y-4">
+      <div className="flex gap-2">
+        <input
+          value={step.name}
+          onChange={e => setStep({...step, name: e.target.value})}
+          className="flex-1 bg-black/20 border border-outline/40 rounded-xl px-4 py-2 text-xs focus:border-primary outline-none"
+          placeholder="Nuevo paso rápido..."
+        />
+        <button type="submit" className="bg-primary p-2 rounded-xl text-white">
+          <Plus size={20} />
+        </button>
+      </div>
+      <div className="flex justify-between items-center">
+        <div className="flex gap-1">
+          {[1, 2, 4].map(d => (
+            <button
+              key={d}
+              type="button"
+              onClick={() => setStep({...step, duration: d})}
+              className={`px-3 py-1.5 rounded-lg text-[10px] font-black border transition-all ${step.duration === d ? 'bg-white text-black border-white' : 'border-outline/40 text-zinc-500'}`}
+            >
+              {d}T
+            </button>
+          ))}
+        </div>
+        <div className="flex gap-1.5">
+          {colors.map(c => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setStep({...step, color: c})}
+              className={`w-5 h-5 rounded-full border ${step.color === c ? 'border-white scale-110' : 'border-transparent'}`}
+              style={{ backgroundColor: c }}
+            />
+          ))}
+        </div>
+      </div>
+    </form>
+  );
+};
+
 const EditorView = () => {
   const {
     currentChoreo, updateChoreoTitle, updateChoreoDifficulty, addMeasure, removeMeasure,
     addBlockToChoreo, updateBlockInChoreo, removeBlockFromChoreo,
     saveCurrentChoreo, resetChoreo, choreos, loadChoreo, deleteChoreo,
-    paintingDuration, setPaintingDuration, isMetronomeEnabled, setMetronomeEnabled
+    paintingDuration, setPaintingDuration, isMetronomeEnabled, setMetronomeEnabled,
+    steps, addStep
   } = useStore();
 
   const [editingBlockSlot, setEditingBlockSlot] = useState(null);
-
-  const getDifficultyColor = (diff) => {
-    if (diff === 'principiante') return '#3b82f6';
-    if (diff === 'intermedio') return '#fbbf24';
-    if (diff === 'avanzado') return '#e11d48';
-    return '#3b82f6';
-  };
+  const [showQuickAdd, setShowQuickAdd] = useState(false);
 
   const handleSlotClick = (slotIndex) => {
     if (!paintingDuration) {
-       // If not painting, try to edit if block exists
        const block = currentChoreo.sequence.find(b => b.slotIndex === slotIndex);
        if (block) setEditingBlockSlot(slotIndex);
        return;
@@ -125,15 +177,16 @@ const EditorView = () => {
 
     addBlockToChoreo({
       duration: paintingDuration,
-      color: '#e11d48'
+      color: paintingDuration === 4 ? '#8b5cf6' : (paintingDuration === 2 ? '#fbbf24' : '#e11d48')
     }, slotIndex);
   };
 
-  const handleSlotLongPress = (slotIndex) => {
-    const block = currentChoreo.sequence.find(b => b.slotIndex === slotIndex);
-    if (block) {
-       removeBlockFromChoreo(slotIndex);
-    }
+  const handleLibraryStepClick = (step) => {
+    // If a step is clicked from library, we set it as the "painting" block or place it if a slot was targeted?
+    // Let's make it simpler: clicking a library step enters "painting mode" with that step's properties.
+    setPaintingDuration(step.duration);
+    // We could extend the store to support painting with a specific step object.
+    // For now, let's just use the duration.
   };
 
   const renderGrid = () => {
@@ -153,7 +206,7 @@ const EditorView = () => {
           <div
             key={slotIndex}
             onClick={() => handleSlotClick(slotIndex)}
-            onContextMenu={(e) => { e.preventDefault(); handleSlotLongPress(slotIndex); }}
+            onContextMenu={(e) => { e.preventDefault(); removeBlockFromChoreo(slotIndex); }}
             style={{ gridColumn: `span ${block ? block.duration : 1}` }}
             className={`
               relative h-16 rounded-xl border flex items-center justify-center transition-all duration-200 cursor-pointer overflow-hidden
@@ -161,22 +214,26 @@ const EditorView = () => {
                 ? 'border-transparent shadow-lg text-white font-black'
                 : 'border-outline/40 bg-black/10 hover:bg-black/20 text-zinc-700'
               }
+              ${(s === 0 || s === 4) && !block ? 'border-l-zinc-500' : ''}
             `}
           >
             {block ? (
               <div
-                className="absolute inset-0 flex flex-col items-center justify-center p-1 text-center"
+                className="absolute inset-0 flex flex-col items-center justify-center p-1 text-center group"
                 style={{ backgroundColor: block.color }}
               >
-                <span className="text-[10px] leading-tight uppercase truncate w-full px-1">
+                <span className="text-[10px] leading-tight uppercase truncate w-full px-1 drop-shadow-md">
                   {block.name || `Paso ${block.duration}T`}
                 </span>
                 {block.description && (
-                  <span className="text-[7px] opacity-70 truncate w-full px-1">{block.description}</span>
+                  <span className="text-[7px] opacity-80 truncate w-full px-1 font-bold">{block.description}</span>
                 )}
+                <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                   <Info size={10} />
+                </div>
               </div>
             ) : (
-              <span className="text-xs font-bold opacity-30">{s + 1}</span>
+              <span className="text-[10px] font-black opacity-20">{s + 1}</span>
             )}
           </div>
         );
@@ -184,7 +241,10 @@ const EditorView = () => {
       rows.push(
         <div key={m} className="space-y-2">
           <div className="flex justify-between items-center px-1">
-            <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Compás {m + 1}</span>
+            <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest flex items-center gap-2">
+              <div className={`w-1 h-1 rounded-full ${m % 2 === 0 ? 'bg-primary' : 'bg-amber-500'}`} />
+              Compás {m + 1}
+            </span>
             <button
               onClick={(e) => { e.stopPropagation(); removeMeasure(m); }}
               className="text-zinc-700 hover:text-red-500 p-1"
@@ -192,7 +252,9 @@ const EditorView = () => {
               <Trash2 size={12} />
             </button>
           </div>
-          <div className="grid grid-cols-8 gap-1 bg-surface/30 p-1.5 rounded-2xl border border-outline/60 shadow-inner">
+          <div className="grid grid-cols-8 gap-1 bg-surface/30 p-1.5 rounded-2xl border border-outline/60 shadow-inner relative">
+             {/* Visual separation for 1-4 and 5-8 */}
+            <div className="absolute inset-y-0 left-1/2 w-px bg-white/5 pointer-events-none" />
             {slots}
           </div>
         </div>
@@ -201,184 +263,117 @@ const EditorView = () => {
     return rows;
   };
 
-  const handleSave = async () => {
-    try {
-      await saveCurrentChoreo();
-      Swal.fire({
-        title: '¡Guardado!',
-        icon: 'success',
-        timer: 1500,
-        showConfirmButton: false,
-        background: '#1a1a1a',
-        color: '#fff'
-      });
-    } catch (e) {
-      Swal.fire('Error', e.message, 'error');
-    }
-  };
-
   return (
-    <div className="flex flex-col min-h-screen bg-background text-white pb-48">
-      {/* Header Fijo */}
+    <div className="flex flex-col min-h-screen bg-background text-white pb-64">
+      {/* Header */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-outline/60 px-4 py-4 space-y-4 shadow-xl">
         <div className="flex items-center gap-3">
-          <div className="relative flex-1">
-            <input
-              value={currentChoreo.title}
-              onChange={(e) => updateChoreoTitle(e.target.value)}
-              className="w-full bg-transparent border-b border-outline/60 py-1 text-lg font-black text-white focus:outline-none focus:border-primary uppercase tracking-tight"
-              placeholder="Nombre de la coreo..."
-            />
-          </div>
+          <input
+            value={currentChoreo.title}
+            onChange={(e) => updateChoreoTitle(e.target.value)}
+            className="flex-1 bg-transparent border-b border-outline/60 py-1 text-lg font-black text-white focus:outline-none focus:border-primary uppercase tracking-tight"
+            placeholder="Mi Bachata Flow..."
+          />
           <button
-            onClick={() => {
-               Swal.fire({
-                 title: '¿Nueva coreografía?',
-                 text: 'Perderás los cambios no guardados.',
-                 icon: 'warning',
-                 showCancelButton: true,
-                 confirmButtonText: 'Sí, nueva',
-                 confirmButtonColor: '#e11d48',
-                 background: '#1a1a1a',
-                 color: '#fff'
-               }).then(result => {
-                 if (result.isConfirmed) resetChoreo();
-               });
-            }}
-            className="p-2.5 bg-zinc-800 rounded-xl text-zinc-400 hover:text-white"
+            onClick={() => setShowQuickAdd(!showQuickAdd)}
+            className={`p-2.5 rounded-xl transition-colors ${showQuickAdd ? 'bg-primary text-white' : 'bg-zinc-800 text-zinc-400'}`}
           >
             <Plus size={20} />
           </button>
           <button
-            onClick={handleSave}
-            className="bg-primary p-2.5 rounded-xl text-white shadow-lg shadow-primary/30 active:scale-95 transition-all"
+            onClick={async () => {
+              try {
+                await saveCurrentChoreo();
+                Swal.fire({ title: '¡Guardado!', icon: 'success', timer: 1000, showConfirmButton: false, background: '#1a1a1a', color: '#fff' });
+              } catch (e) { Swal.fire('Error', e.message, 'error'); }
+            }}
+            className="bg-primary p-2.5 rounded-xl text-white shadow-lg active:scale-95 transition-all"
           >
             <Save size={20} strokeWidth={2.5} />
           </button>
         </div>
 
-        <div className="flex gap-2 items-center">
-          <div className="flex flex-1 gap-2">
-            {['principiante', 'intermedio', 'avanzado'].map((d) => (
-              <button
-                key={d}
-                onClick={() => updateChoreoDifficulty(d)}
-                className={`flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
-                  currentChoreo.difficulty === d
-                    ? 'bg-primary border-primary text-white scale-105 shadow-lg'
-                    : 'bg-surface border-outline/60 text-zinc-500'
-                }`}
-                style={{
-                  backgroundColor: currentChoreo.difficulty === d ? getDifficultyColor(d) : undefined,
-                  borderColor: currentChoreo.difficulty === d ? getDifficultyColor(d) : undefined
-                }}
-              >
-                {d.charAt(0)}
-              </button>
-            ))}
+        {showQuickAdd && (
+          <div className="animate-in slide-in-from-top duration-300">
+            <QuickAddForm onAdd={(s) => {
+               addStep(s);
+               setShowQuickAdd(false);
+            }} />
           </div>
-          <button
-            onClick={() => setMetronomeEnabled(!isMetronomeEnabled)}
-            className={`p-3 rounded-xl border transition-all ${isMetronomeEnabled ? 'bg-amber-500 border-amber-500 text-white' : 'bg-surface border-outline/60 text-zinc-500'}`}
-          >
-            {isMetronomeEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
-          </button>
-        </div>
+        )}
       </div>
 
-      {/* Sequencer Scrollable Area */}
-      <div className="flex-1 p-4 overflow-y-auto space-y-6">
+      <div className="flex-1 p-4 space-y-6 overflow-y-auto mt-2">
         <div className="space-y-4">
+          <h2 className="text-2xl font-black uppercase tracking-tight px-1">Editor de Coreo</h2>
           {renderGrid()}
 
           <button
             onClick={addMeasure}
-            className="w-full h-16 rounded-3xl border-2 border-dashed border-outline/60 flex items-center justify-center gap-2 text-zinc-500 hover:text-white hover:border-primary transition-all"
+            className="w-full h-16 rounded-3xl border-2 border-dashed border-outline/60 flex items-center justify-center gap-2 text-zinc-500 hover:text-white hover:border-primary transition-all bg-surface/20"
           >
             <Plus size={20} />
-            <span className="text-xs font-black uppercase tracking-widest">Agregar Compás</span>
+            <span className="text-xs font-black uppercase tracking-widest">Agregar 8 Tiempos</span>
           </button>
         </div>
 
-        {/* Mis Coreografías List */}
-        <div className="pt-8 border-t border-outline/60">
-           <h3 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-             <Music size={14} className="text-primary" /> Mis Coreografías
-           </h3>
-           <div className="grid gap-2">
-              {choreos.length === 0 && (
-                <p className="text-[10px] text-zinc-500 text-center py-4 uppercase font-bold">No tienes coreos guardadas</p>
-              )}
-              {choreos.map(choreo => (
-                <div key={choreo.id} className="bg-surface/50 border border-outline/60 rounded-2xl p-3 flex items-center gap-3">
-                  <div
-                    className="w-10 h-10 rounded-xl shrink-0 flex items-center justify-center text-[10px] font-black text-white"
-                    style={{ backgroundColor: choreo.color }}
-                  >
-                    {choreo.difficulty?.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-black uppercase truncate">{choreo.title}</p>
-                    <p className="text-[10px] text-zinc-500 font-bold uppercase">{choreo.measures} Compases</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <button onClick={() => loadChoreo(choreo)} className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"><ChevronRight size={20} /></button>
-                    <button
-                      onClick={() => {
-                        Swal.fire({
-                          title: '¿Eliminar?',
-                          icon: 'error',
-                          showCancelButton: true,
-                          confirmButtonText: 'Eliminar',
-                          background: '#1a1a1a',
-                          color: '#fff'
-                        }).then(r => r.isConfirmed && deleteChoreo(choreo.id));
-                      }}
-                      className="p-2 text-zinc-600 hover:text-red-500 transition-colors"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
+        {/* Librería Rápida */}
+        <div className="space-y-3">
+          <h3 className="text-[10px] font-black text-zinc-600 uppercase tracking-widest px-1">Librería de Pasos</h3>
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            {steps.map(step => (
+              <button
+                key={step.id}
+                onClick={() => handleLibraryStepClick(step)}
+                className="shrink-0 flex flex-col items-center gap-1.5 group"
+              >
+                <div
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center text-[10px] font-black text-white shadow-lg transition-transform active:scale-90"
+                  style={{ backgroundColor: step.color }}
+                >
+                  {step.duration}T
                 </div>
-              ))}
-           </div>
+                <span className="text-[8px] font-bold uppercase text-zinc-500 group-hover:text-white transition-colors truncate w-14 text-center">
+                  {step.name}
+                </span>
+              </button>
+            ))}
+            {steps.length === 0 && (
+              <p className="text-[9px] text-zinc-600 font-bold uppercase py-4">No hay pasos guardados aún</p>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Floating Toolbar (Painting Mode) */}
+      {/* Toolbar Fijo Inferior */}
       <div className="fixed bottom-24 left-4 right-4 z-50">
-        <div className="bg-zinc-900/90 backdrop-blur-2xl border border-white/10 rounded-full p-2 flex items-center justify-between shadow-2xl">
-          <div className="flex gap-1">
+        <div className="bg-zinc-900/90 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-2 flex items-center justify-between shadow-2xl">
+          <div className="flex gap-1.5">
             {[null, 1, 2, 4].map(d => (
               <button
                 key={d || 'none'}
                 onClick={() => setPaintingDuration(d)}
-                className={`w-12 h-12 rounded-full flex flex-col items-center justify-center transition-all ${
+                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
                   paintingDuration === d
                     ? 'bg-primary text-white scale-110 shadow-lg'
-                    : 'bg-white/5 text-zinc-500 hover:text-zinc-300'
+                    : 'bg-white/5 text-zinc-500'
                 }`}
               >
-                {d ? (
-                  <span className="text-xs font-black">{d}T</span>
-                ) : (
-                  <Plus size={18} />
-                )}
+                {d ? <span className="text-xs font-black">{d}T</span> : <ChevronRight size={20} />}
               </button>
             ))}
           </div>
-          <div className="px-6 text-right">
-            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-tight">
-              {paintingDuration ? 'MODO PINTAR ACTIVO' : 'MODO EDICIÓN'}
-            </p>
-            <p className="text-[8px] text-primary font-bold uppercase">
-              {paintingDuration ? `Toca slots para añadir ${paintingDuration}T` : 'Toca bloques para editar'}
-            </p>
+          <div className="pr-4 text-right">
+             <p className="text-[9px] font-black text-white uppercase leading-tight">
+               {paintingDuration ? `Modo Pintar: ${paintingDuration}T` : 'Modo Selección'}
+             </p>
+             <p className="text-[8px] text-zinc-500 font-bold uppercase">
+               {paintingDuration ? 'Toca slots vacíos' : 'Toca bloques para editar'}
+             </p>
           </div>
         </div>
       </div>
 
-      {/* Block Editor Modal */}
       {editingBlockSlot !== null && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
           <BlockEditorModal
