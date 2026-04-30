@@ -220,14 +220,14 @@ const LoginView = () => {
           </div>
           <div className="text-center">
             <h2 className="text-2xl font-black uppercase tracking-tight">{user.username}</h2>
-            <p className="text-zinc-500 font-bold uppercase tracking-[0.2em] text-[10px]">
+            <p className="text-zinc-500 font-bold uppercase tracking-[0.2em] text-sm">
               {user.role === 'master' ? 'Master de Baile' : user.role === 'moderator' ? 'Moderador' : 'Estudiante'}
             </p>
           </div>
 
           <button
             onClick={logout}
-            className="flex items-center gap-2 px-6 py-3 bg-surface border border-outline rounded-2xl font-black uppercase text-[10px] tracking-widest text-primary shadow-lg active:scale-95 transition-all"
+            className="flex items-center gap-2 px-6 py-2.5 bg-surface border border-outline rounded-2xl font-black uppercase text-sm tracking-widest text-primary shadow-lg active:scale-95 transition-all"
           >
             <LogOut size={16} />
             Cerrar Sesión
@@ -242,34 +242,34 @@ const LoginView = () => {
   }
 
   return (
-    <div className="p-6 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-sm mx-auto">
-      <div className="text-center space-y-2">
+    <div className="p-2 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-sm mx-auto">
+      <div className="text-center space-y-1">
         <h2 className="text-2xl font-black uppercase tracking-tight text-white drop-shadow-md">Dancing Flow</h2>
-        <p className="text-white/40 font-black uppercase text-[10px] tracking-widest">
+        <p className="text-white/40 font-black uppercase text-sm tracking-widest">
           {isRegister ? 'Registro de Estudiante' : 'Bienvenido de nuevo'}
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-2 px-2">
         {isRegister && (
-          <div className="grid grid-cols-2 gap-3 animate-in fade-in slide-in-from-top-2">
+          <div className="grid grid-cols-2 gap-2 animate-in fade-in slide-in-from-top-2">
              <div className="space-y-1">
-               <label className="text-[9px] font-black text-white/30 uppercase ml-2">Nombre</label>
+               <label className="text-sm font-black text-white/30 uppercase ml-2">Nombre</label>
                <input
                  required
                  value={formData.firstName}
                  onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                 className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2.5 px-4 text-xs outline-none focus:border-primary transition-all placeholder:text-white/10"
+                 className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2 px-4 text-sm outline-none focus:border-primary transition-all placeholder:text-white/10"
                  placeholder="Ej. Juan"
                />
              </div>
              <div className="space-y-1">
-               <label className="text-[9px] font-black text-white/30 uppercase ml-2">Apellido</label>
+               <label className="text-sm font-black text-white/30 uppercase ml-2">Apellido</label>
                <input
                  required
                  value={formData.lastName}
                  onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                 className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2.5 px-4 text-xs outline-none focus:border-primary transition-all placeholder:text-white/10"
+                 className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2 px-4 text-sm outline-none focus:border-primary transition-all placeholder:text-white/10"
                  placeholder="Ej. Perez"
                />
              </div>
@@ -277,21 +277,21 @@ const LoginView = () => {
         )}
 
         <div className="space-y-1">
-          <label className="text-[9px] font-black text-white/30 uppercase ml-2">Usuario</label>
+          <label className="text-sm font-black text-white/30 uppercase ml-2">Usuario</label>
           <div className="relative">
             <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={16} />
             <input
               required
               value={formData.username}
               onChange={(e) => setFormData({...formData, username: e.target.value})}
-              className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-3 pl-11 pr-4 text-xs outline-none focus:border-primary transition-all placeholder:text-white/10"
+              className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2 pl-11 pr-4 text-sm outline-none focus:border-primary transition-all placeholder:text-white/10"
               placeholder="Ej. Andresito"
             />
           </div>
         </div>
 
         <div className="space-y-1">
-          <label className="text-[9px] font-black text-white/30 uppercase ml-2">Contraseña (min 8)</label>
+          <label className="text-sm font-black text-white/30 uppercase ml-2">Contraseña (min 8)</label>
           <div className="relative">
             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={16} />
             <input
@@ -299,7 +299,7 @@ const LoginView = () => {
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}
-              className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-3 pl-11 pr-4 text-xs outline-none focus:border-primary transition-all placeholder:text-white/10"
+              className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2 pl-11 pr-4 text-sm outline-none focus:border-primary transition-all placeholder:text-white/10"
               placeholder="••••••••"
             />
           </div>
@@ -307,14 +307,14 @@ const LoginView = () => {
 
         {isRegister && (
           <div className="space-y-1 animate-in fade-in slide-in-from-top-2">
-            <label className="text-[9px] font-black text-white/30 uppercase ml-2">Token</label>
+            <label className="text-sm font-black text-white/30 uppercase ml-2">Token</label>
             <div className="relative">
               <Key className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={16} />
               <input
                 required
                 value={formData.token}
                 onChange={(e) => setFormData({...formData, token: e.target.value})}
-                className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-3 pl-11 pr-4 text-xs outline-none focus:border-primary transition-all placeholder:text-white/10"
+                className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2 pl-11 pr-4 text-sm outline-none focus:border-primary transition-all placeholder:text-white/10"
                 placeholder="Token de acceso"
               />
             </div>
@@ -323,7 +323,7 @@ const LoginView = () => {
 
         <button
           type="submit"
-          className="w-full bg-primary py-3.5 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20 active:scale-95 transition-all mt-4 flex items-center justify-center gap-2"
+          className="w-full bg-primary py-3 rounded-2xl font-black uppercase tracking-widest text-sm shadow-lg shadow-primary/20 active:scale-95 transition-all mt-4 flex items-center justify-center gap-2"
         >
           {isRegister ? <UserPlus size={18} /> : <LogIn size={18} />}
           {isRegister ? 'Registrarme' : 'Entrar'}
@@ -333,7 +333,7 @@ const LoginView = () => {
       <div className="text-center">
         <button
           onClick={() => setIsRegister(!isRegister)}
-          className="text-zinc-500 text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors"
+          className="text-zinc-500 text-sm font-black uppercase tracking-widest hover:text-white transition-colors"
         >
           {isRegister ? '¿Ya tienes cuenta? Entra' : '¿No tienes cuenta? Regístrate'}
         </button>

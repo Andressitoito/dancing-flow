@@ -65,17 +65,17 @@ const VideoThumbnail = ({ video, onClick, onDelete, onLike, onFavorite, userId, 
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 
         {/* Meta Content Inside Box */}
-        <div className="absolute inset-0 p-2.5 flex flex-col justify-end text-left">
-           <h3 className="text-[11px] font-black uppercase text-white leading-none drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)] line-clamp-2 mb-1">
+        <div className="absolute inset-0 p-2 flex flex-col justify-end text-left">
+           <h3 className="text-sm font-black uppercase text-white leading-tight drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)] line-clamp-2 mb-0.5">
              {video.title}
            </h3>
-           <div className="flex items-center justify-between gap-2">
-             <p className="text-[10px] font-bold text-white/90 italic drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)] line-clamp-1">
+           <div className="flex items-center justify-between gap-1">
+             <p className="text-sm font-bold text-white/90 italic drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)] line-clamp-1">
                {video.subtitle || video.creatorName || 'Sin subtítulo'}
              </p>
-             <div className="flex items-center gap-1 bg-black/40 px-1.5 py-0.5 rounded-full shrink-0">
+             <div className="flex items-center gap-1 bg-black/40 px-1 py-0.5 rounded-full shrink-0">
                 <Heart size={8} fill="white" className="text-white" />
-                <span className="text-[8px] font-black text-white">{video.likes?.length || 0}</span>
+                <span className="text-[10px] font-black text-white">{video.likes?.length || 0}</span>
              </div>
            </div>
         </div>
@@ -144,11 +144,14 @@ const VideoPlayer = ({ video, onBack }) => {
       </div>
 
       {/* Video Content with constrained size */}
-      <div className="flex-1 min-h-0 flex items-center justify-center relative bg-zinc-900/20">
+      <div
+        className="flex-1 min-h-0 flex items-center justify-center relative bg-zinc-900/20 cursor-pointer"
+        onClick={togglePlay}
+      >
         <video
           ref={videoRef}
           src={video.url}
-          className="max-h-full max-w-full w-auto h-auto object-contain"
+          className="max-h-full max-w-full w-auto h-auto object-contain pointer-events-none"
           playsInline
           autoPlay
           onPlay={() => setIsPlaying(true)}
@@ -156,20 +159,19 @@ const VideoPlayer = ({ video, onBack }) => {
         />
 
         {!isPlaying && (
-          <button
-            onClick={togglePlay}
+          <div
             className="absolute inset-0 flex items-center justify-center bg-black/10"
           >
             <div className="bg-primary p-6 rounded-full shadow-2xl scale-125">
               <Play size={32} fill="white" className="text-white" />
             </div>
-          </button>
+          </div>
         )}
       </div>
 
       {/* Footer Controls */}
-      <div className="shrink-0 p-6 pb-10 bg-zinc-950 border-t border-white/10 space-y-6">
-        <div className="flex justify-center items-center gap-8">
+      <div className="shrink-0 p-4 pb-8 bg-zinc-950/90 backdrop-blur-md border-t border-white/10 space-y-4 landscape:space-y-2 landscape:p-2 landscape:pb-4">
+        <div className="flex justify-center items-center gap-6 landscape:gap-10">
            <button
              onClick={() => {
                setIsLooping(!isLooping);
@@ -177,24 +179,24 @@ const VideoPlayer = ({ video, onBack }) => {
              }}
              className={`p-2 rounded-lg transition-all ${isLooping ? 'bg-primary text-white shadow-lg' : 'text-zinc-600'}`}
            >
-             <RotateCcw size={24} />
+             <RotateCcw size={20} />
            </button>
-           <button onClick={() => { videoRef.current.currentTime -= 5 }} className="text-zinc-400 hover:text-white"><Rewind size={32} /></button>
-           <button onClick={togglePlay} className="bg-white text-black p-4 rounded-full shadow-xl active:scale-90 transition-all">
-             {isPlaying ? <Pause size={32} fill="black" /> : <Play size={32} fill="black" />}
+           <button onClick={() => { videoRef.current.currentTime -= 5 }} className="text-zinc-400 hover:text-white"><Rewind size={24} /></button>
+           <button onClick={togglePlay} className="bg-white text-black p-3 rounded-full shadow-xl active:scale-90 transition-all">
+             {isPlaying ? <Pause size={24} fill="black" /> : <Play size={24} fill="black" />}
            </button>
-           <button onClick={() => { videoRef.current.currentTime += 5 }} className="text-zinc-400 hover:text-white"><FastForward size={32} /></button>
-           <div className="w-10" />
+           <button onClick={() => { videoRef.current.currentTime += 5 }} className="text-zinc-400 hover:text-white"><FastForward size={24} /></button>
+           <div className="landscape:hidden w-10" />
         </div>
 
-        <div className="flex flex-col gap-3">
-          <span className="text-[10px] font-black text-zinc-500 uppercase text-center tracking-widest">Velocidad de Reproducción</span>
-          <div className="flex gap-2">
+        <div className="flex flex-col gap-2 landscape:flex-row landscape:items-center landscape:justify-center landscape:gap-4">
+          <span className="text-sm font-black text-zinc-500 uppercase text-center tracking-widest landscape:text-[10px]">Velocidad</span>
+          <div className="flex gap-1.5 landscape:flex-1 landscape:max-w-xs">
             {[0.5, 0.75, 1, 1.25, 1.5, 2].map(rate => (
               <button
                 key={rate}
                 onClick={() => changeRate(rate)}
-                className={`flex-1 py-2.5 rounded-xl font-black text-[10px] tracking-tighter transition-all ${
+                className={`flex-1 py-2 rounded-xl font-black text-sm tracking-tighter transition-all ${
                   playbackRate === rate ? 'bg-primary text-white scale-105 shadow-lg' : 'bg-white/5 bg-zinc-900 text-zinc-500 border border-white/5'
                 }`}
               >
@@ -256,8 +258,8 @@ const VideoListView = () => {
   };
 
   return (
-    <div className="p-4 space-y-5 pb-24">
-      <div className="flex justify-between items-center">
+    <div className="p-2 space-y-4 pb-24">
+      <div className="flex justify-between items-center px-1">
         <h2 className="text-xl font-black uppercase tracking-tight text-white drop-shadow-md">Tutoriales</h2>
         {(user?.role === 'master' || user?.role === 'moderator') && (
           <button
@@ -269,12 +271,12 @@ const VideoListView = () => {
         )}
       </div>
 
-      <div className="relative group">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-primary transition-colors" size={16} />
+      <div className="relative group px-1">
+        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-primary transition-colors" size={16} />
         <input
           type="text"
-          placeholder="Buscar tutoriales..."
-          className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2.5 pl-11 pr-4 text-xs outline-none focus:border-primary transition-all placeholder:text-white/20"
+          placeholder="Buscar..."
+          className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2 pl-11 pr-4 text-sm outline-none focus:border-primary transition-all placeholder:text-white/20"
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
         />
@@ -288,33 +290,33 @@ const VideoListView = () => {
         )}
       </div>
 
-      <div className="flex flex-col gap-4">
-        <div className="flex gap-2 p-1 bg-surface/40 backdrop-blur-md rounded-2xl border border-outline/60">
+      <div className="flex flex-col gap-3 px-1">
+        <div className="flex gap-1.5 p-1 bg-surface/40 backdrop-blur-md rounded-2xl border border-outline/60">
           <button
             onClick={() => setLevel('principiante')}
-            className={`flex-1 py-2.5 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all ${level === 'principiante' ? 'bg-primary text-white shadow-[0_0_20px_rgba(225,29,72,0.4)]' : 'text-white/40'}`}
+            className={`flex-1 py-2 rounded-xl font-black uppercase text-sm tracking-widest transition-all ${level === 'principiante' ? 'bg-primary text-white shadow-[0_0_20px_rgba(225,29,72,0.4)]' : 'text-white/40'}`}
           >
             Principiante
           </button>
           <button
             onClick={() => setLevel('avanzado')}
-            className={`flex-1 py-2.5 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all ${level === 'avanzado' ? 'bg-primary text-white shadow-[0_0_20px_rgba(225,29,72,0.4)]' : 'text-white/40'}`}
+            className={`flex-1 py-2 rounded-xl font-black uppercase text-sm tracking-widest transition-all ${level === 'avanzado' ? 'bg-primary text-white shadow-[0_0_20px_rgba(225,29,72,0.4)]' : 'text-white/40'}`}
           >
-            Int. / Avanzado
+            Avanzado
           </button>
         </div>
 
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-           <span className="text-[9px] font-black uppercase text-white/30 shrink-0 ml-1">Ordenar:</span>
+           <span className="text-sm font-black uppercase text-white/30 shrink-0 ml-1">Ordenar:</span>
            {[
              { id: 'recent', label: 'Recientes' },
              { id: 'likes', label: 'Más Likes' },
-             { id: 'favorites', label: 'Mis Favoritos' }
+             { id: 'favorites', label: 'Favoritos' }
            ].map(opt => (
              <button
                key={opt.id}
                onClick={() => setSortBy(opt.id)}
-               className={`shrink-0 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all border ${
+               className={`shrink-0 px-3 py-1.5 rounded-full text-sm font-black uppercase tracking-widest transition-all border ${
                  sortBy === opt.id ? 'bg-secondary border-secondary text-white shadow-lg' : 'bg-surface/40 border-outline/60 text-white/40'
                }`}
              >
@@ -324,7 +326,7 @@ const VideoListView = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-x-3 gap-y-6">
+      <div className="grid grid-cols-3 gap-x-2 gap-y-4">
         {filteredVideos.map(video => (
           <VideoThumbnail
             key={video.id}
