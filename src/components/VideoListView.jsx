@@ -115,7 +115,8 @@ const VideoPlayer = ({ video, onBack }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
 
-  const togglePlay = () => {
+  const togglePlay = (e) => {
+    if (e) e.stopPropagation();
     if (videoRef.current.paused) {
       videoRef.current.play();
       setIsPlaying(true);
@@ -171,10 +172,11 @@ const VideoPlayer = ({ video, onBack }) => {
       </div>
 
       {/* Footer Controls */}
-      <div className="shrink-0 p-4 pb-8 bg-zinc-950/90 backdrop-blur-md border-t border-white/10 space-y-4 landscape:space-y-2 landscape:p-2 landscape:pb-4">
-        <div className="flex justify-center items-center gap-6 landscape:gap-10">
+      <div className="shrink-0 p-2 pb-6 bg-black/80 backdrop-blur-md border-t border-white/10 space-y-2 landscape:fixed landscape:bottom-0 landscape:left-0 landscape:right-0 landscape:bg-transparent landscape:border-none landscape:pb-4 landscape:space-y-1">
+        <div className="flex justify-center items-center gap-6 landscape:gap-8 landscape:scale-75">
            <button
-             onClick={() => {
+             onClick={(e) => {
+               e.stopPropagation();
                setIsLooping(!isLooping);
                videoRef.current.loop = !isLooping;
              }}
@@ -182,23 +184,23 @@ const VideoPlayer = ({ video, onBack }) => {
            >
              <RotateCcw size={20} />
            </button>
-           <button onClick={() => { videoRef.current.currentTime -= 5 }} className="text-zinc-400 hover:text-white"><Rewind size={24} /></button>
+           <button onClick={(e) => { e.stopPropagation(); videoRef.current.currentTime -= 5 }} className="text-zinc-400 hover:text-white"><Rewind size={24} /></button>
            <button onClick={togglePlay} className="bg-white text-black p-3 rounded-full shadow-xl active:scale-90 transition-all">
              {isPlaying ? <Pause size={24} fill="black" /> : <Play size={24} fill="black" />}
            </button>
-           <button onClick={() => { videoRef.current.currentTime += 5 }} className="text-zinc-400 hover:text-white"><FastForward size={24} /></button>
+           <button onClick={(e) => { e.stopPropagation(); videoRef.current.currentTime += 5 }} className="text-zinc-400 hover:text-white"><FastForward size={24} /></button>
            <div className="landscape:hidden w-10" />
         </div>
 
-        <div className="flex flex-col gap-2 landscape:flex-row landscape:items-center landscape:justify-center landscape:gap-4">
-          <span className="text-sm font-black text-zinc-500 uppercase text-center tracking-widest landscape:text-[10px]">Velocidad</span>
-          <div className="flex gap-1.5 landscape:flex-1 landscape:max-w-xs">
+        <div className="flex flex-col gap-1 landscape:flex-row landscape:items-center landscape:justify-center landscape:gap-2">
+          <span className="text-[9px] font-black text-zinc-500 uppercase text-center tracking-widest">Velocidad</span>
+          <div className="flex gap-1 overflow-x-auto no-scrollbar landscape:max-w-md px-2">
             {[0.5, 0.75, 1, 1.25, 1.5, 2].map(rate => (
               <button
                 key={rate}
-                onClick={() => changeRate(rate)}
-                className={`flex-1 py-2 rounded-xl font-black text-sm tracking-tighter transition-all ${
-                  playbackRate === rate ? 'bg-primary text-white scale-105 shadow-lg' : 'bg-white/5 bg-zinc-900 text-zinc-500 border border-white/5'
+                onClick={(e) => { e.stopPropagation(); changeRate(rate); }}
+                className={`flex-none px-3 py-1.5 rounded-lg font-black text-xs tracking-tighter transition-all ${
+                  playbackRate === rate ? 'bg-primary text-white shadow-lg' : 'bg-black/40 text-zinc-500 border border-white/5'
                 }`}
               >
                 {rate}X

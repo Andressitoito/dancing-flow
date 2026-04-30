@@ -208,8 +208,8 @@ const LoginView = () => {
 
   if (user) {
     return (
-      <div className="p-3 flex flex-col space-y-4 max-w-[340px] mx-auto">
-        <div className="flex flex-col items-center space-y-2 py-2">
+      <div className="p-2 flex flex-col space-y-3 max-w-[340px] mx-auto bg-surface/40 backdrop-blur-xl rounded-2xl border border-outline/60 mt-4 shadow-2xl">
+        <div className="flex flex-col items-center space-y-1.5 py-1">
           <div className="relative">
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center border-2 border-primary/50 shadow-2xl shadow-primary/20">
               <UserIcon size={24} className="text-primary" />
@@ -242,15 +242,15 @@ const LoginView = () => {
   }
 
   return (
-    <div className="p-1.5 space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-[340px] mx-auto">
-      <div className="text-center space-y-0.5">
+    <div className="p-1.5 space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-[340px] mx-auto bg-surface/40 backdrop-blur-xl rounded-2xl border border-outline/60 mt-8 shadow-2xl">
+      <div className="text-center space-y-0.5 pt-2">
         <h2 className="text-xl font-black uppercase tracking-tight text-white drop-shadow-md">Dancing Flow</h2>
         <p className="text-white/40 font-black uppercase text-xs tracking-widest">
           {isRegister ? 'Registro de Estudiante' : 'Bienvenido de nuevo'}
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-1.5 px-1.5">
+      <form onSubmit={handleSubmit} className="space-y-1.5 px-1.5 pb-2">
         {isRegister && (
           <div className="grid grid-cols-2 gap-1.5 animate-in fade-in slide-in-from-top-2">
              <div className="space-y-0.5">
