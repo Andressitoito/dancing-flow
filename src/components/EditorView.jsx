@@ -139,61 +139,70 @@ const EditorView = () => {
   const renderGrid = () => {
     const rows = [];
     for (let m = 0; m < currentChoreo.measures; m++) {
-      const slots = [];
-      for (let s = 0; s < 8; s++) {
-        const slotIndex = m * 8 + s;
-        const block = currentChoreo.sequence.find(b => b.slotIndex === slotIndex);
-        const isOccupiedByPrevious = currentChoreo.sequence.some(b =>
-          slotIndex > b.slotIndex && slotIndex < b.slotIndex + b.duration
-        );
+      const renderSlots = (start, end) => {
+        const slots = [];
+        for (let s = start; s < end; s++) {
+          const slotIndex = m * 8 + s;
+          const block = currentChoreo.sequence.find(b => b.slotIndex === slotIndex);
+          const isOccupiedByPrevious = currentChoreo.sequence.some(b =>
+            slotIndex > b.slotIndex && slotIndex < b.slotIndex + b.duration
+          );
 
-        if (isOccupiedByPrevious) continue;
+          if (isOccupiedByPrevious) continue;
 
-        slots.push(
-          <div
-            key={slotIndex}
-            onClick={() => handleSlotClick(slotIndex)}
-            onContextMenu={(e) => { e.preventDefault(); handleSlotLongPress(slotIndex); }}
-            style={{ gridColumn: `span ${block ? block.duration : 1}` }}
-            className={`
-              relative h-12 rounded-xl border flex items-center justify-center transition-all duration-200 cursor-pointer overflow-hidden
-              ${block
-                ? 'border-transparent shadow-lg text-white font-black'
-                : 'border-outline/40 bg-black/10 hover:bg-black/20 text-zinc-700'
-              }
-            `}
-          >
-            {block ? (
-              <div
-                className="absolute inset-0 flex flex-col items-center justify-center p-0.5 text-center"
-                style={{ backgroundColor: block.color }}
-              >
-                <span className="text-[10px] leading-tight uppercase truncate w-full px-1">
-                  {block.name || `${block.duration}T`}
-                </span>
-                {block.description && (
-                  <span className="text-[8px] opacity-70 truncate w-full px-1 leading-none">{block.description}</span>
-                )}
-              </div>
-            ) : (
-              <span className="text-sm font-bold opacity-30">{(slotIndex % 8) + 1}</span>
-            )}
-          </div>
-        );
-      }
+          slots.push(
+            <div
+              key={slotIndex}
+              onClick={() => handleSlotClick(slotIndex)}
+              onContextMenu={(e) => { e.preventDefault(); handleSlotLongPress(slotIndex); }}
+              style={{
+                gridColumn: `span ${block ? Math.min(block.duration, end - s) : 1}`
+              }}
+              className={`
+                relative h-10 border flex items-center justify-center transition-all duration-200 cursor-pointer overflow-hidden rounded-lg
+                ${block
+                  ? 'border-transparent shadow-lg text-white font-black'
+                  : 'border-outline/20 bg-black/10 hover:bg-black/20 text-zinc-700'
+                }
+                ${s === 3 ? 'scale-x-95 origin-left' : ''}
+              `}
+            >
+              {block ? (
+                <div
+                  className="absolute inset-0 flex flex-col items-center justify-center p-0.5 text-center"
+                  style={{ backgroundColor: block.color }}
+                >
+                  <span className="text-[9px] leading-tight uppercase truncate w-full px-1">
+                    {block.name || `${block.duration}T`}
+                  </span>
+                </div>
+              ) : (
+                <span className="text-xs font-bold opacity-30">{(slotIndex % 8) + 1}</span>
+              )}
+            </div>
+          );
+        }
+        return slots;
+      };
+
       rows.push(
-        <div key={m} className="space-y-1">
-          <div className="flex justify-between items-center px-1">
-            <span className="text-sm font-black text-zinc-600 uppercase tracking-widest">Compás {m + 1}</span>
+        <div key={m} className="space-y-0.5">
+          <div className="flex justify-between items-center px-2">
+            <span className="text-[9px] font-black text-zinc-500 uppercase tracking-[0.2em]">Compás {m + 1}</span>
             <button
               onClick={(e) => { e.stopPropagation(); removeMeasure(m); }}
-              className="text-zinc-700 hover:text-red-500 p-1"
+              className="text-zinc-500 hover:text-red-500 p-1"
             >
-              <Trash2 size={12} />
+              <Trash2 size={10} />
             </button>
           </div>
-          <div className="grid grid-cols-8 gap-0.5 bg-surface/30 p-1 rounded-2xl border border-outline/60 shadow-inner">
-            {slots}
+          <div className="flex gap-4 bg-surface/10 p-1.5 rounded-xl border border-outline/20 shadow-inner">
+            <div className="grid grid-cols-4 gap-1 flex-1">
+              {renderSlots(0, 4)}
+            </div>
+            <div className="grid grid-cols-4 gap-1 flex-1">
+              {renderSlots(4, 8)}
+            </div>
           </div>
         </div>
       );
@@ -257,32 +266,47 @@ const EditorView = () => {
           </button>
         </div>
 
-        <div className="flex gap-1.5 items-center">
-          <div className="flex flex-1 gap-1">
+        <div className="flex gap-2 items-center">
+          {/* Painting Tools */}
+          <div className="flex flex-1 gap-1 bg-surface/30 p-0.5 rounded-xl border border-outline/40">
+            {[null, 1, 2, 4].map(d => (
+              <button
+                key={d || 'none'}
+                onClick={() => setPaintingDuration(d)}
+                className={`flex-1 py-1 rounded-lg flex items-center justify-center transition-all ${
+                  paintingDuration === d
+                    ? 'bg-primary text-white shadow-lg'
+                    : 'text-zinc-500 hover:text-zinc-300'
+                }`}
+              >
+                {d ? (
+                  <span className="text-[10px] font-black">{d}T</span>
+                ) : (
+                  <Plus size={14} />
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Difficulty Tools */}
+          <div className="flex flex-1 gap-1 bg-surface/30 p-0.5 rounded-xl border border-outline/40">
             {['principiante', 'intermedio', 'avanzado'].map((d) => (
               <button
                 key={d}
                 onClick={() => updateChoreoDifficulty(d)}
-                className={`flex-1 py-1 rounded-lg text-xs font-black uppercase tracking-widest border transition-all ${
+                className={`flex-1 py-1 rounded-lg text-[10px] font-black uppercase transition-all ${
                   currentChoreo.difficulty === d
-                    ? 'bg-primary border-primary text-white shadow-lg'
-                    : 'bg-surface/50 border-outline/60 text-zinc-500'
+                    ? 'bg-primary text-white shadow-lg'
+                    : 'text-zinc-500'
                 }`}
                 style={{
-                  backgroundColor: currentChoreo.difficulty === d ? getDifficultyColor(d) : undefined,
-                  borderColor: currentChoreo.difficulty === d ? getDifficultyColor(d) : undefined
+                  backgroundColor: currentChoreo.difficulty === d ? getDifficultyColor(d) : undefined
                 }}
               >
                 {d.charAt(0)}
               </button>
             ))}
           </div>
-          <button
-            onClick={() => setMetronomeEnabled(!isMetronomeEnabled)}
-            className={`p-1 rounded-lg border transition-all ${isMetronomeEnabled ? 'bg-amber-500 border-amber-500 text-white' : 'bg-surface/50 border-outline/60 text-zinc-500'}`}
-          >
-            {isMetronomeEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
-          </button>
         </div>
       </div>
 
@@ -345,38 +369,6 @@ const EditorView = () => {
         </div>
       </div>
 
-      {/* Floating Toolbar (Painting Mode) */}
-      <div className="fixed bottom-[72px] left-1.5 right-1.5 z-50">
-        <div className="bg-zinc-900/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-1 flex items-center justify-between shadow-2xl">
-          <div className="flex gap-1">
-            {[null, 1, 2, 4].map(d => (
-              <button
-                key={d || 'none'}
-                onClick={() => setPaintingDuration(d)}
-                className={`w-10 h-10 rounded-full flex flex-col items-center justify-center transition-all ${
-                  paintingDuration === d
-                    ? 'bg-primary text-white scale-110 shadow-lg'
-                    : 'bg-white/5 text-zinc-500 hover:text-zinc-300'
-                }`}
-              >
-                {d ? (
-                  <span className="text-[10px] font-black">{d}T</span>
-                ) : (
-                  <Plus size={16} />
-                )}
-              </button>
-            ))}
-          </div>
-          <div className="px-2 text-right">
-            <p className="text-xs font-black text-zinc-400 uppercase tracking-tight leading-none">
-              {paintingDuration ? 'PINTAR' : 'EDICIÓN'}
-            </p>
-            <p className="text-[8px] text-primary font-bold uppercase mt-0.5">
-              {paintingDuration ? `${paintingDuration}T` : 'EDIT'}
-            </p>
-          </div>
-        </div>
-      </div>
 
       {/* Block Editor Modal */}
       {editingBlockSlot !== null && (
