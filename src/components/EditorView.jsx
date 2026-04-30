@@ -25,26 +25,26 @@ const BlockEditorModal = ({ block, onSave, onCancel }) => {
   ];
 
   return (
-    <div className="bg-zinc-900 border border-white/10 rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-6 animate-in fade-in zoom-in duration-200">
+    <div className="bg-zinc-900 border border-white/10 rounded-2xl p-4 w-full max-w-[340px] shadow-2xl space-y-3 animate-in fade-in zoom-in duration-200">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-black uppercase tracking-tight text-white">Editar Bloque</h3>
-        <button onClick={onCancel} className="text-zinc-500 hover:text-white"><X size={24} /></button>
+        <button onClick={onCancel} className="text-zinc-500 hover:text-white"><X size={20} /></button>
       </div>
 
-      <div className="space-y-4">
-        <div className="space-y-1">
-          <label className="text-[10px] font-black text-zinc-500 uppercase">Nombre del Paso</label>
+      <div className="space-y-2">
+        <div className="space-y-0.5">
+          <label className="text-[10px] font-black text-zinc-500 uppercase ml-1">Nombre del Paso</label>
           <input
             value={edited.name}
             onChange={e => setEdited({...edited, name: e.target.value})}
-            className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-sm focus:border-primary outline-none"
+            className="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm focus:border-primary outline-none"
             placeholder="Ej: Básico con giro"
           />
         </div>
 
-        <div className="space-y-1">
-          <label className="text-[10px] font-black text-zinc-500 uppercase">Colores</label>
-          <div className="flex gap-2 py-1 overflow-x-auto">
+        <div className="space-y-0.5">
+          <label className="text-[10px] font-black text-zinc-500 uppercase ml-1">Colores</label>
+          <div className="flex gap-1.5 py-1 overflow-x-auto no-scrollbar">
             {colors.map(c => (
               <button
                 key={c}
@@ -56,32 +56,32 @@ const BlockEditorModal = ({ block, onSave, onCancel }) => {
           </div>
         </div>
 
-        <div className="space-y-1">
-          <label className="text-[10px] font-black text-zinc-500 uppercase">Descripción / Adorno</label>
+        <div className="space-y-0.5">
+          <label className="text-[10px] font-black text-zinc-500 uppercase ml-1">Descripción / Adorno</label>
           <textarea
             value={edited.description}
             onChange={e => setEdited({...edited, description: e.target.value})}
-            className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs h-16 resize-none outline-none"
+            className="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs h-12 resize-none outline-none"
             placeholder="¿Qué pasa en este tiempo?"
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1">
-            <label className="text-[10px] font-black text-zinc-500 uppercase">Instrucciones Líder</label>
+        <div className="grid grid-cols-2 gap-2">
+          <div className="space-y-0.5">
+            <label className="text-[10px] font-black text-zinc-500 uppercase ml-1">Instrucciones Líder</label>
             <textarea
               value={edited.leadInstructions}
               onChange={e => setEdited({...edited, leadInstructions: e.target.value})}
-              className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-[10px] h-20 resize-none outline-none"
+              className="w-full bg-black/40 border border-white/10 rounded-xl px-2 py-1.5 text-[10px] h-16 resize-none outline-none"
               placeholder="Guía para él..."
             />
           </div>
-          <div className="space-y-1">
-            <label className="text-[10px] font-black text-zinc-500 uppercase">Instrucciones Follower</label>
+          <div className="space-y-0.5">
+            <label className="text-[10px] font-black text-zinc-500 uppercase ml-1">Instrucciones Follower</label>
             <textarea
               value={edited.followerInstructions}
               onChange={e => setEdited({...edited, followerInstructions: e.target.value})}
-              className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-[10px] h-20 resize-none outline-none"
+              className="w-full bg-black/40 border border-white/10 rounded-xl px-2 py-1.5 text-[10px] h-16 resize-none outline-none"
               placeholder="Guía para ella..."
             />
           </div>
@@ -90,7 +90,7 @@ const BlockEditorModal = ({ block, onSave, onCancel }) => {
 
       <button
         onClick={() => onSave(edited)}
-        className="w-full bg-primary text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20"
+        className="w-full bg-primary text-white py-3 rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20"
       >
         Guardar Bloque
       </button>
@@ -220,13 +220,13 @@ const EditorView = () => {
   return (
     <div className="flex flex-col min-h-screen bg-background text-white pb-32">
       {/* Header Fijo */}
-      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-outline/60 px-2 py-2 space-y-2 shadow-xl">
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-outline/60 px-2 py-1.5 space-y-1.5 shadow-xl">
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
             <input
               value={currentChoreo.title}
               onChange={(e) => updateChoreoTitle(e.target.value)}
-              className="w-full bg-transparent border-b border-outline/60 py-1 text-lg font-black text-white focus:outline-none focus:border-primary uppercase tracking-tight"
+              className="w-full bg-transparent border-b border-outline/60 py-0.5 text-lg font-black text-white focus:outline-none focus:border-primary uppercase tracking-tight"
               placeholder="Nombre..."
             />
           </div>
@@ -257,13 +257,13 @@ const EditorView = () => {
           </button>
         </div>
 
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-1.5 items-center">
           <div className="flex flex-1 gap-1">
             {['principiante', 'intermedio', 'avanzado'].map((d) => (
               <button
                 key={d}
                 onClick={() => updateChoreoDifficulty(d)}
-                className={`flex-1 py-2 rounded-xl text-sm font-black uppercase tracking-widest border transition-all ${
+                className={`flex-1 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest border transition-all ${
                   currentChoreo.difficulty === d
                     ? 'bg-primary border-primary text-white scale-105 shadow-lg'
                     : 'bg-surface border-outline/60 text-zinc-500'
@@ -279,33 +279,33 @@ const EditorView = () => {
           </div>
           <button
             onClick={() => setMetronomeEnabled(!isMetronomeEnabled)}
-            className={`p-2 rounded-xl border transition-all ${isMetronomeEnabled ? 'bg-amber-500 border-amber-500 text-white' : 'bg-surface border-outline/60 text-zinc-500'}`}
+            className={`p-1.5 rounded-lg border transition-all ${isMetronomeEnabled ? 'bg-amber-500 border-amber-500 text-white' : 'bg-surface border-outline/60 text-zinc-500'}`}
           >
-            {isMetronomeEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+            {isMetronomeEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
           </button>
         </div>
       </div>
 
       {/* Sequencer Scrollable Area */}
-      <div className="flex-1 p-2 overflow-y-auto space-y-4">
-        <div className="space-y-2">
+      <div className="flex-1 p-1.5 overflow-y-auto space-y-2">
+        <div className="space-y-1">
           {renderGrid()}
 
           <button
             onClick={addMeasure}
-            className="w-full h-12 rounded-2xl border-2 border-dashed border-outline/60 flex items-center justify-center gap-2 text-zinc-500 hover:text-white hover:border-primary transition-all"
+            className="w-full h-10 rounded-xl border-2 border-dashed border-outline/60 flex items-center justify-center gap-2 text-zinc-500 hover:text-white hover:border-primary transition-all"
           >
-            <Plus size={18} />
-            <span className="text-sm font-black uppercase tracking-widest">Agregar Compás</span>
+            <Plus size={16} />
+            <span className="text-[10px] font-black uppercase tracking-widest">Agregar Compás</span>
           </button>
         </div>
 
         {/* Mis Coreografías List */}
-        <div className="pt-4 border-t border-outline/60">
-           <h3 className="text-sm font-black text-zinc-600 uppercase tracking-[0.2em] mb-3 flex items-center gap-2 px-1">
-             <Music size={14} className="text-primary" /> Mis Coreografías
+        <div className="pt-2 border-t border-outline/60">
+           <h3 className="text-xs font-black text-zinc-600 uppercase tracking-[0.2em] mb-2 flex items-center gap-2 px-1">
+             <Music size={12} className="text-primary" /> Mis Coreografías
            </h3>
-           <div className="grid gap-2">
+           <div className="grid gap-1.5">
               {choreos.length === 0 && (
                 <p className="text-sm text-zinc-500 text-center py-4 uppercase font-bold">No tienes coreos guardadas</p>
               )}
@@ -346,32 +346,32 @@ const EditorView = () => {
       </div>
 
       {/* Floating Toolbar (Painting Mode) */}
-      <div className="fixed bottom-[72px] left-2 right-2 z-50">
-        <div className="bg-zinc-900/90 backdrop-blur-2xl border border-white/10 rounded-3xl p-1.5 flex items-center justify-between shadow-2xl">
+      <div className="fixed bottom-[72px] left-1.5 right-1.5 z-50">
+        <div className="bg-zinc-900/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-1 flex items-center justify-between shadow-2xl">
           <div className="flex gap-1">
             {[null, 1, 2, 4].map(d => (
               <button
                 key={d || 'none'}
                 onClick={() => setPaintingDuration(d)}
-                className={`w-12 h-12 rounded-full flex flex-col items-center justify-center transition-all ${
+                className={`w-10 h-10 rounded-full flex flex-col items-center justify-center transition-all ${
                   paintingDuration === d
                     ? 'bg-primary text-white scale-110 shadow-lg'
                     : 'bg-white/5 text-zinc-500 hover:text-zinc-300'
                 }`}
               >
                 {d ? (
-                  <span className="text-xs font-black">{d}T</span>
+                  <span className="text-[10px] font-black">{d}T</span>
                 ) : (
-                  <Plus size={18} />
+                  <Plus size={16} />
                 )}
               </button>
             ))}
           </div>
-          <div className="px-3 text-right">
-            <p className="text-sm font-black text-zinc-400 uppercase tracking-tight leading-none">
+          <div className="px-2 text-right">
+            <p className="text-xs font-black text-zinc-400 uppercase tracking-tight leading-none">
               {paintingDuration ? 'PINTAR' : 'EDICIÓN'}
             </p>
-            <p className="text-[10px] text-primary font-bold uppercase mt-1">
+            <p className="text-[8px] text-primary font-bold uppercase mt-0.5">
               {paintingDuration ? `${paintingDuration}T` : 'EDIT'}
             </p>
           </div>

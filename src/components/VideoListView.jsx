@@ -138,7 +138,7 @@ const VideoPlayer = ({ video, onBack }) => {
            <ChevronRight size={24} className="rotate-180" />
         </button>
         <div className="flex-1 truncate">
-          <h2 className="text-sm font-black uppercase tracking-tight truncate text-white">{video.title}</h2>
+          <h2 className="text-base font-black uppercase tracking-tight truncate text-white">{video.title}</h2>
           <p className="text-[10px] text-white/50 truncate uppercase tracking-widest font-bold">{video.subtitle}</p>
         </div>
       </div>
@@ -156,6 +156,7 @@ const VideoPlayer = ({ video, onBack }) => {
           autoPlay
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
+          loop={isLooping}
         />
 
         {!isPlaying && (
@@ -258,25 +259,25 @@ const VideoListView = () => {
   };
 
   return (
-    <div className="p-2 space-y-4 pb-24">
+    <div className="p-1.5 space-y-2.5 pb-24">
       <div className="flex justify-between items-center px-1">
-        <h2 className="text-xl font-black uppercase tracking-tight text-white drop-shadow-md">Tutoriales</h2>
+        <h2 className="text-lg font-black uppercase tracking-tight text-white drop-shadow-md">Tutoriales</h2>
         {(user?.role === 'master' || user?.role === 'moderator') && (
           <button
             onClick={() => setIsAdding(true)}
-            className="bg-primary p-2 rounded-full text-white shadow-lg active:scale-90 transition-all"
+            className="bg-primary p-1.5 rounded-full text-white shadow-lg active:scale-90 transition-all"
           >
-            <Plus size={20} />
+            <Plus size={18} />
           </button>
         )}
       </div>
 
       <div className="relative group px-1">
-        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-primary transition-colors" size={16} />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-primary transition-colors" size={14} />
         <input
           type="text"
           placeholder="Buscar..."
-          className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2 pl-11 pr-4 text-sm outline-none focus:border-primary transition-all placeholder:text-white/20"
+          className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-xl py-1.5 pl-9 pr-4 text-xs outline-none focus:border-primary transition-all placeholder:text-white/20"
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
         />
@@ -290,24 +291,24 @@ const VideoListView = () => {
         )}
       </div>
 
-      <div className="flex flex-col gap-3 px-1">
-        <div className="flex gap-1.5 p-1 bg-surface/40 backdrop-blur-md rounded-2xl border border-outline/60">
+      <div className="flex flex-col gap-2 px-1">
+        <div className="flex gap-1 p-1 bg-surface/40 backdrop-blur-md rounded-xl border border-outline/60">
           <button
             onClick={() => setLevel('principiante')}
-            className={`flex-1 py-2 rounded-xl font-black uppercase text-sm tracking-widest transition-all ${level === 'principiante' ? 'bg-primary text-white shadow-[0_0_20px_rgba(225,29,72,0.4)]' : 'text-white/40'}`}
+            className={`flex-1 py-1.5 rounded-lg font-black uppercase text-[10px] tracking-widest transition-all ${level === 'principiante' ? 'bg-primary text-white shadow-[0_0_20px_rgba(225,29,72,0.4)]' : 'text-white/40'}`}
           >
             Principiante
           </button>
           <button
             onClick={() => setLevel('avanzado')}
-            className={`flex-1 py-2 rounded-xl font-black uppercase text-sm tracking-widest transition-all ${level === 'avanzado' ? 'bg-primary text-white shadow-[0_0_20px_rgba(225,29,72,0.4)]' : 'text-white/40'}`}
+            className={`flex-1 py-1.5 rounded-lg font-black uppercase text-[10px] tracking-widest transition-all ${level === 'avanzado' ? 'bg-primary text-white shadow-[0_0_20px_rgba(225,29,72,0.4)]' : 'text-white/40'}`}
           >
             Avanzado
           </button>
         </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-           <span className="text-sm font-black uppercase text-white/30 shrink-0 ml-1">Ordenar:</span>
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+           <span className="text-[10px] font-black uppercase text-white/30 shrink-0 ml-1">Ordenar:</span>
            {[
              { id: 'recent', label: 'Recientes' },
              { id: 'likes', label: 'Más Likes' },
@@ -316,7 +317,7 @@ const VideoListView = () => {
              <button
                key={opt.id}
                onClick={() => setSortBy(opt.id)}
-               className={`shrink-0 px-3 py-1.5 rounded-full text-sm font-black uppercase tracking-widest transition-all border ${
+               className={`shrink-0 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border ${
                  sortBy === opt.id ? 'bg-secondary border-secondary text-white shadow-lg' : 'bg-surface/40 border-outline/60 text-white/40'
                }`}
              >
@@ -326,7 +327,7 @@ const VideoListView = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-x-2 gap-y-4">
+      <div className="grid grid-cols-3 gap-x-1.5 gap-y-2.5">
         {filteredVideos.map(video => (
           <VideoThumbnail
             key={video.id}
@@ -364,42 +365,42 @@ const VideoListView = () => {
 
       {isAdding && (
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
-           <form onSubmit={handleAdd} className="w-full max-w-sm bg-surface p-6 rounded-3xl border border-outline space-y-4 shadow-2xl">
-              <h3 className="text-xl font-black uppercase tracking-tight">Subir Video</h3>
+           <form onSubmit={handleAdd} className="w-full max-w-[340px] bg-surface p-4 rounded-2xl border border-outline space-y-3 shadow-2xl">
+              <h3 className="text-base font-black uppercase tracking-tight">Subir Video</h3>
 
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 <label className="text-[10px] font-black text-zinc-500 uppercase ml-2">Título</label>
                 <input
                   required placeholder="Ej. Básico con onda"
-                  className="w-full bg-surface/50 p-3 rounded-xl border border-outline/60 outline-none focus:border-primary transition-all"
+                  className="w-full bg-surface/50 px-3 py-2 rounded-xl border border-outline/60 text-sm outline-none focus:border-primary transition-all"
                   value={newVideo.title}
                   onChange={e => setNewVideo({...newVideo, title: e.target.value})}
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-[10px] font-black text-zinc-500 uppercase ml-2">Subtítulo / Descripción corta</label>
+              <div className="space-y-0.5">
+                <label className="text-[10px] font-black text-zinc-500 uppercase ml-2">Subtítulo</label>
                 <input
                   placeholder="Ej. Nivel principiante, clase lunes"
-                  className="w-full bg-surface/50 p-3 rounded-xl border border-outline/60 outline-none focus:border-primary transition-all"
+                  className="w-full bg-surface/50 px-3 py-2 rounded-xl border border-outline/60 text-sm outline-none focus:border-primary transition-all"
                   value={newVideo.subtitle}
                   onChange={e => setNewVideo({...newVideo, subtitle: e.target.value})}
                 />
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 <label className="text-[10px] font-black text-zinc-500 uppercase ml-2">Archivo MP4</label>
                 <input
                   type="file" accept="video/mp4"
-                  className="w-full bg-surface/50 p-3 rounded-xl border border-outline/60 text-xs"
+                  className="w-full bg-surface/50 p-2 rounded-xl border border-outline/60 text-[10px]"
                   onChange={e => setNewVideo({...newVideo, videoFile: e.target.files[0], url: ''})}
                 />
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 <label className="text-[10px] font-black text-zinc-500 uppercase ml-2">Nivel</label>
                 <select
-                  className="w-full bg-surface/50 p-3 rounded-xl border border-outline/60 outline-none focus:border-primary transition-all"
+                  className="w-full bg-surface/50 px-3 py-2 rounded-xl border border-outline/60 text-sm outline-none focus:border-primary transition-all"
                   value={newVideo.level}
                   onChange={e => setNewVideo({...newVideo, level: e.target.value})}
                 >
@@ -408,19 +409,19 @@ const VideoListView = () => {
                 </select>
               </div>
 
-              <div className="flex gap-2 pt-4">
+              <div className="flex gap-2 pt-2">
                 <button
                   type="button"
                   disabled={isUploading}
                   onClick={() => setIsAdding(false)}
-                  className="flex-1 py-3 bg-surface/50 rounded-xl font-bold disabled:opacity-50 active:scale-95 transition-all"
+                  className="flex-1 py-2 bg-surface/50 rounded-xl font-bold text-sm disabled:opacity-50 active:scale-95 transition-all"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isUploading}
-                  className="flex-1 py-3 bg-primary rounded-xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 disabled:opacity-70 active:scale-95 transition-all shadow-lg shadow-primary/20"
+                  className="flex-1 py-2 bg-primary rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 disabled:opacity-70 active:scale-95 transition-all shadow-lg shadow-primary/20"
                 >
                   {isUploading ? (
                     <>

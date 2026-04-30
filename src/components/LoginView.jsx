@@ -25,25 +25,25 @@ const PalettePicker = () => {
   const { palette, setPalette } = useStore();
 
   return (
-    <div className="bg-surface p-4 rounded-3xl border border-outline space-y-4 shadow-xl">
-      <div className="flex items-center gap-2 px-2">
-        <Palette size={18} className="text-secondary" />
-        <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Paleta de Colores</h3>
+    <div className="bg-surface p-3 rounded-2xl border border-outline space-y-2 shadow-xl">
+      <div className="flex items-center gap-2 px-1">
+        <Palette size={14} className="text-secondary" />
+        <h3 className="text-[9px] font-black uppercase tracking-widest text-zinc-400">Paleta de Colores</h3>
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2">
         {Object.entries(APP_PALETTES).map(([key, p]) => (
           <button
             key={key}
             onClick={() => setPalette(p)}
-            className={`p-3 rounded-2xl border-2 transition-all text-left space-y-2 ${
+            className={`p-2 rounded-xl border-2 transition-all text-left space-y-1 ${
               palette.name === p.name ? 'border-primary bg-primary/10 shadow-lg shadow-primary/10' : 'border-outline bg-zinc-950/20'
             }`}
           >
-            <span className="text-[9px] font-black block uppercase truncate">{p.name}</span>
+            <span className="text-[8px] font-black block uppercase truncate">{p.name}</span>
             <div className="flex gap-1">
-              <div className="w-4 h-4 rounded-full shadow-sm" style={{ backgroundColor: p.primary }} />
-              <div className="w-4 h-4 rounded-full shadow-sm" style={{ backgroundColor: p.secondary }} />
-              <div className="w-4 h-4 rounded-full shadow-sm" style={{ backgroundColor: p.accent }} />
+              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: p.primary }} />
+              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: p.secondary }} />
+              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: p.accent }} />
             </div>
           </button>
         ))}
@@ -104,11 +104,11 @@ const AdminPanel = () => {
   );
 
   return (
-    <div className="mt-8 pt-8 border-t border-outline space-y-4">
+    <div className="mt-4 pt-4 border-t border-outline space-y-2">
       <div className="flex items-center justify-between px-2">
         <div className="flex items-center gap-2">
-          <Shield className="text-primary" size={20} />
-          <h3 className="font-black uppercase tracking-widest text-[10px] text-zinc-400">Administración</h3>
+          <Shield className="text-primary" size={16} />
+          <h3 className="font-black uppercase tracking-widest text-[9px] text-zinc-400">Administración</h3>
         </div>
         {user.role === 'master' && (
           <button
@@ -117,7 +117,7 @@ const AdminPanel = () => {
               const data = await res.json();
               Swal.fire({ title: 'Limpieza', text: `${data.deleted} coreos huérfanas borradas.`, icon: 'success', background: '#18181b', color: '#fff' });
             }}
-            className="text-[9px] font-black text-primary uppercase border border-primary/30 px-2 py-1 rounded-lg"
+            className="text-[8px] font-black text-primary uppercase border border-primary/30 px-1.5 py-0.5 rounded-lg"
           >
             Limpiar Huérfanas
           </button>
@@ -125,19 +125,19 @@ const AdminPanel = () => {
       </div>
 
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={14} />
         <input
           type="text"
           placeholder="Buscar usuarios..."
-          className="w-full bg-surface border border-outline rounded-2xl py-2.5 pl-12 pr-4 text-xs outline-none focus:border-primary transition-all"
+          className="w-full bg-surface border border-outline rounded-xl py-1.5 pl-9 pr-3 text-[10px] outline-none focus:border-primary transition-all"
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
         />
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {filteredUsers.map(u => (
-          <div key={u.id} className="bg-surface p-3 rounded-2xl border border-outline flex items-center justify-between gap-4">
+          <div key={u.id} className="bg-surface p-2 rounded-xl border border-outline flex items-center justify-between gap-3">
             <div className="flex-1 truncate">
               <h4 className="font-bold text-white text-xs truncate">
                 {u.username} <span className="text-[10px] text-zinc-500 font-medium">({u.firstName} {u.lastName})</span>
@@ -208,28 +208,28 @@ const LoginView = () => {
 
   if (user) {
     return (
-      <div className="p-6 flex flex-col space-y-6 max-w-sm mx-auto">
-        <div className="flex flex-col items-center space-y-4 py-4">
+      <div className="p-3 flex flex-col space-y-4 max-w-[340px] mx-auto">
+        <div className="flex flex-col items-center space-y-2 py-2">
           <div className="relative">
-            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center border-2 border-primary/50 shadow-2xl shadow-primary/20">
-              <UserIcon size={32} className="text-primary" />
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center border-2 border-primary/50 shadow-2xl shadow-primary/20">
+              <UserIcon size={24} className="text-primary" />
             </div>
-            <div className="absolute -bottom-1 -right-1 bg-surface p-1.5 rounded-full border border-outline">
-              <Sparkles size={12} className="text-secondary" />
+            <div className="absolute -bottom-1 -right-1 bg-surface p-1 rounded-full border border-outline">
+              <Sparkles size={10} className="text-secondary" />
             </div>
           </div>
           <div className="text-center">
-            <h2 className="text-2xl font-black uppercase tracking-tight">{user.username}</h2>
-            <p className="text-zinc-500 font-bold uppercase tracking-[0.2em] text-sm">
+            <h2 className="text-xl font-black uppercase tracking-tight">{user.username}</h2>
+            <p className="text-zinc-500 font-bold uppercase tracking-[0.2em] text-xs">
               {user.role === 'master' ? 'Master de Baile' : user.role === 'moderator' ? 'Moderador' : 'Estudiante'}
             </p>
           </div>
 
           <button
             onClick={logout}
-            className="flex items-center gap-2 px-6 py-2.5 bg-surface border border-outline rounded-2xl font-black uppercase text-sm tracking-widest text-primary shadow-lg active:scale-95 transition-all"
+            className="flex items-center gap-2 px-4 py-1.5 bg-surface border border-outline rounded-xl font-black uppercase text-xs tracking-widest text-primary shadow-lg active:scale-95 transition-all"
           >
-            <LogOut size={16} />
+            <LogOut size={14} />
             Cerrar Sesión
           </button>
         </div>
@@ -242,79 +242,79 @@ const LoginView = () => {
   }
 
   return (
-    <div className="p-2 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-sm mx-auto">
-      <div className="text-center space-y-1">
-        <h2 className="text-2xl font-black uppercase tracking-tight text-white drop-shadow-md">Dancing Flow</h2>
-        <p className="text-white/40 font-black uppercase text-sm tracking-widest">
+    <div className="p-1.5 space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-[340px] mx-auto">
+      <div className="text-center space-y-0.5">
+        <h2 className="text-xl font-black uppercase tracking-tight text-white drop-shadow-md">Dancing Flow</h2>
+        <p className="text-white/40 font-black uppercase text-xs tracking-widest">
           {isRegister ? 'Registro de Estudiante' : 'Bienvenido de nuevo'}
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-2 px-2">
+      <form onSubmit={handleSubmit} className="space-y-1.5 px-1.5">
         {isRegister && (
-          <div className="grid grid-cols-2 gap-2 animate-in fade-in slide-in-from-top-2">
-             <div className="space-y-1">
-               <label className="text-sm font-black text-white/30 uppercase ml-2">Nombre</label>
+          <div className="grid grid-cols-2 gap-1.5 animate-in fade-in slide-in-from-top-2">
+             <div className="space-y-0.5">
+               <label className="text-[10px] font-black text-white/30 uppercase ml-1.5">Nombre</label>
                <input
                  required
                  value={formData.firstName}
                  onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                 className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2 px-4 text-sm outline-none focus:border-primary transition-all placeholder:text-white/10"
+                 className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-xl py-1.5 px-3 text-xs outline-none focus:border-primary transition-all placeholder:text-white/10"
                  placeholder="Ej. Juan"
                />
              </div>
-             <div className="space-y-1">
-               <label className="text-sm font-black text-white/30 uppercase ml-2">Apellido</label>
+             <div className="space-y-0.5">
+               <label className="text-[10px] font-black text-white/30 uppercase ml-1.5">Apellido</label>
                <input
                  required
                  value={formData.lastName}
                  onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                 className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2 px-4 text-sm outline-none focus:border-primary transition-all placeholder:text-white/10"
+                 className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-xl py-1.5 px-3 text-xs outline-none focus:border-primary transition-all placeholder:text-white/10"
                  placeholder="Ej. Perez"
                />
              </div>
           </div>
         )}
 
-        <div className="space-y-1">
-          <label className="text-sm font-black text-white/30 uppercase ml-2">Usuario</label>
+        <div className="space-y-0.5">
+          <label className="text-[10px] font-black text-white/30 uppercase ml-1.5">Usuario</label>
           <div className="relative">
-            <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={16} />
+            <UserIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/20" size={14} />
             <input
               required
               value={formData.username}
               onChange={(e) => setFormData({...formData, username: e.target.value})}
-              className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2 pl-11 pr-4 text-sm outline-none focus:border-primary transition-all placeholder:text-white/10"
+              className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-xl py-1.5 pl-9 pr-3 text-xs outline-none focus:border-primary transition-all placeholder:text-white/10"
               placeholder="Ej. Andresito"
             />
           </div>
         </div>
 
-        <div className="space-y-1">
-          <label className="text-sm font-black text-white/30 uppercase ml-2">Contraseña (min 8)</label>
+        <div className="space-y-0.5">
+          <label className="text-[10px] font-black text-white/30 uppercase ml-1.5">Contraseña</label>
           <div className="relative">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={16} />
+            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/20" size={14} />
             <input
               required
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}
-              className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2 pl-11 pr-4 text-sm outline-none focus:border-primary transition-all placeholder:text-white/10"
+              className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-xl py-1.5 pl-9 pr-3 text-xs outline-none focus:border-primary transition-all placeholder:text-white/10"
               placeholder="••••••••"
             />
           </div>
         </div>
 
         {isRegister && (
-          <div className="space-y-1 animate-in fade-in slide-in-from-top-2">
-            <label className="text-sm font-black text-white/30 uppercase ml-2">Token</label>
+          <div className="space-y-0.5 animate-in fade-in slide-in-from-top-2">
+            <label className="text-[10px] font-black text-white/30 uppercase ml-1.5">Token</label>
             <div className="relative">
-              <Key className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={16} />
+              <Key className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/20" size={14} />
               <input
                 required
                 value={formData.token}
                 onChange={(e) => setFormData({...formData, token: e.target.value})}
-                className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-2xl py-2 pl-11 pr-4 text-sm outline-none focus:border-primary transition-all placeholder:text-white/10"
+                className="w-full bg-surface/40 backdrop-blur-md border border-outline/60 rounded-xl py-1.5 pl-9 pr-3 text-xs outline-none focus:border-primary transition-all placeholder:text-white/10"
                 placeholder="Token de acceso"
               />
             </div>
@@ -323,9 +323,9 @@ const LoginView = () => {
 
         <button
           type="submit"
-          className="w-full bg-primary py-3 rounded-2xl font-black uppercase tracking-widest text-sm shadow-lg shadow-primary/20 active:scale-95 transition-all mt-4 flex items-center justify-center gap-2"
+          className="w-full bg-primary py-2 rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20 active:scale-95 transition-all mt-2 flex items-center justify-center gap-2"
         >
-          {isRegister ? <UserPlus size={18} /> : <LogIn size={18} />}
+          {isRegister ? <UserPlus size={16} /> : <LogIn size={16} />}
           {isRegister ? 'Registrarme' : 'Entrar'}
         </button>
       </form>
