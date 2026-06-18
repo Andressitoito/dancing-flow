@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const { readDB, writeDB } = require('./db.cjs');
+const { User, Questionnaire } = require('../models/index.cjs');
 
 const TOKEN = "bachata2026";
 
-router.post('/signup-user', (req, res) => {
+router.post('/signup-user', async (req, res) => {
   try {
-    const { username, password, token, firstName, lastName } = req.body;
+    const { username, password, token, gender, level } = req.body;
     if (token !== TOKEN) {
       return res.status(401).json({ error: 'Token de registro inválido' });
     }
@@ -16,36 +16,39 @@ router.post('/signup-user', (req, res) => {
       return res.status(400).json({ error: 'La contraseña debe tener al menos 8 caracteres' });
     }
 
-    const users = readDB('users.json');
-    if (users.find(u => u.username.toLowerCase() === username.toLowerCase())) {
+    const existingUser = await User.findOne({ where: { username: username.toLowerCase() } });
+    if (existingUser) {
       return res.status(400).json({ error: 'El usuario ya existe' });
     }
 
     const hashedPassword = bcrypt.hashSync(password, 10);
-    const newUser = {
-      id: Date.now().toString(),
-      username,
+    const newUser = await User.create({
+      username: username.toLowerCase(),
       password: hashedPassword,
-      firstName: firstName || '',
-      lastName: lastName || '',
+      gender: gender || 'unidentified',
+      level: level || 'principiante',
       role: 'student',
       status: 'active'
-    };
-    users.push(newUser);
-    writeDB('users.json', users);
+    });
 
-    const { password: _, ...userWithoutPassword } = newUser;
-    res.json(userWithoutPassword);
+    // Initialize empty questionnaire
+    await Questionnaire.create({ userId: newUser.id });
+
+    const userResponse = newUser.toJSON();
+    delete userResponse.password;
+    res.json(userResponse);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
 });
 
-router.post('/login-user', (req, res) => {
+router.post('/login-user', async (req, res) => {
   try {
     const { username, password } = req.body;
-    const users = readDB('users.json');
-    const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+    const user = await User.findOne({
+      where: { username: username.toLowerCase() },
+      include: [Questionnaire]
+    });
 
     if (!user || !bcrypt.compareSync(password, user.password)) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
@@ -55,8 +58,12 @@ router.post('/login-user', (req, res) => {
       return res.status(403).json({ error: `Tu cuenta está ${user.status === 'banned' ? 'baneada' : 'pausada'}.` });
     }
 
-    const { password: _, ...userWithoutPassword } = user;
-    res.json(userWithoutPassword);
+    user.lastLogin = new Date();
+    await user.save();
+
+    const userResponse = user.toJSON();
+    delete userResponse.password;
+    res.json(userResponse);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }

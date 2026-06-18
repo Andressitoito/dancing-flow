@@ -1,68 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import useStore from './store/useStore';
-import EditorView from './components/EditorView';
-import ChoreoViewerView from './components/ChoreoViewerView';
+import HomeView from './components/HomeView';
 import LoginView from './components/LoginView';
-import VideoListView from './components/VideoListView';
-
-import { AlertCircle } from 'lucide-react';
+import StudentProfileView from './components/StudentProfileView';
+import StudentTrainingView from './components/StudentTrainingView';
+import AdminControlView from './components/AdminControlView';
 
 function App() {
-  const { user, fetchInitialData, loading, stopPlayback, backendStatus } = useStore();
-  const [activeTab, setActiveTab] = useState('videos');
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const { user, fetchInitialData, loading } = useStore();
+  const [activeTab, setActiveTab] = useState('home');
 
   useEffect(() => {
     fetchInitialData();
   }, [fetchInitialData]);
 
-  // Stop playback when switching away from Viewer
-  useEffect(() => {
-    if (activeTab !== 'viewer') {
-      stopPlayback();
-    }
-  }, [activeTab, stopPlayback]);
-
-  // Handle protected tabs
   const handleTabChange = (tab) => {
-    if ((tab === 'editor' || tab === 'steps') && !user) {
+    if (!user && ['profile', 'training', 'admin'].includes(tab)) {
       setActiveTab('login');
       return;
     }
     setActiveTab(tab);
   };
-
-  if (backendStatus === 'error') {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen bg-background text-white p-6 text-center space-y-4">
-        <AlertCircle size={64} className="text-primary animate-pulse" />
-        <h2 className="text-2xl font-bold">Error de Conectividad</h2>
-        <p className="text-zinc-500 max-w-xs">
-          El servidor Node.js no está respondiendo correctamente (Error 405 o Fallo de Red).
-          Esto sucede porque el Proxy (Nginx) está intentando servir las rutas de la API como archivos estáticos.
-        </p>
-        <div className="bg-surface p-4 rounded-xl text-left border border-outline space-y-2">
-           <p className="text-[10px] font-black text-primary uppercase">Solución Requerida:</p>
-           <p className="text-[10px] text-zinc-400 font-mono">
-             Debes configurar un location /backend-service/ en tu Nginx que haga proxy_pass al puerto 3001.
-           </p>
-        </div>
-        <button
-          onClick={() => window.location.reload()}
-          className="bg-primary px-6 py-2 rounded-xl font-bold"
-        >
-          Reintentar
-        </button>
-      </div>
-    );
-  }
 
   if (loading) {
     return (
@@ -74,39 +33,23 @@ function App() {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'editor':
-        return <EditorView />;
-      case 'viewer':
-        return <ChoreoViewerView onTabChange={handleTabChange} />;
-      case 'videos':
-        return <VideoListView />;
+      case 'home':
+        return <HomeView />;
       case 'login':
-        return <LoginView />;
+        return <LoginView onLoginSuccess={() => setActiveTab('profile')} />;
+      case 'profile':
+        return <StudentProfileView />;
+      case 'training':
+        return <StudentTrainingView />;
+      case 'admin':
+        return <AdminControlView />;
       default:
-        return <EditorView />;
+        return <HomeView />;
     }
-  };
-
-  const backgrounds = {
-    editor: '/assets/backgrounds/bg-editor.jpg',
-    viewer: '/assets/backgrounds/bg-viewer.jpg',
-    videos: '/assets/backgrounds/bg-videos.jpg',
-    login: '/assets/backgrounds/bg-account.jpg'
   };
 
   return (
     <div className="min-h-screen bg-background text-white pb-32">
-      {/* Dynamic Background */}
-      <div
-        className="fixed inset-0 z-0 transition-opacity duration-1000 bg-cover bg-center bg-no-repeat scale-110 pointer-events-none"
-        style={{
-          backgroundImage: `url(${backgrounds[activeTab] || backgrounds.login})`,
-          opacity: 0.6,
-          transform: `translateY(${-scrollY * 0.05}px) scale(1.1)`
-        }}
-      />
-
-      {/* Content Overlay */}
       <main className="max-w-md mx-auto relative z-10">
         {renderContent()}
       </main>

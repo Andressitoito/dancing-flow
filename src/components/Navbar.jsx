@@ -1,33 +1,43 @@
 import React from 'react';
-import { LayoutGrid, PlayCircle, Settings, User, Video, ShieldCheck } from 'lucide-react';
+import { Home, User, GraduationCap, LayoutGrid, LogIn } from 'lucide-react';
 import useStore from '../store/useStore';
 
 const Navbar = ({ activeTab, onTabChange }) => {
   const { user } = useStore();
 
-  const isPrivileged = user?.role === 'master' || user?.role === 'moderator';
-
   const tabs = [
-    { id: 'viewer', name: 'Visor', icon: PlayCircle },
-    { id: 'videos', name: 'Clases', icon: Video },
-    ...(user ? [{ id: 'editor', name: 'Editor', icon: LayoutGrid }] : []),
-    { id: 'login', name: 'Cuenta', icon: User },
+    { id: 'home', icon: Home, label: 'Inicio' },
   ];
 
+  if (!user) {
+    tabs.push({ id: 'login', icon: LogIn, label: 'Entrar' });
+  } else {
+    if (user.role === 'master' || user.role === 'moderator') {
+      tabs.push({ id: 'admin', icon: LayoutGrid, label: 'Master' });
+    } else {
+      tabs.push({ id: 'profile', icon: User, label: 'Mi Perfil' });
+      tabs.push({ id: 'training', icon: GraduationCap, label: 'Clases' });
+    }
+  }
+
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-surface/90 backdrop-blur-lg border-t border-outline/60 px-2 py-2 flex justify-around items-center z-50 shadow-[0_-4px_30px_rgba(0,0,0,0.5)]">
-      {tabs.map((tab) => (
-        <button
-          key={tab.id}
-          onClick={() => onTabChange(tab.id)}
-          className={`flex flex-col items-center min-w-[64px] p-2 rounded-2xl transition-all duration-300 ${
-            activeTab === tab.id ? 'text-primary bg-primary/5 scale-105' : 'text-zinc-500'
-          }`}
-        >
-          <tab.icon size={22} strokeWidth={activeTab === tab.id ? 2.5 : 2} />
-          <span className="text-[9px] mt-1.5 font-black uppercase tracking-widest">{tab.name}</span>
-        </button>
-      ))}
+    <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-surface-glass backdrop-blur-2xl border border-outline rounded-3xl p-2 z-50 shadow-2xl flex justify-around items-center">
+      {tabs.map((tab) => {
+        const Icon = tab.icon;
+        const isActive = activeTab === tab.id;
+        return (
+          <button
+            key={tab.id}
+            onClick={() => onTabChange(tab.id)}
+            className={`flex flex-col items-center justify-center w-14 h-14 rounded-2xl transition-all duration-300 ${
+              isActive ? 'bg-primary text-background scale-110 shadow-lg' : 'text-zinc-500 hover:text-primary'
+            }`}
+          >
+            <Icon size={24} strokeWidth={isActive ? 3 : 2} />
+            <span className="text-[10px] font-bold mt-1 uppercase">{tab.label}</span>
+          </button>
+        );
+      })}
     </nav>
   );
 };

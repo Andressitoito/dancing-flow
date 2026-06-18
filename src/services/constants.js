@@ -28,6 +28,8 @@ export const APP_PALETTES = {
   }
 };
 
+export const API_BASE_URL = '/backend-service';
+
 export const APP_COLORS = [
   '#e11d48', // Rose
   '#fbbf24', // Amber

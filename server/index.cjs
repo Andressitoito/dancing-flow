@@ -1,88 +1,76 @@
 const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
 const cors = require('cors');
-const bodyParser = require('body-parser');
-const fs = require('fs');
 const path = require('path');
+const sequelize = require('./config/database.cjs');
+require('./models/index.cjs'); // Initialize associations
 
 const app = express();
-const PORT = process.env.PORT || 3001;
-
-// Routes
-const authRoutes = require('./routes/auth.cjs');
-const choreosRoutes = require('./routes/choreos.cjs');
-const adminRoutes = require('./routes/admin.cjs');
-const videoRoutes = require('./routes/videos.cjs');
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
 
 app.use(cors());
-app.use(bodyParser.json({ limit: '100mb' }));
-app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Serve uploads
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+// Static files
+const buildPath = path.join(__dirname, '../dist');
+app.use(express.static(buildPath));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// Request Logger
-app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  next();
-});
+// Routes (to be implemented)
+const authRoutes = require('./routes/auth.cjs');
+const userRoutes = require('./routes/users.cjs');
+const studyRoutes = require('./routes/study.cjs');
 
-const { readDB, writeDB } = require('./routes/db.cjs');
+app.use('/backend-service/auth', authRoutes);
+app.use('/backend-service/users', userRoutes);
+app.use('/backend-service/study', studyRoutes);
 
+// Socket.io logic
+const onlineUsers = new Map();
 
-if (readDB('videos.json').length === 0) {
-  writeDB('videos.json', [
-    {
-      id: 'demo-video',
-      title: 'Demo de Bienvenida',
-      url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
-      level: 'principiante',
-      userId: 'system',
-      creatorName: 'Dancing Flow'
+io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
+
+  socket.on('authenticate', (userId) => {
+    onlineUsers.set(userId, socket.id);
+    io.emit('online_users', Array.from(onlineUsers.keys()));
+  });
+
+  socket.on('disconnect', () => {
+    for (let [userId, socketId] of onlineUsers.entries()) {
+      if (socketId === socket.id) {
+        onlineUsers.delete(userId);
+        break;
+      }
     }
-  ]);
-}
+    io.emit('online_users', Array.from(onlineUsers.keys()));
+    console.log('User disconnected');
+  });
 
-const apiRouter = express.Router();
-
-// Health Check
-apiRouter.get('/ping', (req, res) => {
-  res.json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+  socket.on('send_message', (data) => {
+    // Logic for real-time replies
+    io.emit('new_message', data);
   });
 });
 
-// API Routes
-apiRouter.use('/', authRoutes);
-apiRouter.use('/choreos', choreosRoutes);
-apiRouter.use('/admin', adminRoutes);
-apiRouter.use('/videos', videoRoutes);
-
-// Mount the router on both the prefix and the root
-app.use('/backend-service', apiRouter);
-app.use('/', apiRouter);
-
-// Serve static files
-const buildPath = path.join(__dirname, '..', 'build');
-if (fs.existsSync(buildPath)) {
-  app.use(express.static(buildPath));
-
-  // SPA fallback: any route that isn't an API route and didn't match a static file
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(buildPath, 'index.html'));
-  });
-}
-
-// Global Error Handler
-app.use((err, req, res, next) => {
-  console.error('Server Error:', err);
-  res.status(500).json({
-    error: 'Error interno del servidor',
-    message: err.message
-  });
+// Fallback to React
+app.get('*', (req, res) => {
+  res.sendFile(path.join(buildPath, 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`Dancing Flow Monolith running on port ${PORT}`);
+const PORT = process.env.PORT || 3001;
+
+sequelize.sync({ force: false }).then(() => {
+  console.log('Database synced');
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 });
