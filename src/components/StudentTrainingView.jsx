@@ -7,6 +7,9 @@ const StudentTrainingView = () => {
   const { assignments, fetchAssignments, postReply, user } = useStore();
   const [selectedAssignment, setSelectedAssignment] = useState(null);
   const [replyText, setReplyText] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioBlob, setAudioBlob] = useState(null);
+  const mediaRecorderRef = useRef(null);
   const chatEndRef = useRef(null);
 
   useEffect(() => {
@@ -20,11 +23,39 @@ const StudentTrainingView = () => {
   }, [selectedAssignment?.Replies]);
 
   const handleSendReply = async () => {
-    if (!replyText.trim()) return;
-    await postReply(selectedAssignment.id, replyText);
+    if (!replyText.trim() && !audioBlob) return;
+    await postReply(selectedAssignment.id, replyText, audioBlob);
     setReplyText('');
-    // Re-fetch to get the updated assignment with new reply
+    setAudioBlob(null);
     fetchAssignments();
+  };
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      const chunks = [];
+
+      mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
+        setAudioBlob(blob);
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (err) {
+      console.error("Error accessing microphone:", err);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+    }
   };
 
   if (!selectedAssignment) {
@@ -135,7 +166,13 @@ const StudentTrainingView = () => {
             placeholder="Escribe tu duda o réplica..."
             className="flex-1 bg-transparent text-sm outline-none"
           />
-          <button className="p-2 text-zinc-500">
+          <button
+            onMouseDown={startRecording}
+            onMouseUp={stopRecording}
+            onTouchStart={startRecording}
+            onTouchEnd={stopRecording}
+            className={`p-2 transition-colors ${isRecording ? 'text-primary animate-pulse' : audioBlob ? 'text-green-500' : 'text-zinc-500'}`}
+          >
             <Mic size={20} />
           </button>
           <button

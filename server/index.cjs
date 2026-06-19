@@ -29,9 +29,15 @@ const authRoutes = require('./routes/auth.cjs');
 const userRoutes = require('./routes/users.cjs');
 const studyRoutes = require('./routes/study.cjs');
 
-app.use('/backend-service/auth', authRoutes);
-app.use('/backend-service/users', userRoutes);
-app.use('/backend-service/study', studyRoutes);
+// Register routes both with and without prefix to support different Nginx proxy configurations
+const registerRoutes = (path, router) => {
+  app.use(path, router);
+  app.use(`/backend-service${path}`, router);
+};
+
+registerRoutes('/auth', authRoutes);
+registerRoutes('/users', userRoutes);
+registerRoutes('/study', studyRoutes);
 
 // Socket.io logic
 const onlineUsers = new Map();
@@ -56,7 +62,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('send_message', (data) => {
-    // Logic for real-time replies
+    // In a production app, you'd use rooms for privacy (socket.to(assignmentId).emit(...))
+    // For now, we emit to everyone and filter client-side for simplicity in this MVP
     io.emit('new_message', data);
   });
 });

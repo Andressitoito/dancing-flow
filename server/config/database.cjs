@@ -1,19 +1,33 @@
 const { Sequelize } = require('sequelize');
 const path = require('path');
 
-// To switch to MariaDB, uncomment the following and comment the SQLite part:
-/*
-const sequelize = new Sequelize('dancing_flow', 'user', 'password', {
-  host: 'localhost',
-  dialect: 'mariadb',
-  logging: false,
-});
-*/
+const dialect = process.env.DB_DIALECT || 'sqlite';
 
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: path.join(__dirname, '../../db/database.sqlite'),
-  logging: false,
-});
+let sequelize;
+
+if (dialect === 'mariadb' || dialect === 'mysql') {
+  sequelize = new Sequelize(
+    process.env.DB_NAME || 'dancing_flow',
+    process.env.DB_USER || 'root',
+    process.env.DB_PASS || '',
+    {
+      host: process.env.DB_HOST || 'localhost',
+      dialect: dialect,
+      logging: false,
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+      }
+    }
+  );
+} else {
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: path.join(__dirname, '../../db/database.sqlite'),
+    logging: false,
+  });
+}
 
 module.exports = sequelize;

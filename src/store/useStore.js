@@ -22,6 +22,7 @@ const useStore = create((set, get) => ({
 
   setPalette: (p) => {
     set({ palette: p });
+    localStorage.setItem('dancing_palette', JSON.stringify(p));
     document.documentElement.style.setProperty('--primary', p.primary);
     document.documentElement.style.setProperty('--secondary', p.secondary);
     document.documentElement.style.setProperty('--accent', p.accent);
@@ -32,6 +33,23 @@ const useStore = create((set, get) => ({
 
   fetchInitialData: async () => {
     set({ loading: true });
+
+    // Initial Palette setup
+    const savedPalette = localStorage.getItem('dancing_palette');
+    if (savedPalette) {
+      get().setPalette(JSON.parse(savedPalette));
+    } else {
+      get().setPalette(get().palette);
+    }
+
+    // Restore Session
+    const savedUser = localStorage.getItem('dancing_user');
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      set({ user, questionnaire: user.Questionnaire });
+      get().initSocket(user.id);
+    }
+
     try {
       const usersRes = await fetch(`${API_BASE_URL}/users/all`);
       const users = await usersRes.json();
@@ -53,6 +71,7 @@ const useStore = create((set, get) => ({
       const data = await res.json();
       if (res.ok) {
         set({ user: data, questionnaire: data.Questionnaire });
+        localStorage.setItem('dancing_user', JSON.stringify(data));
         get().initSocket(data.id);
         return { success: true };
       }
@@ -72,6 +91,7 @@ const useStore = create((set, get) => ({
       const data = await res.json();
       if (res.ok) {
         set({ user: data });
+        localStorage.setItem('dancing_user', JSON.stringify(data));
         get().initSocket(data.id);
         return { success: true };
       }
@@ -84,18 +104,29 @@ const useStore = create((set, get) => ({
   logout: () => {
     const { socket } = get();
     if (socket) socket.disconnect();
+    localStorage.removeItem('dancing_user');
     set({ user: null, questionnaire: null, socket: null });
   },
 
   initSocket: (userId) => {
-    // Determine socket URL based on environment
-    const socketUrl = window.location.port === '5173'
-      ? `http://${window.location.hostname}:3001`
-      : window.location.origin;
-
-    const socket = io(socketUrl);
+    const socket = io(window.location.origin);
     socket.emit('authenticate', userId);
     socket.on('online_users', (list) => set({ onlineUsers: list }));
+
+    // Listen for new messages to update state in real-time
+    socket.on('new_message', (reply) => {
+      const { assignments } = get();
+      const updated = assignments.map(a => {
+        if (a.id === reply.assignmentId) {
+          // Check if reply already exists to avoid duplicates
+          if (a.Replies?.some(r => r.id === reply.id)) return a;
+          return { ...a, Replies: [...(a.Replies || []), reply] };
+        }
+        return a;
+      });
+      set({ assignments: updated });
+    });
+
     set({ socket });
   },
 
@@ -118,7 +149,7 @@ const useStore = create((set, get) => ({
   },
 
   postReply: async (assignmentId, content, audioFile = null) => {
-    const { user } = get();
+    const { user, socket } = get();
     const formData = new FormData();
     formData.append('assignmentId', assignmentId);
     formData.append('userId', user.id);
@@ -130,6 +161,11 @@ const useStore = create((set, get) => ({
       body: formData
     });
     const newReply = await res.json();
+
+    // Emit via socket for real-time
+    if (socket) {
+      socket.emit('send_message', { ...newReply, User: { username: user.username, role: user.role } });
+    }
 
     const { assignments } = get();
     const updated = assignments.map(a => {

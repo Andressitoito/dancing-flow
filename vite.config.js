@@ -14,12 +14,18 @@ export default defineConfig({
       ],
     },
   },
+  build: {
+    outDir: 'build'
+  },
   server: {
     proxy: {
       '/backend-service': {
         target: 'http://localhost:3001',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/backend-service/, '/backend-service')
+        changeOrigin: true
+      },
+      '/uploads': {
+        target: 'http://localhost:3001',
+        changeOrigin: true
       }
     },
     watch: {
