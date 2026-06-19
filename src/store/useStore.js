@@ -248,14 +248,20 @@ const useStore = create((set, get) => ({
     const { user } = get();
     if (!user) return;
     const updated = await api.likeChoreo(id, user.id);
-    set(state => ({ choreos: state.choreos.map(c => c.id === id ? updated : c) }));
+    set(state => ({
+      choreos: state.choreos.map(c => c.id === id ? updated : c),
+      currentChoreo: state.currentChoreo.id === id ? updated : state.currentChoreo
+    }));
   },
 
   favoriteChoreo: async (id) => {
     const { user } = get();
     if (!user) return;
     const updated = await api.favoriteChoreo(id, user.id);
-    set(state => ({ choreos: state.choreos.map(c => c.id === id ? updated : c) }));
+    set(state => ({
+      choreos: state.choreos.map(c => c.id === id ? updated : c),
+      currentChoreo: state.currentChoreo.id === id ? updated : state.currentChoreo
+    }));
   },
 
   resetChoreo: () => {

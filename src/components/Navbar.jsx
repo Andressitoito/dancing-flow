@@ -20,12 +20,12 @@ const Navbar = ({ activeTab, onTabChange }) => {
         <button
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
-          className={`flex flex-col items-center min-w-[64px] p-2 rounded-2xl transition-all duration-300 ${
+          className={`flex-1 flex flex-col items-center py-1.5 rounded-xl transition-all duration-300 ${
             activeTab === tab.id ? 'text-primary bg-primary/5 scale-105' : 'text-zinc-500'
           }`}
         >
-          <tab.icon size={22} strokeWidth={activeTab === tab.id ? 2.5 : 2} />
-          <span className="text-[9px] mt-1.5 font-black uppercase tracking-widest">{tab.name}</span>
+          <tab.icon size={20} strokeWidth={activeTab === tab.id ? 2.5 : 2} />
+          <span className="text-[10px] mt-1 font-black uppercase tracking-widest">{tab.name}</span>
         </button>
       ))}
     </nav>

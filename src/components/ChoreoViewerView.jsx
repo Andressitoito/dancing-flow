@@ -12,7 +12,7 @@ const ChoreoViewerView = ({ onTabChange }) => {
   const {
     choreos, user, loadChoreo, currentChoreo, resetChoreo,
     activeSlot, setActiveSlot, isPlaying, startPlayback, pausePlayback, stopPlayback,
-    likeChoreo, favoriteChoreo
+    likeChoreo, favoriteChoreo, copyChoreo
   } = useStore();
 
   const [view, setView] = useState('explorer'); // explorer, player
@@ -48,70 +48,70 @@ const ChoreoViewerView = ({ onTabChange }) => {
   };
 
   const renderExplorer = () => (
-    <div className="p-4 space-y-6">
-      <div className="space-y-1">
-        <h2 className="text-3xl font-black uppercase tracking-tighter text-white">Explorar</h2>
-        <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Coreografías de la Comunidad</p>
+    <div className="p-1 space-y-1.5">
+      <div className="space-y-0 px-1">
+        <h2 className="text-lg font-black uppercase tracking-tighter text-white">Explorar</h2>
+        <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Coreografías de la Comunidad</p>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-1.5 px-1">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={18} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
           <input
-            placeholder="Buscar por nombre o autor..."
-            className="w-full bg-surface/50 border border-outline/60 rounded-2xl py-3 pl-10 pr-4 text-xs focus:border-primary outline-none"
+            placeholder="Buscar..."
+            className="w-full bg-surface/50 border border-outline/60 rounded-xl py-1.5 pl-9 pr-3 text-xs focus:border-primary outline-none"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
           />
         </div>
-        <div className="flex gap-1 bg-surface/50 p-1 rounded-2xl border border-outline/60">
+        <div className="flex gap-1 bg-surface/50 p-1 rounded-xl border border-outline/60">
            {['all', 'principiante', 'intermedio', 'avanzado'].map(d => (
              <button
                key={d}
                onClick={() => setFilterDifficulty(d)}
-               className={`w-8 h-8 rounded-xl flex items-center justify-center text-[10px] font-black uppercase transition-all ${
+               className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black uppercase transition-all ${
                  filterDifficulty === d ? 'bg-primary text-white' : 'text-zinc-500'
                }`}
              >
-               {d === 'all' ? <Filter size={14} /> : d.charAt(0).toUpperCase()}
+               {d === 'all' ? <Filter size={12} /> : d.charAt(0).toUpperCase()}
              </button>
            ))}
         </div>
       </div>
 
-      <div className="grid gap-3">
+      <div className="grid gap-1">
         {filteredChoreos.map(choreo => (
           <div
             key={choreo.id}
             onClick={() => handleOpenChoreo(choreo)}
-            className="bg-surface/40 backdrop-blur-xl border border-outline/60 p-4 rounded-3xl flex items-center gap-4 group active:scale-95 transition-all"
+            className="bg-surface/40 backdrop-blur-xl border border-outline/60 p-1 rounded-xl flex items-center gap-2 group active:scale-95 transition-all"
           >
             <div
-              className="w-14 h-14 rounded-2xl flex flex-col items-center justify-center text-white shadow-xl shrink-0"
+              className="w-9 h-9 rounded-lg flex flex-col items-center justify-center text-white shadow-xl shrink-0"
               style={{ backgroundColor: choreo.color }}
             >
-              <span className="text-[10px] font-black uppercase">{choreo.difficulty?.substring(0, 3)}</span>
-              <Zap size={14} className="mt-0.5 opacity-60" />
+              <span className="text-[10px] font-black uppercase">{choreo.difficulty?.substring(0, 1)}</span>
+              <Zap size={10} className="mt-0 opacity-60" />
             </div>
 
             <div className="flex-1 min-w-0">
-              <h4 className="font-black text-sm text-white truncate uppercase tracking-tight">{choreo.title}</h4>
-              <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-tighter truncate mt-0.5">
-                Por {choreo.creatorName || 'Usuario'} • {choreo.measures} Compases
+              <h4 className="font-black text-xs text-white truncate uppercase tracking-tight">{choreo.title}</h4>
+              <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-tighter truncate">
+                Por {choreo.creatorName || 'Usuario'} • {choreo.measures} Comp.
               </p>
-              <div className="flex gap-3 mt-2">
-                 <span className="flex items-center gap-1 text-[9px] font-black text-zinc-400">
-                    <Heart size={10} className={choreo.likes?.includes(user?.id) ? 'text-primary fill-primary' : ''} />
+              <div className="flex gap-2 mt-0.5">
+                 <span className="flex items-center gap-1 text-[10px] font-black text-zinc-400">
+                    <Heart size={8} className={choreo.likes?.includes(user?.id) ? 'text-primary fill-primary' : ''} />
                     {choreo.likes?.length || 0}
                  </span>
-                 <span className="flex items-center gap-1 text-[9px] font-black text-zinc-400">
-                    <Star size={10} className={choreo.favorites?.includes(user?.id) ? 'text-amber-500 fill-amber-500' : ''} />
+                 <span className="flex items-center gap-1 text-[10px] font-black text-zinc-400">
+                    <Star size={8} className={choreo.favorites?.includes(user?.id) ? 'text-amber-500 fill-amber-500' : ''} />
                     {choreo.favorites?.length || 0}
                  </span>
               </div>
             </div>
 
-            <ChevronRight className="text-zinc-700 group-hover:text-primary transition-colors" />
+            <ChevronRight className="text-zinc-700 group-hover:text-primary transition-colors mr-1" size={16} />
           </div>
         ))}
       </div>
@@ -157,46 +157,58 @@ const ChoreoViewerView = ({ onTabChange }) => {
     const measureSlots = Array.from({ length: 8 }, (_, i) => currentMeasure * 8 + i);
 
     return (
-      <div className="flex flex-col min-h-screen bg-black/20 backdrop-blur-sm pb-40">
+      <div className="flex flex-col min-h-screen bg-surface/40 backdrop-blur-xl pb-32">
         {/* Header */}
-        <div className="p-6 pt-10 flex items-center justify-between">
+        <div className="p-1 flex items-center justify-between border-b border-outline/60 bg-black/20">
           <button
             onClick={() => { setView('explorer'); stopPlayback(); }}
-            className="p-2 text-white/70 hover:text-white transition-colors"
+            className="p-1 text-white/70 hover:text-white transition-colors"
           >
-            <ChevronRight size={28} className="rotate-180" />
+            <ChevronRight size={20} className="rotate-180" />
           </button>
-          <div className="text-center flex-1 truncate px-4">
-            <h2 className="text-xl font-black uppercase tracking-tight text-white truncate">{currentChoreo.title}</h2>
+          <div className="text-center flex-1 truncate px-1">
+            <h2 className="text-lg font-black uppercase tracking-tight text-white truncate leading-none">{currentChoreo.title}</h2>
             <p className="text-[10px] font-black uppercase tracking-widest mt-0.5">
               <span className="text-rose-500">AUTOR:</span> <span className="text-white opacity-80">{currentChoreo.creatorName || 'DESCONOCIDO'}</span>
             </p>
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-1">
              <button
-               onClick={() => {
-                 api.saveChoreo({ ...currentChoreo, id: null, title: `${currentChoreo.title} (Copia)` }, user?.id, user?.username)
-                    .then(() => Swal.fire({ title: 'Copiado', icon: 'success', timer: 1500, showConfirmButton: false, background: '#18181b', color: '#fff' }));
+               onClick={async () => {
+                 try {
+                   await copyChoreo(currentChoreo);
+                   Swal.fire({
+                     title: 'Copiado',
+                     text: 'La coreografía ha sido copiada',
+                     icon: 'success',
+                     timer: 1500,
+                     showConfirmButton: false,
+                     background: '#18181b',
+                     color: '#fff'
+                   });
+                 } catch (e) {
+                   Swal.fire({ title: 'Error', text: e.message, icon: 'error', background: '#18181b', color: '#fff' });
+                 }
                }}
-               className="text-white/70 hover:text-white transition-colors"
+               className="text-white/70 hover:text-white transition-colors p-1"
              >
-               <Copy size={20} />
+               <Copy size={18} />
              </button>
-             <button onClick={() => likeChoreo(currentChoreo.id)} className={currentChoreo.likes?.includes(user?.id) ? 'text-rose-500' : 'text-white/70 hover:text-white'}>
-               <Heart size={20} fill={currentChoreo.likes?.includes(user?.id) ? 'currentColor' : 'none'} />
+             <button onClick={() => likeChoreo(currentChoreo.id)} className={`transition-all p-1 ${currentChoreo.likes?.includes(user?.id) ? 'text-rose-500 scale-110' : 'text-white/70'}`}>
+               <Heart size={18} fill={currentChoreo.likes?.includes(user?.id) ? 'currentColor' : 'none'} />
              </button>
-             <button onClick={() => favoriteChoreo(currentChoreo.id)} className={currentChoreo.favorites?.includes(user?.id) ? 'text-amber-500' : 'text-white/70 hover:text-white'}>
-               <Star size={20} fill={currentChoreo.favorites?.includes(user?.id) ? 'currentColor' : 'none'} />
+             <button onClick={() => favoriteChoreo(currentChoreo.id)} className={`transition-all p-1 ${currentChoreo.favorites?.includes(user?.id) ? 'text-amber-500 scale-110' : 'text-white/70'}`}>
+               <Star size={18} fill={currentChoreo.favorites?.includes(user?.id) ? 'currentColor' : 'none'} />
              </button>
           </div>
         </div>
 
         {/* Visualizer (Grid 2x8) */}
-        <div className="px-4 py-8 space-y-3">
+        <div className="px-1 py-1 space-y-0.5">
           {/* Blocks Row */}
-          <div className="flex gap-2">
+          <div className="flex gap-0.5">
             {[0, 4].map(startOffset => (
-               <div key={startOffset} className="grid grid-cols-4 gap-1.5 flex-1">
+               <div key={startOffset} className="grid grid-cols-4 gap-0.5 flex-1">
                  {Array.from({ length: 4 }).map((_, i) => {
                    const slotIdx = measureSlots[startOffset + i];
                    const block = currentChoreo.sequence.find(b => b.slotIndex === slotIdx);
@@ -215,20 +227,20 @@ const ChoreoViewerView = ({ onTabChange }) => {
                        onTouchEnd={handleLongPressEnd}
                        style={{
                          gridColumn: block ? `span ${Math.min(block.duration, 4 - i)}` : 'span 1',
-                         backgroundColor: block ? block.color : 'rgba(255,255,255,0.06)'
+                         backgroundColor: block ? block.color : 'rgba(255,255,255,0.04)'
                        }}
                        className={`
-                         h-20 rounded-xl flex items-center justify-center transition-all duration-150 relative border
-                         ${isActive ? 'border-primary shadow-[0_0_40px_rgba(225,29,72,0.4)] z-10' : 'border-white/5'}
+                         h-10 rounded-lg flex items-center justify-center transition-all duration-150 relative border
+                         ${isActive ? 'border-primary shadow-[0_0_20px_rgba(225,29,72,0.4)] z-10' : 'border-white/5'}
                        `}
                      >
                        {block && (
-                         <span className="text-[7px] font-black text-white uppercase truncate px-1 text-center drop-shadow-md leading-tight">
+                         <span className="text-[10px] font-black text-white uppercase truncate px-1 text-center drop-shadow-md leading-tight">
                            {block.name}
                          </span>
                        )}
                        {isActive && (
-                         <div className="absolute inset-0 bg-primary/20 animate-pulse rounded-xl" />
+                         <div className="absolute inset-0 bg-primary/20 animate-pulse rounded-lg" />
                        )}
                      </div>
                    );
@@ -238,20 +250,20 @@ const ChoreoViewerView = ({ onTabChange }) => {
           </div>
 
           {/* Numbers Row */}
-          <div className="flex gap-2">
+          <div className="flex gap-0.5">
             {[0, 4].map(startOffset => (
-               <div key={startOffset} className="grid grid-cols-4 gap-1.5 flex-1">
+               <div key={startOffset} className="grid grid-cols-4 gap-0.5 flex-1">
                  {Array.from({ length: 4 }).map((_, i) => {
                    const slotIdx = measureSlots[startOffset + i];
                    const isActive = activeSlot === slotIdx;
                    return (
                      <div
                        key={slotIdx}
-                       className={`h-14 flex items-center justify-center rounded-xl border transition-all duration-150
-                         ${isActive ? 'bg-primary/40 border-primary shadow-[0_0_20px_rgba(225,29,72,0.3)]' : 'bg-white/5 border-white/5'}
+                       className={`h-6 flex items-center justify-center rounded-lg border transition-all duration-150
+                         ${isActive ? 'bg-primary/40 border-primary shadow-[0_0_15px_rgba(225,29,72,0.3)]' : 'bg-white/5 border-white/5'}
                        `}
                      >
-                       <span className={`text-base font-black ${isActive ? 'text-white' : 'text-white/20'}`}>{(slotIdx % 8) + 1}</span>
+                       <span className={`text-[10px] font-black ${isActive ? 'text-white' : 'text-white/20'}`}>{(slotIdx % 8) + 1}</span>
                      </div>
                    );
                  })}
@@ -261,43 +273,43 @@ const ChoreoViewerView = ({ onTabChange }) => {
         </div>
 
         {/* Detail Card */}
-        <div className="flex-1 px-4 mb-4">
-          <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-8 space-y-8 shadow-2xl min-h-[340px] flex flex-col">
+        <div className="flex-1 px-1 mb-1">
+          <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-xl p-2 space-y-1.5 shadow-2xl min-h-[140px] flex flex-col">
             {activeBlock ? (
               <>
-                <div className="flex items-center gap-5">
+                <div className="flex items-center gap-1.5">
                   <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-2xl shrink-0"
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-sm shadow-2xl shrink-0"
                     style={{ backgroundColor: activeBlock.color }}
                   >
                     {activeBlock.duration}T
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-2xl font-black uppercase text-white tracking-tight leading-none truncate">{activeBlock.name}</h3>
-                    <p className="text-xs font-bold text-zinc-500 uppercase tracking-[0.2em] mt-2">
+                    <h3 className="text-base font-black uppercase text-white tracking-tight leading-none truncate">{activeBlock.name}</h3>
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mt-0.5">
                       {currentChoreo.difficulty || 'PRINCIPIANTE'} • BASE
                     </p>
                   </div>
                 </div>
 
-                <div className="space-y-8 flex-1">
-                  <div className="space-y-3">
-                     <div className="flex items-center gap-2 text-rose-500">
-                        <Info size={14} className="shrink-0" />
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">Líder</span>
+                <div className="space-y-1.5 flex-1 overflow-y-auto">
+                  <div className="space-y-0">
+                     <div className="flex items-center gap-1.5 text-rose-500">
+                        <Info size={10} className="shrink-0" />
+                        <span className="text-[9px] font-black uppercase tracking-widest">Líder</span>
                      </div>
-                     <p className="text-sm text-white font-medium italic leading-relaxed opacity-95">
-                       "{activeBlock.leadInstructions || 'Inicia con pie izquierdo hacia la izquierda (1), cierra (2), abre (3), tap con derecha (4).'}"
+                     <p className="text-sm text-white font-medium italic leading-snug opacity-95">
+                       "{activeBlock.leadInstructions || 'Paso básico'}"
                      </p>
                   </div>
 
-                  <div className="space-y-3">
-                     <div className="flex items-center gap-2 text-amber-400">
-                        <Info size={14} className="shrink-0" />
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">Follower</span>
+                  <div className="space-y-0">
+                     <div className="flex items-center gap-1.5 text-amber-400">
+                        <Info size={10} className="shrink-0" />
+                        <span className="text-[9px] font-black uppercase tracking-widest">Follower</span>
                      </div>
-                     <p className="text-sm text-white font-medium italic leading-relaxed opacity-95">
-                       "{activeBlock.followerInstructions || 'Espejo: Inicia con pie derecho hacia su derecha, cierra, abre, tap con izquierda.'}"
+                     <p className="text-sm text-white font-medium italic leading-snug opacity-95">
+                       "{activeBlock.followerInstructions || 'Paso básico espejo'}"
                      </p>
                   </div>
                 </div>
@@ -311,39 +323,39 @@ const ChoreoViewerView = ({ onTabChange }) => {
         </div>
 
         {/* Playback Controls */}
-        <div className="fixed bottom-24 left-4 right-4 z-40">
-           <div className="bg-black/60 backdrop-blur-3xl border border-white/10 rounded-full p-4 flex items-center justify-between shadow-2xl">
-              <div className="flex items-center gap-4">
+        <div className="fixed bottom-[72px] left-1 right-1 z-40">
+           <div className="bg-black/90 backdrop-blur-3xl border border-white/10 rounded-xl p-2 flex items-center justify-between shadow-2xl">
+              <div className="flex items-center gap-1">
                  <button
                    onClick={isPlaying ? pausePlayback : () => startPlayback(bpm)}
-                   className="w-14 h-14 rounded-full bg-rose-500 flex items-center justify-center text-white shadow-lg shadow-rose-500/30 active:scale-90 transition-all"
+                   className="w-9 h-9 rounded-full bg-rose-500 flex items-center justify-center text-white shadow-lg shadow-rose-500/30 active:scale-90 transition-all"
                  >
-                   {isPlaying ? <Pause size={30} fill="white" /> : <Play size={30} fill="white" className="ml-1" />}
+                   {isPlaying ? <Pause size={18} fill="white" /> : <Play size={18} fill="white" className="ml-0.5" />}
                  </button>
                  <button
                    onClick={stopPlayback}
-                   className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-black active:scale-90 transition-all shadow-lg"
+                   className="w-7 h-7 rounded-lg bg-white flex items-center justify-center text-black active:scale-90 transition-all shadow-lg"
                  >
-                   <div className="w-3.5 h-3.5 bg-black rounded-sm" />
+                   <div className="w-2.5 h-2.5 bg-black rounded-sm" />
                  </button>
               </div>
 
-              <div className="flex flex-col items-center flex-1 px-8 min-w-0">
-                 <div className="flex items-center justify-between w-full mb-1 px-1">
-                    <span className="text-[10px] font-black text-white/50 uppercase tracking-widest">BPM: {bpm}</span>
+              <div className="flex flex-col items-center flex-1 px-2 min-w-0">
+                 <div className="flex items-center justify-between w-full mb-0.5 px-1">
+                    <span className="text-[9px] font-black text-white uppercase tracking-widest">BPM: {bpm}</span>
                  </div>
                  <input
                    type="range" min="60" max="180" value={bpm}
                    onChange={(e) => setBpm(parseInt(e.target.value))}
-                   className="w-full accent-rose-500 h-1 bg-white/10 rounded-full appearance-none cursor-pointer"
+                   className="w-full accent-rose-500 h-3 bg-white/10 rounded-full appearance-none cursor-pointer"
                  />
               </div>
 
               <button
                 onClick={() => setDisplayMode(prev => prev === 'linear' ? 'grid' : 'linear')}
-                className="bg-zinc-800/80 text-white/90 px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-white/10 active:scale-95 transition-all shadow-xl whitespace-nowrap mr-1"
+                className="bg-zinc-800/80 text-white/90 px-1.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border border-white/10 active:scale-95 transition-all shadow-xl whitespace-nowrap"
               >
-                MODO REJILLA
+                MODO
               </button>
            </div>
         </div>

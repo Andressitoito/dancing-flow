@@ -25,26 +25,26 @@ const BlockEditorModal = ({ block, onSave, onCancel }) => {
   ];
 
   return (
-    <div className="bg-zinc-900 border border-white/10 rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-6 animate-in fade-in zoom-in duration-200">
+    <div className="bg-zinc-900 border border-white/10 rounded-2xl p-3 w-full max-w-[320px] shadow-2xl space-y-1.5 animate-in fade-in zoom-in duration-200">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-black uppercase tracking-tight text-white">Editar Bloque</h3>
-        <button onClick={onCancel} className="text-zinc-500 hover:text-white"><X size={24} /></button>
+        <h3 className="text-base font-black uppercase tracking-tight text-white">Editar Bloque</h3>
+        <button onClick={onCancel} className="text-zinc-500 hover:text-white"><X size={18} /></button>
       </div>
 
-      <div className="space-y-4">
-        <div className="space-y-1">
-          <label className="text-[10px] font-black text-zinc-500 uppercase">Nombre del Paso</label>
+      <div className="space-y-1.5">
+        <div className="space-y-0.5">
+          <label className="text-[10px] font-black text-zinc-500 uppercase ml-1">Nombre del Paso</label>
           <input
             value={edited.name}
             onChange={e => setEdited({...edited, name: e.target.value})}
-            className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-sm focus:border-primary outline-none"
+            className="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm focus:border-primary outline-none"
             placeholder="Ej: Básico con giro"
           />
         </div>
 
-        <div className="space-y-1">
-          <label className="text-[10px] font-black text-zinc-500 uppercase">Colores</label>
-          <div className="flex gap-2 py-1 overflow-x-auto">
+        <div className="space-y-0.5">
+          <label className="text-[10px] font-black text-zinc-500 uppercase ml-1">Colores</label>
+          <div className="flex gap-1.5 py-1 overflow-x-auto no-scrollbar">
             {colors.map(c => (
               <button
                 key={c}
@@ -56,32 +56,32 @@ const BlockEditorModal = ({ block, onSave, onCancel }) => {
           </div>
         </div>
 
-        <div className="space-y-1">
-          <label className="text-[10px] font-black text-zinc-500 uppercase">Descripción / Adorno</label>
+        <div className="space-y-0.5">
+          <label className="text-[10px] font-black text-zinc-500 uppercase ml-1">Descripción / Adorno</label>
           <textarea
             value={edited.description}
             onChange={e => setEdited({...edited, description: e.target.value})}
-            className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs h-16 resize-none outline-none"
+            className="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs h-12 resize-none outline-none"
             placeholder="¿Qué pasa en este tiempo?"
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1">
-            <label className="text-[10px] font-black text-zinc-500 uppercase">Instrucciones Líder</label>
+        <div className="grid grid-cols-2 gap-2">
+          <div className="space-y-0.5">
+            <label className="text-[10px] font-black text-zinc-500 uppercase ml-1">Instrucciones Líder</label>
             <textarea
               value={edited.leadInstructions}
               onChange={e => setEdited({...edited, leadInstructions: e.target.value})}
-              className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-[10px] h-20 resize-none outline-none"
+              className="w-full bg-black/40 border border-white/10 rounded-xl px-2 py-1.5 text-[10px] h-16 resize-none outline-none"
               placeholder="Guía para él..."
             />
           </div>
-          <div className="space-y-1">
-            <label className="text-[10px] font-black text-zinc-500 uppercase">Instrucciones Follower</label>
+          <div className="space-y-0.5">
+            <label className="text-[10px] font-black text-zinc-500 uppercase ml-1">Instrucciones Follower</label>
             <textarea
               value={edited.followerInstructions}
               onChange={e => setEdited({...edited, followerInstructions: e.target.value})}
-              className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-[10px] h-20 resize-none outline-none"
+              className="w-full bg-black/40 border border-white/10 rounded-xl px-2 py-1.5 text-[10px] h-16 resize-none outline-none"
               placeholder="Guía para ella..."
             />
           </div>
@@ -90,7 +90,7 @@ const BlockEditorModal = ({ block, onSave, onCancel }) => {
 
       <button
         onClick={() => onSave(edited)}
-        className="w-full bg-primary text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20"
+        className="w-full bg-primary text-white py-3 rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20"
       >
         Guardar Bloque
       </button>
@@ -139,61 +139,70 @@ const EditorView = () => {
   const renderGrid = () => {
     const rows = [];
     for (let m = 0; m < currentChoreo.measures; m++) {
-      const slots = [];
-      for (let s = 0; s < 8; s++) {
-        const slotIndex = m * 8 + s;
-        const block = currentChoreo.sequence.find(b => b.slotIndex === slotIndex);
-        const isOccupiedByPrevious = currentChoreo.sequence.some(b =>
-          slotIndex > b.slotIndex && slotIndex < b.slotIndex + b.duration
-        );
+      const renderSlots = (start, end) => {
+        const slots = [];
+        for (let s = start; s < end; s++) {
+          const slotIndex = m * 8 + s;
+          const block = currentChoreo.sequence.find(b => b.slotIndex === slotIndex);
+          const isOccupiedByPrevious = currentChoreo.sequence.some(b =>
+            slotIndex > b.slotIndex && slotIndex < b.slotIndex + b.duration
+          );
 
-        if (isOccupiedByPrevious) continue;
+          if (isOccupiedByPrevious) continue;
 
-        slots.push(
-          <div
-            key={slotIndex}
-            onClick={() => handleSlotClick(slotIndex)}
-            onContextMenu={(e) => { e.preventDefault(); handleSlotLongPress(slotIndex); }}
-            style={{ gridColumn: `span ${block ? block.duration : 1}` }}
-            className={`
-              relative h-16 rounded-xl border flex items-center justify-center transition-all duration-200 cursor-pointer overflow-hidden
-              ${block
-                ? 'border-transparent shadow-lg text-white font-black'
-                : 'border-outline/40 bg-black/10 hover:bg-black/20 text-zinc-700'
-              }
-            `}
-          >
-            {block ? (
-              <div
-                className="absolute inset-0 flex flex-col items-center justify-center p-1 text-center"
-                style={{ backgroundColor: block.color }}
-              >
-                <span className="text-[10px] leading-tight uppercase truncate w-full px-1">
-                  {block.name || `Paso ${block.duration}T`}
-                </span>
-                {block.description && (
-                  <span className="text-[7px] opacity-70 truncate w-full px-1">{block.description}</span>
-                )}
-              </div>
-            ) : (
-              <span className="text-xs font-bold opacity-30">{s + 1}</span>
-            )}
-          </div>
-        );
-      }
+          slots.push(
+            <div
+              key={slotIndex}
+              onClick={() => handleSlotClick(slotIndex)}
+              onContextMenu={(e) => { e.preventDefault(); handleSlotLongPress(slotIndex); }}
+              style={{
+                gridColumn: `span ${block ? Math.min(block.duration, end - s) : 1}`
+              }}
+              className={`
+                relative h-10 border flex items-center justify-center transition-all duration-200 cursor-pointer overflow-hidden rounded-lg
+                ${block
+                  ? 'border-transparent shadow-lg text-white font-black'
+                  : 'border-outline/20 bg-black/10 hover:bg-black/20 text-zinc-700'
+                }
+                ${s === 3 ? 'scale-x-95 origin-left' : ''}
+              `}
+            >
+              {block ? (
+                <div
+                  className="absolute inset-0 flex flex-col items-center justify-center p-0.5 text-center"
+                  style={{ backgroundColor: block.color }}
+                >
+                  <span className="text-[9px] leading-tight uppercase truncate w-full px-1">
+                    {block.name || `${block.duration}T`}
+                  </span>
+                </div>
+              ) : (
+                <span className="text-xs font-bold opacity-30">{(slotIndex % 8) + 1}</span>
+              )}
+            </div>
+          );
+        }
+        return slots;
+      };
+
       rows.push(
-        <div key={m} className="space-y-2">
-          <div className="flex justify-between items-center px-1">
-            <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Compás {m + 1}</span>
+        <div key={m} className="space-y-0.5">
+          <div className="flex justify-between items-center px-2">
+            <span className="text-[9px] font-black text-zinc-500 uppercase tracking-[0.2em]">Compás {m + 1}</span>
             <button
               onClick={(e) => { e.stopPropagation(); removeMeasure(m); }}
-              className="text-zinc-700 hover:text-red-500 p-1"
+              className="text-zinc-500 hover:text-red-500 p-1"
             >
-              <Trash2 size={12} />
+              <Trash2 size={10} />
             </button>
           </div>
-          <div className="grid grid-cols-8 gap-1 bg-surface/30 p-1.5 rounded-2xl border border-outline/60 shadow-inner">
-            {slots}
+          <div className="flex gap-4 bg-surface/10 p-1.5 rounded-xl border border-outline/20 shadow-inner">
+            <div className="grid grid-cols-4 gap-1 flex-1">
+              {renderSlots(0, 4)}
+            </div>
+            <div className="grid grid-cols-4 gap-1 flex-1">
+              {renderSlots(4, 8)}
+            </div>
           </div>
         </div>
       );
@@ -218,16 +227,16 @@ const EditorView = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-white pb-48">
+    <div className="flex flex-col min-h-screen bg-surface/40 backdrop-blur-xl text-white pb-32">
       {/* Header Fijo */}
-      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-outline/60 px-4 py-4 space-y-4 shadow-xl">
-        <div className="flex items-center gap-3">
+      <div className="sticky top-0 z-40 bg-black/20 backdrop-blur-xl border-b border-outline/60 px-1.5 py-1 space-y-1 shadow-xl">
+        <div className="flex items-center gap-1.5">
           <div className="relative flex-1">
             <input
               value={currentChoreo.title}
               onChange={(e) => updateChoreoTitle(e.target.value)}
-              className="w-full bg-transparent border-b border-outline/60 py-1 text-lg font-black text-white focus:outline-none focus:border-primary uppercase tracking-tight"
-              placeholder="Nombre de la coreo..."
+              className="w-full bg-transparent border-b border-outline/60 py-0 text-base font-black text-white focus:outline-none focus:border-primary uppercase tracking-tight"
+              placeholder="Nombre..."
             />
           </div>
           <button
@@ -245,84 +254,99 @@ const EditorView = () => {
                  if (result.isConfirmed) resetChoreo();
                });
             }}
-            className="p-2.5 bg-zinc-800 rounded-xl text-zinc-400 hover:text-white"
+            className="p-2 bg-zinc-800 rounded-xl text-zinc-400 hover:text-white"
           >
             <Plus size={20} />
           </button>
           <button
             onClick={handleSave}
-            className="bg-primary p-2.5 rounded-xl text-white shadow-lg shadow-primary/30 active:scale-95 transition-all"
+            className="bg-primary p-2 rounded-xl text-white shadow-lg shadow-primary/30 active:scale-95 transition-all"
           >
             <Save size={20} strokeWidth={2.5} />
           </button>
         </div>
 
         <div className="flex gap-2 items-center">
-          <div className="flex flex-1 gap-2">
+          {/* Painting Tools */}
+          <div className="flex flex-1 gap-1 bg-surface/30 p-0.5 rounded-xl border border-outline/40">
+            {[null, 1, 2, 4].map(d => (
+              <button
+                key={d || 'none'}
+                onClick={() => setPaintingDuration(d)}
+                className={`flex-1 py-1 rounded-lg flex items-center justify-center transition-all ${
+                  paintingDuration === d
+                    ? 'bg-primary text-white shadow-lg'
+                    : 'text-zinc-500 hover:text-zinc-300'
+                }`}
+              >
+                {d ? (
+                  <span className="text-[10px] font-black">{d}T</span>
+                ) : (
+                  <Plus size={14} />
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Difficulty Tools */}
+          <div className="flex flex-1 gap-1 bg-surface/30 p-0.5 rounded-xl border border-outline/40">
             {['principiante', 'intermedio', 'avanzado'].map((d) => (
               <button
                 key={d}
                 onClick={() => updateChoreoDifficulty(d)}
-                className={`flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
+                className={`flex-1 py-1 rounded-lg text-[10px] font-black uppercase transition-all ${
                   currentChoreo.difficulty === d
-                    ? 'bg-primary border-primary text-white scale-105 shadow-lg'
-                    : 'bg-surface border-outline/60 text-zinc-500'
+                    ? 'bg-primary text-white shadow-lg'
+                    : 'text-zinc-500'
                 }`}
                 style={{
-                  backgroundColor: currentChoreo.difficulty === d ? getDifficultyColor(d) : undefined,
-                  borderColor: currentChoreo.difficulty === d ? getDifficultyColor(d) : undefined
+                  backgroundColor: currentChoreo.difficulty === d ? getDifficultyColor(d) : undefined
                 }}
               >
                 {d.charAt(0)}
               </button>
             ))}
           </div>
-          <button
-            onClick={() => setMetronomeEnabled(!isMetronomeEnabled)}
-            className={`p-3 rounded-xl border transition-all ${isMetronomeEnabled ? 'bg-amber-500 border-amber-500 text-white' : 'bg-surface border-outline/60 text-zinc-500'}`}
-          >
-            {isMetronomeEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
-          </button>
         </div>
       </div>
 
       {/* Sequencer Scrollable Area */}
-      <div className="flex-1 p-4 overflow-y-auto space-y-6">
-        <div className="space-y-4">
+      <div className="flex-1 p-1 overflow-y-auto space-y-1.5">
+        <div className="space-y-1">
           {renderGrid()}
 
           <button
             onClick={addMeasure}
-            className="w-full h-16 rounded-3xl border-2 border-dashed border-outline/60 flex items-center justify-center gap-2 text-zinc-500 hover:text-white hover:border-primary transition-all"
+            className="w-full h-8 rounded-lg border-2 border-dashed border-outline/60 flex items-center justify-center gap-2 text-zinc-500 hover:text-white hover:border-primary transition-all"
           >
-            <Plus size={20} />
-            <span className="text-xs font-black uppercase tracking-widest">Agregar Compás</span>
+            <Plus size={14} />
+            <span className="text-[9px] font-black uppercase tracking-widest">Agregar Compás</span>
           </button>
         </div>
 
         {/* Mis Coreografías List */}
-        <div className="pt-8 border-t border-outline/60">
-           <h3 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-             <Music size={14} className="text-primary" /> Mis Coreografías
+        <div className="pt-1.5 border-t border-outline/60">
+           <h3 className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-1 flex items-center gap-2 px-1">
+             <Music size={10} className="text-primary" /> Mis Coreografías
            </h3>
-           <div className="grid gap-2">
+           <div className="grid gap-1">
               {choreos.length === 0 && (
-                <p className="text-[10px] text-zinc-500 text-center py-4 uppercase font-bold">No tienes coreos guardadas</p>
+                <p className="text-xs text-zinc-500 text-center py-2 uppercase font-bold">No tienes coreos guardadas</p>
               )}
               {choreos.map(choreo => (
-                <div key={choreo.id} className="bg-surface/50 border border-outline/60 rounded-2xl p-3 flex items-center gap-3">
+                <div key={choreo.id} className="bg-surface/40 border border-outline/60 rounded-xl p-1.5 flex items-center gap-2">
                   <div
-                    className="w-10 h-10 rounded-xl shrink-0 flex items-center justify-center text-[10px] font-black text-white"
+                    className="w-8 h-8 rounded-lg shrink-0 flex items-center justify-center text-xs font-black text-white"
                     style={{ backgroundColor: choreo.color }}
                   >
                     {choreo.difficulty?.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-black uppercase truncate">{choreo.title}</p>
-                    <p className="text-[10px] text-zinc-500 font-bold uppercase">{choreo.measures} Compases</p>
+                    <p className="text-xs font-black uppercase truncate">{choreo.title}</p>
+                    <p className="text-[10px] text-zinc-500 font-bold uppercase">{choreo.measures} Comp.</p>
                   </div>
-                  <div className="flex gap-1">
-                    <button onClick={() => loadChoreo(choreo)} className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"><ChevronRight size={20} /></button>
+                  <div className="flex gap-0.5">
+                    <button onClick={() => loadChoreo(choreo)} className="p-1.5 text-primary hover:bg-primary/10 rounded-lg transition-colors"><ChevronRight size={18} /></button>
                     <button
                       onClick={() => {
                         Swal.fire({
@@ -345,38 +369,6 @@ const EditorView = () => {
         </div>
       </div>
 
-      {/* Floating Toolbar (Painting Mode) */}
-      <div className="fixed bottom-24 left-4 right-4 z-50">
-        <div className="bg-zinc-900/90 backdrop-blur-2xl border border-white/10 rounded-full p-2 flex items-center justify-between shadow-2xl">
-          <div className="flex gap-1">
-            {[null, 1, 2, 4].map(d => (
-              <button
-                key={d || 'none'}
-                onClick={() => setPaintingDuration(d)}
-                className={`w-12 h-12 rounded-full flex flex-col items-center justify-center transition-all ${
-                  paintingDuration === d
-                    ? 'bg-primary text-white scale-110 shadow-lg'
-                    : 'bg-white/5 text-zinc-500 hover:text-zinc-300'
-                }`}
-              >
-                {d ? (
-                  <span className="text-xs font-black">{d}T</span>
-                ) : (
-                  <Plus size={18} />
-                )}
-              </button>
-            ))}
-          </div>
-          <div className="px-6 text-right">
-            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-tight">
-              {paintingDuration ? 'MODO PINTAR ACTIVO' : 'MODO EDICIÓN'}
-            </p>
-            <p className="text-[8px] text-primary font-bold uppercase">
-              {paintingDuration ? `Toca slots para añadir ${paintingDuration}T` : 'Toca bloques para editar'}
-            </p>
-          </div>
-        </div>
-      </div>
 
       {/* Block Editor Modal */}
       {editingBlockSlot !== null && (
