@@ -40,6 +40,10 @@ registerRoutes('/auth', authRoutes);
 registerRoutes('/users', userRoutes);
 registerRoutes('/study', studyRoutes);
 
+// Health check
+app.get('/ping', (req, res) => res.json({ status: 'ok', time: new Date() }));
+app.get('/backend-service/ping', (req, res) => res.json({ status: 'ok', time: new Date() }));
+
 // Socket.io logic
 const onlineUsers = new Map();
 
