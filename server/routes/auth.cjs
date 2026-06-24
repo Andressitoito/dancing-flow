@@ -5,6 +5,29 @@ const { User, Questionnaire } = require('../models/index.cjs');
 
 const TOKEN = "bachata2026";
 
+router.put('/change-role', async (req, res) => {
+  try {
+    const { userId, newRole, token } = req.body;
+    const secretToken = process.env.AUTH_TOKEN || "mHlMAi8ExJ17Euc";
+
+    if (token !== secretToken) {
+      return res.status(401).json({ error: 'Token de administrador inválido' });
+    }
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    user.role = newRole;
+    await user.save();
+
+    res.json({ success: true, user: { id: user.id, username: user.username, role: user.role } });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 router.post('/signup-user', async (req, res) => {
   try {
     const { username, password, token, gender, level } = req.body;
