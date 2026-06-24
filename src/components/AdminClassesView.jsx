@@ -17,7 +17,7 @@ const AdminClassesView = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [activeBlockId, setActiveBlockId] = useState(null);
-  const [masterReply, setMasterReply] = useState('');
+  const [profesorReply, setProfesorReply] = useState('');
 
   const fetchBlocks = async () => {
     const res = await fetch(`${API_BASE_URL}/study/blocks`);
@@ -68,20 +68,20 @@ const AdminClassesView = () => {
     }
   };
 
-  const handleMasterReply = async (assignmentId) => {
-    if (!masterReply.trim()) return;
+  const handleProfesorReply = async (assignmentId) => {
+    if (!profesorReply.trim()) return;
     const res = await fetch(`${API_BASE_URL}/study/replies`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         assignmentId,
         userId: user.id,
-        content: masterReply,
+        content: profesorReply,
         type: 'text'
       })
     });
     if (res.ok) {
-      setMasterReply('');
+      setProfesorReply('');
       fetchBlocks();
     }
   };
@@ -177,7 +177,7 @@ const AdminClassesView = () => {
                 <div className="space-y-3">
                   <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Asignar a Alumnos</h4>
                   <div className="flex flex-wrap gap-2">
-                    {users.filter(u => u.role === 'student').map(u => (
+                    {users.filter(u => u.role === 'alumno').map(u => (
                       <button
                         key={u.id}
                         onClick={() => setSelectedStudents(prev =>
@@ -232,12 +232,12 @@ const AdminClassesView = () => {
                            <input
                              placeholder="Responder a este alumno..."
                              className="flex-1 bg-background border border-outline rounded-lg px-3 py-2 text-[11px] outline-none focus:border-primary"
-                             value={asgn.id === activeBlockId + '_reply' ? masterReply : ''} // This logic is simplified for the demo
-                             onChange={e => setMasterReply(e.target.value)}
-                             onKeyPress={e => e.key === 'Enter' && handleMasterReply(asgn.id)}
+                             value={asgn.id === activeBlockId + '_reply' ? profesorReply : ''} // This logic is simplified for the demo
+                             onChange={e => setProfesorReply(e.target.value)}
+                             onKeyPress={e => e.key === 'Enter' && handleProfesorReply(asgn.id)}
                            />
                            <button
-                             onClick={() => handleMasterReply(asgn.id)}
+                             onClick={() => handleProfesorReply(asgn.id)}
                              className="bg-primary text-background p-2 rounded-lg"
                            >
                              <Send size={14} />

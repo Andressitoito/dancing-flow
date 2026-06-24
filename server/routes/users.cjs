@@ -13,6 +13,22 @@ router.get('/me/questionnaire', async (req, res) => {
   }
 });
 
+router.put('/:id/role', async (req, res) => {
+  try {
+    const { isPro } = req.body;
+    const user = await User.findByPk(req.params.id);
+    if (user) {
+      user.isPro = isPro;
+      await user.save();
+      res.json(user);
+    } else {
+      res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // Update questionnaire
 router.post('/me/questionnaire', async (req, res) => {
   try {

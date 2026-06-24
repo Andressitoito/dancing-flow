@@ -23,8 +23,12 @@ const Reply = sequelize.define('Reply', {
     type: DataTypes.STRING,
     allowNull: true
   },
+  videoUrl: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   type: {
-    type: DataTypes.ENUM('text', 'audio'),
+    type: DataTypes.ENUM('text', 'audio', 'video'),
     defaultValue: 'text'
   },
   isReadByMaster: {

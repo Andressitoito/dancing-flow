@@ -80,7 +80,7 @@ const LoginView = ({ onLoginSuccess }) => {
           <div className="text-center">
             <h2 className="text-2xl font-black uppercase tracking-tight">{user.username}</h2>
             <p className="text-zinc-500 font-bold uppercase tracking-[0.2em] text-[10px]">
-              {user.role === 'master' ? 'Master de Baile' : 'Estudiante'}
+              {user.role === 'profesor' ? 'Profesor de Baile' : 'Alumno'}
             </p>
           </div>
 

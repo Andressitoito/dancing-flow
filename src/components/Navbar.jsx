@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, User, GraduationCap, LayoutGrid, LogIn } from 'lucide-react';
+import { Home, User, GraduationCap, LayoutGrid, LogIn, Users } from 'lucide-react';
 import useStore from '../store/useStore';
 
 const Navbar = ({ activeTab, onTabChange }) => {
@@ -7,13 +7,14 @@ const Navbar = ({ activeTab, onTabChange }) => {
 
   const tabs = [
     { id: 'home', icon: Home, label: 'Inicio' },
+    { id: 'about', icon: Users, label: 'Nosotros' },
   ];
 
   if (!user) {
     tabs.push({ id: 'login', icon: LogIn, label: 'Entrar' });
   } else {
-    if (user.role === 'master' || user.role === 'moderator') {
-      tabs.push({ id: 'admin', icon: LayoutGrid, label: 'Master' });
+    if (user.role === 'profesor') {
+      tabs.push({ id: 'admin', icon: LayoutGrid, label: 'Profesor' });
     } else {
       tabs.push({ id: 'profile', icon: User, label: 'Mi Perfil' });
       tabs.push({ id: 'training', icon: GraduationCap, label: 'Clases' });
@@ -21,7 +22,7 @@ const Navbar = ({ activeTab, onTabChange }) => {
   }
 
   return (
-    <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-surface-glass backdrop-blur-2xl border border-outline rounded-3xl p-2 z-50 shadow-2xl flex justify-around items-center">
+    <nav className="fixed bottom-6 md:top-6 md:bottom-auto left-1/2 -translate-x-1/2 w-[90%] max-w-2xl bg-surface-glass backdrop-blur-2xl border border-outline rounded-3xl p-2 z-50 shadow-2xl flex justify-around items-center">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;

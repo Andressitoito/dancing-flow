@@ -142,19 +142,28 @@ const useStore = create((set, get) => ({
   },
 
   fetchAssignments: async () => {
-    const { user } = get();
+    const { user, socket } = get();
+    if (!user) return;
     const res = await fetch(`${API_BASE_URL}/study/my-assignments?userId=${user.id}`);
     const data = await res.json();
     set({ assignments: data });
+
+    // Join rooms for all assignments to receive real-time updates
+    if (socket) {
+      data.forEach(asgn => {
+        socket.emit('join_assignment', asgn.id);
+      });
+    }
   },
 
-  postReply: async (assignmentId, content, audioFile = null) => {
+  postReply: async (assignmentId, content, audioFile = null, videoFile = null) => {
     const { user, socket } = get();
     const formData = new FormData();
     formData.append('assignmentId', assignmentId);
     formData.append('userId', user.id);
     formData.append('content', content);
     if (audioFile) formData.append('audio', audioFile);
+    if (videoFile) formData.append('video', videoFile);
 
     const res = await fetch(`${API_BASE_URL}/study/replies`, {
       method: 'POST',

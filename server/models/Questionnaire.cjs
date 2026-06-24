@@ -30,21 +30,13 @@ const Questionnaire = sequelize.define('Questionnaire', {
     type: DataTypes.TEXT,
     allowNull: true
   },
-  testimonial: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
-  testimonialStars: {
+  completionPercentage: {
     type: DataTypes.INTEGER,
-    defaultValue: 5
+    defaultValue: 0
   },
   isCompleted: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
-  },
-  completionPercentage: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0
   }
 });
 

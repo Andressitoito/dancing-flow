@@ -12,9 +12,9 @@ async function seed() {
 
     // Create Master
     const master = await User.create({
-      username: 'Andresito',
+      username: 'andresito',
       password: bcrypt.hashSync(MASTER_PASSWORD, 10),
-      role: 'master',
+      role: 'profesor',
       gender: 'male',
       status: 'active'
     });
@@ -24,6 +24,10 @@ async function seed() {
     const levels = ['principiante', 'pre-intermedio', 'intermedio', 'avanzado'];
     const genders = ['male', 'female', 'unidentified'];
     const preferences = ['alone', 'couple', 'shy', 'show', 'training_teacher'];
+    const whyOptions = ['social', 'hobby', 'sport', 'profession'];
+    const objOptions = ['social_dance', 'shows', 'teacher', 'technique'];
+    const hardOptions = ['rhythm', 'technique', 'connection', 'expression'];
+    const fearOptions = ['ridicule', 'camera', 'mistakes', 'judgment'];
 
     for (let i = 1; i <= 30; i++) {
       const gender = genders[i % 3];
@@ -31,25 +35,24 @@ async function seed() {
       const user = await User.create({
         username: `user${i}`,
         password: bcrypt.hashSync(`password${i}`, 10),
-        role: 'student',
+        role: 'alumno',
         gender: gender,
         level: level,
         status: 'active'
       });
 
-      const completion = Math.floor(Math.random() * 101);
+      const completion = 100;
       await Questionnaire.create({
         userId: user.id,
-        whyStarted: `Empecé a bailar porque ${i % 2 === 0 ? 'quería socializar' : 'me encanta la bachata'}.`,
-        objectives: `Mis objetivos son ${i % 3 === 0 ? 'hacer shows' : 'mejorar mi técnica'}.`,
-        hardestPart: `Lo que más me cuesta es ${i % 2 === 0 ? 'el ritmo' : 'la expresión corporal'}.`,
-        fears: `Tengo miedo de ${i % 5 === 0 ? 'hacer el ridículo' : 'la cámara'}.`,
+        whyStarted: whyOptions[i % 4],
+        objectives: objOptions[i % 4],
+        hardestPart: hardOptions[i % 4],
+        fears: fearOptions[i % 4],
         recordingPreference: preferences[i % 5],
-        personalFeeling: `Me siento ${i % 2 === 0 ? 'motivado' : 'un poco estancado'}.`,
         testimonial: i % 10 === 0 ? `¡La plataforma me encanta! He mejorado mucho.` : null,
         testimonialStars: 5,
-        isCompleted: completion === 100,
-        completionPercentage: completion
+        isCompleted: true,
+        completionPercentage: 100
       });
     }
 
@@ -73,7 +76,7 @@ async function seed() {
     });
 
     // Assign to some students and add replies
-    const students = await User.findAll({ where: { role: 'student' }, limit: 5 });
+    const students = await User.findAll({ where: { role: 'alumno' }, limit: 5 });
     for (const student of students) {
       const assignment = await Assignment.create({
         studyBlockId: block1.id,

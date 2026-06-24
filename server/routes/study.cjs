@@ -70,21 +70,27 @@ router.get('/my-assignments', async (req, res) => {
 });
 
 // Post a reply (Student or Master)
-router.post('/replies', upload.single('audio'), async (req, res) => {
+router.post('/replies', upload.fields([{ name: 'audio', maxCount: 1 }, { name: 'video', maxCount: 1 }]), async (req, res) => {
   try {
     const { assignmentId, userId, content, type, parentReplyId } = req.body;
+
+    let finalType = type || 'text';
+    if (req.files['audio']) finalType = 'audio';
+    if (req.files['video']) finalType = 'video';
+
     const reply = await Reply.create({
       assignmentId,
       userId,
       content,
-      type: req.file ? 'audio' : (type || 'text'),
-      audioUrl: req.file ? `/uploads/content/${req.file.filename}` : null,
+      type: finalType,
+      audioUrl: req.files['audio'] ? `/uploads/content/${req.files['audio'][0].filename}` : null,
+      videoUrl: req.files['video'] ? `/uploads/content/${req.files['video'][0].filename}` : null,
       parentReplyId: parentReplyId || null,
       isReadByMaster: false, // Should logic for role be here? Yes.
     });
 
     const user = await User.findByPk(userId);
-    if (user.role === 'master') {
+    if (user.role === 'profesor') {
       reply.isReadByMaster = true;
       reply.isReadByUser = false;
       await reply.save();

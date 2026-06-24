@@ -17,8 +17,8 @@ const User = sequelize.define('User', {
     allowNull: false
   },
   role: {
-    type: DataTypes.ENUM('student', 'master', 'moderator'),
-    defaultValue: 'student'
+    type: DataTypes.ENUM('alumno', 'profesor'),
+    defaultValue: 'alumno'
   },
   gender: {
     type: DataTypes.ENUM('male', 'female', 'other', 'unidentified'),
@@ -31,6 +31,10 @@ const User = sequelize.define('User', {
   profilePicture: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  isPro: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   },
   level: {
     type: DataTypes.ENUM('principiante', 'pre-intermedio', 'intermedio', 'avanzado'),

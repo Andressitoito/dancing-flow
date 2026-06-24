@@ -6,6 +6,7 @@ import LoginView from './components/LoginView';
 import StudentProfileView from './components/StudentProfileView';
 import StudentTrainingView from './components/StudentTrainingView';
 import AdminControlView from './components/AdminControlView';
+import AboutUsView from './components/AboutUsView';
 
 function App() {
   const { user, fetchInitialData, loading } = useStore();
@@ -35,6 +36,8 @@ function App() {
     switch (activeTab) {
       case 'home':
         return <HomeView />;
+      case 'about':
+        return <AboutUsView />;
       case 'login':
         return <LoginView onLoginSuccess={() => setActiveTab('profile')} />;
       case 'profile':
@@ -49,8 +52,8 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-white pb-32">
-      <main className="max-w-md mx-auto relative z-10">
+    <div className="min-h-screen bg-background text-white pb-24 md:pb-0">
+      <main className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {renderContent()}
       </main>
       <Navbar activeTab={activeTab} onTabChange={handleTabChange} />

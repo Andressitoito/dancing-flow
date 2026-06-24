@@ -27,7 +27,7 @@ router.post('/signup-user', async (req, res) => {
       password: hashedPassword,
       gender: gender || 'unidentified',
       level: level || 'principiante',
-      role: 'student',
+      role: 'alumno',
       status: 'active'
     });
 

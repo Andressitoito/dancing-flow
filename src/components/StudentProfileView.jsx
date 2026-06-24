@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import useStore from '../store/useStore';
-import { Save, CheckCircle2, MessageSquare } from 'lucide-react';
+import { Save, CheckCircle2, User, Target, Zap, AlertTriangle, Video, Award, Check, BarChart } from 'lucide-react';
+import { QUESTIONNAIRE_OPTIONS } from '../services/constants';
 import Swal from 'sweetalert2';
 
 const StudentProfileView = () => {
@@ -11,8 +12,7 @@ const StudentProfileView = () => {
     hardestPart: '',
     fears: '',
     recordingPreference: 'alone',
-    personalFeeling: '',
-    testimonial: ''
+    personalFeeling: ''
   });
 
   useEffect(() => {
@@ -23,158 +23,179 @@ const StudentProfileView = () => {
         hardestPart: questionnaire.hardestPart || '',
         fears: questionnaire.fears || '',
         recordingPreference: questionnaire.recordingPreference || 'alone',
-        personalFeeling: questionnaire.personalFeeling || '',
-        testimonial: questionnaire.testimonial || ''
+        personalFeeling: questionnaire.personalFeeling || ''
       });
     }
   }, [questionnaire]);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const toggleOption = (field, optionId) => {
+    let current = formData[field] ? formData[field].split(',') : [];
+    if (current.includes(optionId)) {
+      current = current.filter(id => id !== optionId);
+    } else {
+      current.push(optionId);
+    }
+    setFormData({ ...formData, [field]: current.join(',') });
+  };
+
+  const setSingleOption = (field, optionId) => {
+    setFormData({ ...formData, [field]: optionId });
   };
 
   const handleSubmit = async () => {
     await updateQuestionnaire(formData);
     Swal.fire({
       icon: 'success',
-      title: '¡Guardado!',
-      text: 'Tu perfil ha sido actualizado.',
+      title: '¡Perfil Actualizado!',
+      text: 'Tus profesores ya pueden ver tus nuevos objetivos.',
       timer: 2000,
       showConfirmButton: false,
       background: '#18181b',
-      color: '#fff'
+      color: '#fff',
+      customClass: {
+        popup: 'rounded-3xl border border-primary/20'
+      }
     });
   };
 
-  const progress = questionnaire?.completionPercentage || 0;
+  const renderMultiSelect = (field, options) => {
+    const selected = formData[field] ? formData[field].split(',') : [];
+    return (
+      <div className="grid grid-cols-1 gap-2">
+        {options.map(opt => (
+          <button
+            key={opt.id}
+            onClick={() => toggleOption(field, opt.id)}
+            className={`flex items-center justify-between p-3 rounded-xl border text-left transition-all ${
+              selected.includes(opt.id)
+              ? 'bg-primary/20 border-primary text-primary'
+              : 'bg-background/40 border-white/5 text-zinc-400 hover:border-white/20'
+            }`}
+          >
+            <span className="text-sm font-medium">{opt.label}</span>
+            {selected.includes(opt.id) && <Check size={16} />}
+          </button>
+        ))}
+      </div>
+    );
+  };
+
+  const completion = questionnaire?.completionPercentage || 0;
 
   return (
-    <div className="p-6 space-y-8 animate-in fade-in duration-500">
-      <header>
-        <h1 className="text-3xl font-black text-primary italic uppercase">Mi Perfil</h1>
-        <p className="text-zinc-500 text-sm">Completa tu información para que tus profes te conozcan mejor.</p>
-      </header>
-
-      {/* Progress Bar */}
-      <div className="space-y-2">
-        <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-zinc-400">
-          <span>Progreso del Perfil</span>
-          <span>{progress}%</span>
-        </div>
-        <div className="h-3 bg-surface border border-outline rounded-full overflow-hidden">
-          <div
-            className="h-full bg-primary transition-all duration-1000 ease-out"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
-
-      <div className="space-y-6">
-        <section className="space-y-4 bg-surface p-4 rounded-2xl border border-outline">
-          <label className="block">
-            <span className="text-xs font-black text-primary uppercase ml-1">¿Por qué empecé a bailar?</span>
-            <textarea
-              name="whyStarted"
-              value={formData.whyStarted}
-              onChange={handleChange}
-              className="w-full mt-1 bg-background border border-outline rounded-xl p-3 text-sm focus:border-primary outline-none min-h-[80px]"
-              placeholder="Cuéntanos tu motivación..."
-            />
-          </label>
-
-          <label className="block">
-            <span className="text-xs font-black text-primary uppercase ml-1">¿Cuáles son mis objetivos?</span>
-            <textarea
-              name="objectives"
-              value={formData.objectives}
-              onChange={handleChange}
-              className="w-full mt-1 bg-background border border-outline rounded-xl p-3 text-sm focus:border-primary outline-none min-h-[80px]"
-              placeholder="Ej: Bailar en social, hacer un show, ser profesor..."
-            />
-          </label>
-
-          <label className="block">
-            <span className="text-xs font-black text-primary uppercase ml-1">¿Qué me cuesta más?</span>
-            <textarea
-              name="hardestPart"
-              value={formData.hardestPart}
-              onChange={handleChange}
-              className="w-full mt-1 bg-background border border-outline rounded-xl p-3 text-sm focus:border-primary outline-none min-h-[80px]"
-              placeholder="Técnica, musicalidad, conexión..."
-            />
-          </label>
-
-          <label className="block">
-            <span className="text-xs font-black text-primary uppercase ml-1">¿Qué miedos tengo?</span>
-            <textarea
-              name="fears"
-              value={formData.fears}
-              onChange={handleChange}
-              className="w-full mt-1 bg-background border border-outline rounded-xl p-3 text-sm focus:border-primary outline-none min-h-[80px]"
-              placeholder="Hacer el ridículo, la cámara, bailar en público..."
-            />
-          </label>
-        </section>
-
-        <section className="space-y-4 bg-surface p-4 rounded-2xl border border-outline">
-          <span className="text-xs font-black text-primary uppercase ml-1">Preferencias de Grabación</span>
-          <div className="grid grid-cols-1 gap-2">
-            {[
-              { id: 'alone', label: 'Prefiero grabar solo' },
-              { id: 'couple', label: 'Quiero grabar en pareja' },
-              { id: 'shy', label: 'Me da vergüenza la cámara' },
-              { id: 'show', label: 'Quiero hacer shows' },
-              { id: 'training_teacher', label: 'Entrenando para profesor' }
-            ].map((opt) => (
-              <button
-                key={opt.id}
-                onClick={() => setFormData({ ...formData, recordingPreference: opt.id })}
-                className={`text-left p-3 rounded-xl text-xs font-bold border transition-all ${
-                  formData.recordingPreference === opt.id
-                  ? 'bg-primary border-primary text-background'
-                  : 'bg-background border-outline text-zinc-400'
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
+    <div className="py-10 pb-32 md:pb-10 space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-4 md:px-0">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <h1 className="text-5xl font-black text-white italic uppercase tracking-tighter">Mi Perfil</h1>
+            {user?.isPro && (
+                <span className="bg-primary text-background text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-widest animate-pulse">PRO</span>
+            )}
           </div>
-        </section>
 
-        <section className="space-y-4 bg-surface p-4 rounded-2xl border border-outline">
-          <label className="block">
-            <span className="text-xs font-black text-primary uppercase ml-1">¿Cómo me siento con mi baile?</span>
-            <textarea
-              name="personalFeeling"
-              value={formData.personalFeeling}
-              onChange={handleChange}
-              className="w-full mt-1 bg-background border border-outline rounded-xl p-3 text-sm focus:border-primary outline-none min-h-[100px]"
-              placeholder="Describe tu estado actual personalmente..."
-            />
-          </label>
-        </section>
-
-        <section className="space-y-4 bg-surface p-4 rounded-2xl border border-outline">
-          <label className="block">
-            <span className="text-xs font-black text-primary uppercase ml-1">Testimonio para la web (Opcional)</span>
-            <textarea
-              name="testimonial"
-              value={formData.testimonial}
-              onChange={handleChange}
-              className="w-full mt-1 bg-background border border-outline rounded-xl p-3 text-sm focus:border-primary outline-none min-h-[80px]"
-              placeholder="¿Qué te parece la plataforma?"
-            />
-          </label>
-        </section>
+          <div className="flex flex-col gap-2">
+             <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-zinc-500 px-1">
+                <span className="flex items-center gap-1"><BarChart size={12}/> Progreso del Perfil</span>
+                <span className={completion === 100 ? 'text-primary' : ''}>{completion}%</span>
+             </div>
+             <div className="h-2 w-full max-w-xs bg-white/5 rounded-full overflow-hidden border border-white/5">
+                <div
+                  className="h-full bg-primary transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]"
+                  style={{ width: `${completion}%` }}
+                />
+             </div>
+          </div>
+        </div>
 
         <button
           onClick={handleSubmit}
-          className="w-full bg-primary text-background font-black py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
+          className="bg-primary text-background font-black px-8 py-4 rounded-2xl flex items-center justify-center gap-2 shadow-xl hover:scale-105 active:scale-95 transition-all"
         >
           <Save size={20} />
-          GUARDAR MI PROGRESO
+          GUARDAR CAMBIOS
         </button>
+      </header>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0">
+        {/* Why Started */}
+        <section className="space-y-4 bg-surface-glass backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
+          <div className="flex items-center gap-3 text-primary mb-4">
+            <User size={24} />
+            <h2 className="text-xs font-black uppercase tracking-[0.2em]">¿Por qué empecé a bailar?</h2>
+          </div>
+          {renderMultiSelect('whyStarted', QUESTIONNAIRE_OPTIONS.whyStarted)}
+        </section>
+
+        {/* Objectives */}
+        <section className="space-y-4 bg-surface-glass backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
+          <div className="flex items-center gap-3 text-primary mb-4">
+            <Target size={24} />
+            <h2 className="text-xs font-black uppercase tracking-[0.2em]">¿Cuáles son mis objetivos?</h2>
+          </div>
+          {renderMultiSelect('objectives', QUESTIONNAIRE_OPTIONS.objectives)}
+        </section>
+
+        {/* Hardest Part */}
+        <section className="space-y-4 bg-surface-glass backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
+          <div className="flex items-center gap-3 text-primary mb-4">
+            <Zap size={24} />
+            <h2 className="text-xs font-black uppercase tracking-[0.2em]">¿Qué me cuesta más?</h2>
+          </div>
+          {renderMultiSelect('hardestPart', QUESTIONNAIRE_OPTIONS.hardestPart)}
+        </section>
+
+        {/* Fears */}
+        <section className="space-y-4 bg-surface-glass backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
+          <div className="flex items-center gap-3 text-primary mb-4">
+            <AlertTriangle size={24} />
+            <h2 className="text-xs font-black uppercase tracking-[0.2em]">¿Qué miedos tengo?</h2>
+          </div>
+          {renderMultiSelect('fears', QUESTIONNAIRE_OPTIONS.fears)}
+        </section>
       </div>
+
+      {/* Recording Preferences */}
+      <section className="px-4 md:px-0">
+        <div className="bg-surface-glass backdrop-blur-xl p-8 md:p-12 rounded-[3rem] border border-white/5 shadow-2xl">
+          <div className="flex items-center gap-3 text-primary mb-8">
+            <Video size={28} />
+            <h2 className="text-xl font-black uppercase tracking-[0.2em] italic">Preferencias de Entrenamiento</h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {QUESTIONNAIRE_OPTIONS.recordingPreference.map((opt) => {
+              const isActive = formData.recordingPreference === opt.id;
+              return (
+                <button
+                  key={opt.id}
+                  onClick={() => setSingleOption('recordingPreference', opt.id)}
+                  className={`flex items-center gap-4 p-6 rounded-2xl border-2 transition-all duration-300 text-left ${
+                    isActive
+                    ? 'bg-primary border-primary text-background shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)] scale-[1.02]'
+                    : 'bg-background/40 border-white/5 text-zinc-400 hover:border-primary/30 hover:bg-background/60'
+                  }`}
+                >
+                  <span className="font-bold text-sm uppercase tracking-tight">{opt.label}</span>
+                  {isActive && <CheckCircle2 size={20} className="ml-auto" />}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mt-12 pt-12 border-t border-white/5 space-y-4">
+             <div className="flex items-center gap-3 text-primary mb-4">
+                <Target size={24} />
+                <h2 className="text-xs font-black uppercase tracking-[0.2em]">¿Cómo me siento hoy con el baile?</h2>
+             </div>
+             <textarea
+                value={formData.personalFeeling}
+                onChange={(e) => setFormData({...formData, personalFeeling: e.target.value})}
+                placeholder="Comparte tus sensaciones personales..."
+                className="w-full bg-background/50 border border-white/10 rounded-2xl p-6 text-base focus:border-primary outline-none min-h-[120px] transition-colors"
+             />
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
