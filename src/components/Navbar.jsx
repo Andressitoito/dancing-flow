@@ -22,7 +22,7 @@ const Navbar = ({ activeTab, onTabChange }) => {
   }
 
   return (
-    <nav className="fixed bottom-6 md:top-6 md:bottom-auto left-1/2 -translate-x-1/2 w-[90%] max-w-2xl bg-surface-glass backdrop-blur-2xl border border-outline rounded-3xl p-2 z-50 shadow-2xl flex justify-around items-center">
+    <nav className="fixed bottom-0 md:top-0 md:bottom-auto left-0 right-0 w-full bg-surface/90 backdrop-blur-xl border-t md:border-t-0 md:border-b border-white/5 p-2 z-50 shadow-2xl flex justify-around md:justify-center md:gap-12 items-center">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
@@ -30,12 +30,12 @@ const Navbar = ({ activeTab, onTabChange }) => {
           <button
             key={tab.id}
             onClick={() => onTabChange(tab.id)}
-            className={`flex flex-col items-center justify-center w-14 h-14 rounded-2xl transition-all duration-300 ${
-              isActive ? 'bg-primary text-background scale-110 shadow-lg' : 'text-zinc-500 hover:text-primary'
+            className={`flex flex-col md:flex-row items-center justify-center gap-1 md:gap-3 px-4 py-2 md:py-3 rounded-2xl transition-all duration-300 ${
+              isActive ? 'bg-primary/10 text-primary md:bg-primary md:text-background shadow-lg' : 'text-zinc-500 hover:text-primary hover:bg-white/5'
             }`}
           >
-            <Icon size={24} strokeWidth={isActive ? 3 : 2} />
-            <span className="text-[10px] font-bold mt-1 uppercase">{tab.label}</span>
+            <Icon size={22} strokeWidth={isActive ? 3 : 2} />
+            <span className="text-[10px] md:text-xs font-black uppercase tracking-widest">{tab.label}</span>
           </button>
         );
       })}

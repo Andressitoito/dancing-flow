@@ -9,6 +9,7 @@ const useStore = create((set, get) => ({
   assignments: [],
   onlineUsers: [],
   loading: false,
+  isInitialLoad: true,
   socket: null,
   palette: {
     name: 'Clásico Dark',
@@ -32,7 +33,8 @@ const useStore = create((set, get) => ({
   },
 
   fetchInitialData: async () => {
-    set({ loading: true });
+    const { isInitialLoad } = get();
+    if (isInitialLoad) set({ loading: true });
 
     // Initial Palette setup
     const savedPalette = localStorage.getItem('dancing_palette');
@@ -53,7 +55,7 @@ const useStore = create((set, get) => ({
     try {
       const usersRes = await fetch(`${API_BASE_URL}/users/all`);
       const users = await usersRes.json();
-      set({ users });
+      set({ users, isInitialLoad: false });
     } catch (e) {
       console.error(e);
     } finally {

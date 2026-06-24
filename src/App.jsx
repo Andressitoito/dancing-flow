@@ -52,7 +52,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-white pb-24 md:pb-0">
+    <div className="min-h-screen bg-background text-white pb-24 md:pb-10 md:pt-28">
       <main className="relative z-10 w-full max-w-7xl mx-auto md:px-6 lg:px-8">
         {renderContent()}
       </main>

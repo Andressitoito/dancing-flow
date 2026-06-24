@@ -90,9 +90,9 @@ const StudentTrainingView = () => {
   if (!selectedAssignment) {
     return (
       <div className="py-10 px-4 md:px-8 lg:px-0 max-w-7xl mx-auto animate-in fade-in duration-500">
-        <header className="mb-12">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white italic uppercase tracking-tighter mb-2">Entrenamiento</h1>
-          <p className="text-zinc-500 text-base md:text-lg font-medium">Contenido personalizado para tu evolución.</p>
+        <header className="mb-8">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-white italic uppercase tracking-tighter mb-2">Entrenamiento</h1>
+          <p className="text-zinc-500 text-sm md:text-base font-medium">Contenido personalizado para tu evolución.</p>
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -158,8 +158,8 @@ const StudentTrainingView = () => {
             <X size={24} />
           </button>
           <div className="text-right hidden md:block">
-            <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter">{currentAssignment.StudyBlock.title}</h2>
-            <p className="text-primary text-[10px] font-black uppercase tracking-widest">{currentAssignment.StudyBlock.level}</p>
+            <h2 className="text-xl font-black text-white italic uppercase tracking-tighter">{currentAssignment.StudyBlock.title}</h2>
+            <p className="text-primary text-[9px] font-black uppercase tracking-widest">{currentAssignment.StudyBlock.level}</p>
           </div>
         </header>
 

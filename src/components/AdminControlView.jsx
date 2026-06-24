@@ -266,10 +266,10 @@ const AdminControlView = () => {
 
   return (
     <div className="py-10 px-4 md:px-0">
-      <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-16 max-w-7xl mx-auto">
+      <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-12 max-w-7xl mx-auto">
         <div>
-          <h1 className="text-6xl font-black text-white italic uppercase tracking-tighter leading-none">Panel de Profesor</h1>
-          <p className="text-zinc-500 text-lg font-medium mt-2">Gestiona tu comunidad y personaliza el aprendizaje.</p>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-white italic uppercase tracking-tighter leading-none">Panel de Profesor</h1>
+          <p className="text-zinc-500 text-sm md:text-base font-medium mt-2">Gestiona tu comunidad y personaliza el aprendizaje.</p>
         </div>
 
         <div className="flex gap-2 bg-surface-glass backdrop-blur-xl border border-white/10 p-2 rounded-3xl shadow-2xl">

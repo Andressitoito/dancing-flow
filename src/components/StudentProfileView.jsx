@@ -61,19 +61,19 @@ const StudentProfileView = () => {
   const renderMultiSelect = (field, options) => {
     const selected = formData[field] ? formData[field].split(',') : [];
     return (
-      <div className="grid grid-cols-1 gap-2">
+      <div className="grid grid-cols-1 gap-1.5">
         {options.map(opt => (
           <button
             key={opt.id}
             onClick={() => toggleOption(field, opt.id)}
-            className={`flex items-center justify-between p-3 rounded-xl border text-left transition-all ${
+            className={`flex items-center justify-between p-2.5 rounded-xl border text-left transition-all ${
               selected.includes(opt.id)
               ? 'bg-primary/20 border-primary text-primary'
               : 'bg-background/40 border-white/5 text-zinc-400 hover:border-white/20'
             }`}
           >
-            <span className="text-sm font-medium">{opt.label}</span>
-            {selected.includes(opt.id) && <Check size={16} />}
+            <span className="text-xs font-medium">{opt.label}</span>
+            {selected.includes(opt.id) && <Check size={14} />}
           </button>
         ))}
       </div>
@@ -83,11 +83,11 @@ const StudentProfileView = () => {
   const completion = questionnaire?.completionPercentage || 0;
 
   return (
-    <div className="py-10 pb-32 md:pb-10 space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto px-4 md:px-8 lg:px-0">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="space-y-4">
+    <div className="py-10 pb-32 md:pb-10 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto px-4 md:px-8 lg:px-0">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div className="space-y-2">
           <div className="flex items-center gap-3">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white italic uppercase tracking-tighter">Mi Perfil</h1>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-white italic uppercase tracking-tighter">Mi Perfil</h1>
             {user?.isPro && (
                 <span className="bg-primary text-background text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-widest animate-pulse">PRO</span>
             )}
@@ -116,39 +116,39 @@ const StudentProfileView = () => {
         </button>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {/* Why Started */}
-        <section className="space-y-4 bg-surface-glass backdrop-blur-xl p-8 lg:p-10 rounded-[2.5rem] border border-white/5 shadow-2xl">
-          <div className="flex items-center gap-3 text-primary mb-4">
-            <User size={24} />
-            <h2 className="text-xs font-black uppercase tracking-[0.2em]">¿Por qué empecé a bailar?</h2>
+        <section className="space-y-3 bg-surface-glass backdrop-blur-xl p-6 lg:p-8 rounded-[2rem] border border-white/5 shadow-2xl">
+          <div className="flex items-center gap-3 text-primary mb-2">
+            <User size={20} />
+            <h2 className="text-[10px] font-black uppercase tracking-[0.2em]">¿Por qué empecé a bailar?</h2>
           </div>
           {renderMultiSelect('whyStarted', QUESTIONNAIRE_OPTIONS.whyStarted)}
         </section>
 
         {/* Objectives */}
-        <section className="space-y-4 bg-surface-glass backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
-          <div className="flex items-center gap-3 text-primary mb-4">
-            <Target size={24} />
-            <h2 className="text-xs font-black uppercase tracking-[0.2em]">¿Cuáles son mis objetivos?</h2>
+        <section className="space-y-3 bg-surface-glass backdrop-blur-xl p-6 lg:p-8 rounded-[2rem] border border-white/5 shadow-2xl">
+          <div className="flex items-center gap-3 text-primary mb-2">
+            <Target size={20} />
+            <h2 className="text-[10px] font-black uppercase tracking-[0.2em]">¿Cuáles son mis objetivos?</h2>
           </div>
           {renderMultiSelect('objectives', QUESTIONNAIRE_OPTIONS.objectives)}
         </section>
 
         {/* Hardest Part */}
-        <section className="space-y-4 bg-surface-glass backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
-          <div className="flex items-center gap-3 text-primary mb-4">
-            <Zap size={24} />
-            <h2 className="text-xs font-black uppercase tracking-[0.2em]">¿Qué me cuesta más?</h2>
+        <section className="space-y-3 bg-surface-glass backdrop-blur-xl p-6 lg:p-8 rounded-[2rem] border border-white/5 shadow-2xl">
+          <div className="flex items-center gap-3 text-primary mb-2">
+            <Zap size={20} />
+            <h2 className="text-[10px] font-black uppercase tracking-[0.2em]">¿Qué me cuesta más?</h2>
           </div>
           {renderMultiSelect('hardestPart', QUESTIONNAIRE_OPTIONS.hardestPart)}
         </section>
 
         {/* Fears */}
-        <section className="space-y-4 bg-surface-glass backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
-          <div className="flex items-center gap-3 text-primary mb-4">
-            <AlertTriangle size={24} />
-            <h2 className="text-xs font-black uppercase tracking-[0.2em]">¿Qué miedos tengo?</h2>
+        <section className="space-y-3 bg-surface-glass backdrop-blur-xl p-6 lg:p-8 rounded-[2rem] border border-white/5 shadow-2xl">
+          <div className="flex items-center gap-3 text-primary mb-2">
+            <AlertTriangle size={20} />
+            <h2 className="text-[10px] font-black uppercase tracking-[0.2em]">¿Qué miedos tengo?</h2>
           </div>
           {renderMultiSelect('fears', QUESTIONNAIRE_OPTIONS.fears)}
         </section>
