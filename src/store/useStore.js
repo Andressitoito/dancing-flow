@@ -90,7 +90,7 @@ const useStore = create((set, get) => ({
       });
       const data = await res.json();
       if (res.ok) {
-        set({ user: data });
+        set({ user: data, questionnaire: data.Questionnaire });
         localStorage.setItem('dancing_user', JSON.stringify(data));
         get().initSocket(data.id);
         return { success: true };

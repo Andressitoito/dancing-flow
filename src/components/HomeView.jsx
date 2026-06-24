@@ -71,10 +71,10 @@ const HomeView = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-background z-[-1]" />
 
         <div className="text-center px-4 animate-in fade-in slide-in-from-bottom-10 duration-1000">
-          <h1 className="text-7xl md:text-[10rem] font-black italic tracking-tighter text-primary drop-shadow-[0_20px_20px_rgba(0,0,0,0.7)] leading-none">
+          <h1 className="text-7xl md:text-8xl lg:text-9xl font-black italic tracking-tighter text-primary drop-shadow-[0_20px_20px_rgba(0,0,0,0.7)] leading-none">
             DANCING FLOW
           </h1>
-          <p className="mt-8 text-2xl md:text-4xl font-light text-white uppercase tracking-[0.4em] drop-shadow-md">
+          <p className="mt-8 text-2xl md:text-3xl font-light text-white uppercase tracking-[0.4em] drop-shadow-md">
             Mastery & Mentorship
           </p>
         </div>
@@ -98,14 +98,14 @@ const HomeView = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent z-[-1]" />
 
-          <div className="max-w-3xl bg-surface-glass backdrop-blur-3xl p-12 md:p-20 rounded-[3.5rem] border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] animate-in slide-in-from-left-20 duration-1000">
+          <div className="max-w-3xl bg-surface-glass backdrop-blur-3xl p-12 md:p-16 lg:p-20 rounded-[3.5rem] border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] animate-in slide-in-from-left-20 duration-1000">
             <p className="text-primary font-black uppercase tracking-[0.4em] text-xs mb-4">Mentor Principal</p>
-            <h2 className="text-6xl md:text-9xl font-black mb-8 text-white italic tracking-tighter">{teacher.name}</h2>
+            <h2 className="text-6xl md:text-7xl lg:text-8xl font-black mb-8 text-white italic tracking-tighter">{teacher.name}</h2>
             <div className="h-1 w-24 bg-primary mb-12" />
-            <p className="text-white leading-relaxed text-2xl md:text-3xl mb-12 font-medium italic opacity-90">
+            <p className="text-white leading-relaxed text-2xl md:text-2xl lg:text-3xl mb-12 font-medium italic opacity-90">
               "{teacher.bio}"
             </p>
-            <p className="text-zinc-400 leading-relaxed text-xl mb-12 border-l-2 border-white/10 pl-8">
+            <p className="text-zinc-400 leading-relaxed text-lg lg:text-xl mb-12 border-l-2 border-white/10 pl-8">
               {teacher.career}
             </p>
             <div className="flex gap-8">
@@ -124,14 +124,14 @@ const HomeView = () => {
       ))}
 
       {/* Testimonials Carousel */}
-      <section className="py-48 bg-background px-6 relative overflow-hidden">
+      <section className="py-24 md:py-32 lg:py-48 bg-background px-6 relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] z-0" />
 
         <div className="max-w-5xl mx-auto text-center relative z-10">
             <p className="text-primary font-black uppercase tracking-[0.4em] text-xs mb-6">Comunidad</p>
-            <h2 className="text-5xl md:text-7xl font-black mb-24 italic tracking-tight text-white">HISTORIAS <span className="text-primary">FLOW</span></h2>
+            <h2 className="text-4xl md:text-5xl lg:text-7xl font-black mb-24 italic tracking-tight text-white">HISTORIAS <span className="text-primary">FLOW</span></h2>
 
-            <div className="relative min-h-[350px] flex items-center justify-center">
+            <div className="relative min-h-[300px] md:min-h-[350px] flex items-center justify-center">
                 {testimonials.map((t, i) => (
                     <div
                         key={i}
@@ -140,12 +140,12 @@ const HomeView = () => {
                         }`}
                     >
                         <div className="flex text-primary mb-10 gap-2">
-                            {[...Array(t.stars)].map((_, s) => <Star key={s} size={28} fill="currentColor" />)}
+                            {[...Array(t.stars)].map((_, s) => <Star key={s} size={24} md:size={28} fill="currentColor" />)}
                         </div>
-                        <p className="text-3xl md:text-5xl italic text-white mb-12 font-light leading-tight max-w-4xl">
+                        <p className="text-2xl md:text-3xl lg:text-4xl italic text-white mb-12 font-light leading-tight max-w-4xl">
                             "{t.text}"
                         </p>
-                        <p className="font-black text-primary text-2xl uppercase tracking-[0.3em]">
+                        <p className="font-black text-primary text-xl md:text-2xl uppercase tracking-[0.3em]">
                            <span className="text-zinc-700 mr-4">—</span> {t.name}
                         </p>
                     </div>

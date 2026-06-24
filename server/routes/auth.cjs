@@ -32,10 +32,14 @@ router.post('/signup-user', async (req, res) => {
     });
 
     // Initialize empty questionnaire
-    await Questionnaire.create({ userId: newUser.id });
+    const questionnaire = await Questionnaire.create({
+      userId: newUser.id,
+      recordingPreference: 'alone' // Default value for enum
+    });
 
     const userResponse = newUser.toJSON();
     delete userResponse.password;
+    userResponse.Questionnaire = questionnaire.toJSON();
     res.json(userResponse);
   } catch (e) {
     res.status(500).json({ error: e.message });

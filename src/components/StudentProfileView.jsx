@@ -83,11 +83,11 @@ const StudentProfileView = () => {
   const completion = questionnaire?.completionPercentage || 0;
 
   return (
-    <div className="py-10 pb-32 md:pb-10 space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-4 md:px-0">
+    <div className="py-10 pb-32 md:pb-10 space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto px-4 md:px-8 lg:px-0">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-4">
           <div className="flex items-center gap-3">
-            <h1 className="text-5xl font-black text-white italic uppercase tracking-tighter">Mi Perfil</h1>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white italic uppercase tracking-tighter">Mi Perfil</h1>
             {user?.isPro && (
                 <span className="bg-primary text-background text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-widest animate-pulse">PRO</span>
             )}
@@ -116,9 +116,9 @@ const StudentProfileView = () => {
         </button>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Why Started */}
-        <section className="space-y-4 bg-surface-glass backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
+        <section className="space-y-4 bg-surface-glass backdrop-blur-xl p-8 lg:p-10 rounded-[2.5rem] border border-white/5 shadow-2xl">
           <div className="flex items-center gap-3 text-primary mb-4">
             <User size={24} />
             <h2 className="text-xs font-black uppercase tracking-[0.2em]">¿Por qué empecé a bailar?</h2>
