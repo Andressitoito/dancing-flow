@@ -12,7 +12,9 @@ const StudentProfileView = () => {
     hardestPart: '',
     fears: '',
     recordingPreference: 'alone',
-    personalFeeling: ''
+    personalFeeling: '',
+    testimonial: '',
+    testimonialStars: 5
   });
 
   useEffect(() => {
@@ -23,7 +25,9 @@ const StudentProfileView = () => {
         hardestPart: questionnaire.hardestPart || '',
         fears: questionnaire.fears || '',
         recordingPreference: questionnaire.recordingPreference || 'alone',
-        personalFeeling: questionnaire.personalFeeling || ''
+        personalFeeling: questionnaire.personalFeeling || '',
+        testimonial: questionnaire.testimonial || '',
+        testimonialStars: questionnaire.testimonialStars || 5
       });
     }
   }, [questionnaire]);
@@ -193,6 +197,34 @@ const StudentProfileView = () => {
                 placeholder="Comparte tus sensaciones personales..."
                 className="w-full bg-background/50 border border-white/10 rounded-2xl p-6 text-base focus:border-primary outline-none min-h-[120px] transition-colors"
              />
+          </div>
+
+          <div className="mt-12 pt-12 border-t border-white/5 space-y-4">
+             <div className="flex items-center gap-3 text-secondary mb-4">
+                <Award size={24} />
+                <h2 className="text-xs font-black uppercase tracking-[0.2em]">Tu Testimonio para la Web</h2>
+             </div>
+             <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest px-1">Tu opinión ayuda a otros alumnos a motivarse. ¡Cuéntanos tu experiencia!</p>
+             <textarea
+                value={formData.testimonial}
+                onChange={(e) => setFormData({...formData, testimonial: e.target.value})}
+                placeholder="Escribe tu testimonio aquí..."
+                className="w-full bg-background/50 border border-white/10 rounded-2xl p-6 text-base focus:border-secondary outline-none min-h-[100px] transition-colors"
+             />
+             <div className="flex items-center gap-4 px-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Puntuación:</span>
+                <div className="flex gap-2">
+                    {[1, 2, 3, 4, 5].map(star => (
+                        <button
+                            key={star}
+                            onClick={() => setFormData({...formData, testimonialStars: star})}
+                            className={`transition-all ${formData.testimonialStars >= star ? 'text-secondary scale-110' : 'text-zinc-800 hover:text-secondary/40'}`}
+                        >
+                            <Award size={20} fill={formData.testimonialStars >= star ? 'currentColor' : 'none'} />
+                        </button>
+                    ))}
+                </div>
+             </div>
           </div>
         </div>
       </section>

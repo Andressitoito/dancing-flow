@@ -86,9 +86,45 @@ app.get('*', (req, res) => {
 
 const PORT = process.env.PORT || 3001;
 
-sequelize.sync({ force: false }).then(() => {
-  console.log('Database synced');
-  server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-});
+async function startServer() {
+  try {
+    // Basic sync
+    await sequelize.authenticate();
+    console.log('Database connection successful');
+
+    // Robust column check/migration for Users table
+    const queryInterface = sequelize.getQueryInterface();
+    const tableInfo = await queryInterface.describeTable('Users').catch(() => ({}));
+
+    // Check and add isPro
+    if (tableInfo.id && !tableInfo.isPro) {
+      console.log('Adding missing isPro column...');
+      await queryInterface.addColumn('Users', 'isPro', {
+        type: require('sequelize').DataTypes.BOOLEAN,
+        defaultValue: false
+      });
+    }
+
+    // Check and add level
+    if (tableInfo.id && !tableInfo.level) {
+      console.log('Adding missing level column...');
+      await queryInterface.addColumn('Users', 'level', {
+        type: require('sequelize').DataTypes.ENUM('principiante', 'pre-intermedio', 'intermedio', 'avanzado'),
+        allowNull: true
+      });
+    }
+
+    // Final sync for other models
+    await sequelize.sync({ alter: true });
+    console.log('Database synced');
+
+    server.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+}
+
+startServer();
