@@ -32,60 +32,60 @@ const AboutUsView = () => {
   ];
 
   return (
-    <div className="py-10 pb-32 md:pb-20 max-w-7xl mx-auto px-4 md:px-0 space-y-24 animate-in fade-in duration-700">
-      <header className="text-center space-y-4">
-        <h1 className="text-6xl md:text-8xl font-black text-white italic uppercase tracking-tighter leading-none">
+    <div className="py-8 pb-32 md:pb-20 max-w-6xl mx-auto px-4 md:px-0 space-y-16 animate-in fade-in duration-700">
+      <header className="text-center space-y-2">
+        <h1 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter leading-none">
           QUIENES <span className="text-primary">SOMOS</span>
         </h1>
-        <p className="text-zinc-500 text-xl font-medium tracking-widest uppercase">El equipo detrás de Dancing Flow</p>
+        <p className="text-zinc-500 text-sm font-medium tracking-widest uppercase">El equipo detrás de Dancing Flow</p>
       </header>
 
       {teachers.map((teacher, idx) => (
-        <section key={idx} className={`flex flex-col ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-12 items-center`}>
+        <section key={idx} className={`flex flex-col ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 md:gap-16 items-center`}>
           <div className="w-full md:w-1/2 relative group">
-            <div className="absolute -inset-4 bg-primary/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-full" />
-            <div className="relative aspect-[4/5] md:aspect-[3/4] overflow-hidden rounded-[3rem] border border-white/10 shadow-2xl">
+            <div className="absolute -inset-3 bg-primary/15 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-full" />
+            <div className="relative aspect-[4/5] md:aspect-[1/1] overflow-hidden rounded-[2rem] border border-white/10 shadow-xl">
               <img
                 src={teacher.image}
                 alt={teacher.name}
                 className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-105 hover:scale-100"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
-              <div className="absolute bottom-8 left-8">
-                <p className="text-primary font-black uppercase tracking-[0.3em] text-xs mb-2">{teacher.role}</p>
-                <h2 className="text-5xl font-black text-white italic tracking-tighter">{teacher.name}</h2>
+              <div className="absolute bottom-6 left-6">
+                <p className="text-primary font-black uppercase tracking-[0.2em] text-[10px] mb-1.5">{teacher.role}</p>
+                <h2 className="text-3xl font-black text-white italic tracking-tighter">{teacher.name}</h2>
               </div>
             </div>
           </div>
 
-          <div className="w-full md:w-1/2 space-y-8">
-            <div className="space-y-4">
-              <div className="flex gap-2">
-                 {[...Array(5)].map((_, i) => <Star key={i} size={16} className="text-primary" fill="currentColor" />)}
+          <div className="w-full md:w-1/2 space-y-6">
+            <div className="space-y-3">
+              <div className="flex gap-1.5">
+                 {[...Array(5)].map((_, i) => <Star key={i} size={14} className="text-primary" fill="currentColor" />)}
               </div>
-              <p className="text-2xl text-white font-medium leading-relaxed italic">
+              <p className="text-xl text-white font-medium leading-relaxed italic">
                 "{teacher.bio}"
               </p>
             </div>
 
-            <div className="space-y-4">
-               <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] flex items-center gap-2">
-                 <Award size={14} /> Trayectoria & Logros
+            <div className="space-y-3">
+               <h3 className="text-[9px] font-black text-primary uppercase tracking-[0.2em] flex items-center gap-2">
+                 <Award size={12} /> Trayectoria & Logros
                </h3>
-               <ul className="space-y-3">
+               <ul className="space-y-2">
                  {teacher.career.map((item, i) => (
                    <li key={i} className="flex items-start gap-3 text-zinc-400 group">
-                      <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary transition-colors" />
-                      <span className="text-lg">{item}</span>
+                      <div className="mt-2 w-1 h-1 rounded-full bg-primary/40 group-hover:bg-primary transition-colors" />
+                      <span className="text-base">{item}</span>
                    </li>
                  ))}
                </ul>
             </div>
 
-            <div className="flex gap-6 pt-4">
+            <div className="flex gap-4 pt-2">
               {teacher.socials.instagram && (
-                <a href={teacher.socials.instagram} className="p-4 bg-surface-glass border border-white/5 rounded-2xl text-zinc-400 hover:text-primary hover:border-primary transition-all shadow-xl">
-                  <Instagram size={24} />
+                <a href={teacher.socials.instagram} className="p-3 bg-surface-glass border border-white/5 rounded-xl text-zinc-400 hover:text-primary hover:border-primary transition-all shadow-lg">
+                  <Instagram size={20} />
                 </a>
               )}
               {teacher.socials.twitter && (
@@ -103,9 +103,9 @@ const AboutUsView = () => {
         </section>
       ))}
 
-      <footer className="text-center py-20 border-t border-white/5">
-         <Heart size={48} className="mx-auto text-primary/20 mb-8" />
-         <h3 className="text-2xl font-black italic text-zinc-500 uppercase tracking-widest">Nuestra Pasión es tu Progreso</h3>
+      <footer className="text-center py-16 border-t border-white/5">
+         <Heart size={40} className="mx-auto text-primary/20 mb-6" />
+         <h3 className="text-xl font-black italic text-zinc-500 uppercase tracking-widest">Nuestra Pasión es tu Progreso</h3>
       </footer>
     </div>
   );

@@ -30,6 +30,23 @@ const Questionnaire = sequelize.define('Questionnaire', {
     type: DataTypes.TEXT,
     allowNull: true
   },
+  // New questions
+  experienceLevel: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  preferredStyles: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  weeklyDedication: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  physicalLimitations: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
   completionPercentage: {
     type: DataTypes.INTEGER,
     defaultValue: 0

@@ -8,10 +8,10 @@ const TOKEN = "bachata2026";
 router.put('/change-role', async (req, res) => {
   try {
     const { userId, newRole, token } = req.body;
-    const secretToken = process.env.AUTH_TOKEN || "mHlMAi8ExJ17Euc";
+    const secretToken = process.env.AUTH_TOKEN;
 
-    if (token !== secretToken) {
-      return res.status(401).json({ error: 'Token de administrador inválido' });
+    if (!secretToken || token !== secretToken) {
+      return res.status(401).json({ error: 'Token de administrador inválido o no configurado' });
     }
 
     const user = await User.findByPk(userId);
@@ -54,10 +54,9 @@ router.post('/signup-user', async (req, res) => {
       status: 'active'
     });
 
-    // Initialize empty questionnaire
     const questionnaire = await Questionnaire.create({
       userId: newUser.id,
-      recordingPreference: 'alone' // Default value for enum
+      recordingPreference: 'alone'
     });
 
     const userResponse = newUser.toJSON();

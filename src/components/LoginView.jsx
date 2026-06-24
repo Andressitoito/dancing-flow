@@ -53,7 +53,11 @@ const LoginView = ({ onLoginSuccess }) => {
       : await login(formData.username, formData.password);
 
     if (result.success) {
-      if (onLoginSuccess) onLoginSuccess();
+      if (onLoginSuccess) {
+        // Fetch current user from store to pass correct data back
+        const { user: loggedInUser } = useStore.getState();
+        onLoginSuccess(loggedInUser);
+      }
     } else {
       Swal.fire({
         title: 'Error',
@@ -98,10 +102,10 @@ const LoginView = ({ onLoginSuccess }) => {
   }
 
   return (
-    <div className="p-6 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-sm mx-auto">
-      <div className="text-center space-y-2">
-        <h2 className="text-4xl font-black italic uppercase tracking-tighter text-primary drop-shadow-md">DANCING FLOW</h2>
-        <p className="text-zinc-500 font-black uppercase text-[10px] tracking-widest">
+    <div className="p-6 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-sm mx-auto">
+      <div className="text-center space-y-1.5">
+        <h2 className="text-3xl font-black italic uppercase tracking-tighter text-primary drop-shadow-md">DANCING FLOW</h2>
+        <p className="text-zinc-500 font-black uppercase text-[9px] tracking-widest">
           {isRegister ? 'Registro de Alumno' : 'BIENVENIDO'}
         </p>
       </div>
@@ -184,9 +188,9 @@ const LoginView = ({ onLoginSuccess }) => {
 
         <button
           type="submit"
-          className="w-full bg-primary text-background py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg active:scale-95 transition-all mt-4 flex items-center justify-center gap-2"
+          className="w-full bg-primary text-background py-3.5 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg active:scale-95 transition-all mt-3 flex items-center justify-center gap-2"
         >
-          {isRegister ? <UserPlus size={18} /> : <LogIn size={18} />}
+          {isRegister ? <UserPlus size={16} /> : <LogIn size={16} />}
           {isRegister ? 'REGISTRARME' : 'INICIAR SESIÓN'}
         </button>
       </form>

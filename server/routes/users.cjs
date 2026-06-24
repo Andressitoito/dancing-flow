@@ -1,38 +1,22 @@
 const express = require('express');
 const router = express.Router();
 const { User, Questionnaire } = require('../models/index.cjs');
+const { authMiddleware, profesorMiddleware } = require('../middlewares/auth.cjs');
 
 // Get current user's questionnaire
-router.get('/me/questionnaire', async (req, res) => {
+router.get('/me/questionnaire', authMiddleware, async (req, res) => {
   try {
-    const { userId } = req.query; // For now, passing via query until middleware is more robust
-    const quest = await Questionnaire.findOne({ where: { userId } });
+    const quest = await Questionnaire.findOne({ where: { userId: req.user.id } });
     res.json(quest);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
 });
 
-router.put('/:id/role', async (req, res) => {
-  try {
-    const { isPro } = req.body;
-    const user = await User.findByPk(req.params.id);
-    if (user) {
-      user.isPro = isPro;
-      await user.save();
-      res.json(user);
-    } else {
-      res.status(404).json({ error: 'Usuario no encontrado' });
-    }
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
 // Update questionnaire
-router.post('/me/questionnaire', async (req, res) => {
+router.post('/me/questionnaire', authMiddleware, async (req, res) => {
   try {
-    const { userId, ...data } = req.body;
+    const data = req.body;
 
     // Calculate percentage
     const fields = ['whyStarted', 'objectives', 'hardestPart', 'fears', 'recordingPreference', 'personalFeeling'];
@@ -43,7 +27,7 @@ router.post('/me/questionnaire', async (req, res) => {
     const percentage = Math.round((filled / fields.length) * 100);
 
     const [quest, created] = await Questionnaire.findOrCreate({
-      where: { userId },
+      where: { userId: req.user.id },
       defaults: { ...data, completionPercentage: percentage, isCompleted: percentage === 100 }
     });
 
@@ -57,8 +41,8 @@ router.post('/me/questionnaire', async (req, res) => {
   }
 });
 
-// Get all users (Admin)
-router.get('/all', async (req, res) => {
+// Get all users (Admin only)
+router.get('/all', authMiddleware, profesorMiddleware, async (req, res) => {
   try {
     const users = await User.findAll({
       include: [Questionnaire],
@@ -70,11 +54,11 @@ router.get('/all', async (req, res) => {
   }
 });
 
-// Update user level or status (Admin)
-router.patch('/:id', async (req, res) => {
+// Update user level or status (Admin only)
+router.patch('/:id', authMiddleware, profesorMiddleware, async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
 
     await user.update(req.body);
     res.json(user);
@@ -83,11 +67,11 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
-// Delete user (Admin)
-router.delete('/:id', async (req, res) => {
+// Delete user (Admin only)
+router.delete('/:id', authMiddleware, profesorMiddleware, async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
     await user.destroy();
     res.json({ success: true });
   } catch (e) {

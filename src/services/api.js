@@ -1,9 +1,26 @@
 const BASE_URL = '/backend-service';
 
+// Helper for authenticated requests
+const authFetch = async (url, options = {}) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const headers = {
+    ...options.headers,
+    'x-user-id': user?.id || '',
+  };
+
+  const res = await fetch(url, { ...options, headers });
+  if (res.status === 401 || res.status === 403) {
+    // Optional: handle session expiry/unauthorized globally
+    // localStorage.removeItem('user');
+    // window.location.href = '/login';
+  }
+  return res;
+};
+
 export const api = {
   // Auth
   login: async (username, password) => {
-    const res = await fetch(`${BASE_URL}/login-user`, {
+    const res = await fetch(`${BASE_URL}/auth/login-user`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -13,24 +30,34 @@ export const api = {
     return data;
   },
 
-  register: async (username, password, token, firstName, lastName) => {
-    const res = await fetch(`${BASE_URL}/signup-user`, {
+  register: async (username, password, token, gender, level) => {
+    const res = await fetch(`${BASE_URL}/auth/signup-user`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password, token, firstName, lastName })
+      body: JSON.stringify({ username, password, token, gender, level })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
     return data;
   },
 
-  getUsers: async (adminId) => {
-    const res = await fetch(`${BASE_URL}/admin/users?adminId=${adminId}`);
+  changeRole: async (userId, newRole, token) => {
+    const res = await fetch(`${BASE_URL}/auth/change-role`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, newRole, token })
+    });
     return res.json();
   },
 
-  updateUser: async (userId, data, adminId) => {
-    const res = await fetch(`${BASE_URL}/admin/users/${userId}?adminId=${adminId}`, {
+  // Users & Admin
+  getUsers: async () => {
+    const res = await authFetch(`${BASE_URL}/users/all`);
+    return res.json();
+  },
+
+  updateUser: async (userId, data) => {
+    const res = await authFetch(`${BASE_URL}/admin/users/${userId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
@@ -38,90 +65,60 @@ export const api = {
     return res.json();
   },
 
-  deleteUser: async (userId, adminId) => {
-    const res = await fetch(`${BASE_URL}/admin/users/${userId}?adminId=${adminId}`, {
+  deleteUser: async (userId) => {
+    const res = await authFetch(`${BASE_URL}/admin/users/${userId}`, {
       method: 'DELETE'
     });
     return res.json();
   },
 
-
-  // Choreos
-  getChoreos: async () => {
-    const res = await fetch(`${BASE_URL}/choreos`);
+  // Questionnaires
+  getQuestionnaire: async () => {
+    const res = await authFetch(`${BASE_URL}/users/me/questionnaire`);
     return res.json();
   },
 
-  saveChoreo: async (choreo, userId, creatorName) => {
-    const res = await fetch(`${BASE_URL}/choreos`, {
+  saveQuestionnaire: async (data) => {
+    const res = await authFetch(`${BASE_URL}/users/me/questionnaire`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...choreo, userId, creatorName })
+      body: JSON.stringify(data)
     });
     return res.json();
   },
 
-  deleteChoreo: async (id, userId) => {
-    const res = await fetch(`${BASE_URL}/choreos/${id}?userId=${userId}`, {
-      method: 'DELETE'
+  // Mentorship / Study Blocks
+  getBlocks: async () => {
+    const res = await authFetch(`${BASE_URL}/study/blocks`);
+    return res.json();
+  },
+
+  createBlock: async (formData) => {
+    const res = await authFetch(`${BASE_URL}/study/blocks`, {
+      method: 'POST',
+      body: formData // Form data handles multipart/form-data
     });
     return res.json();
   },
 
-  likeChoreo: async (id, userId) => {
-    const res = await fetch(`${BASE_URL}/choreos/${id}/like`, {
+  assignBlock: async (studyBlockId, userIds) => {
+    const res = await authFetch(`${BASE_URL}/study/assignments`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId })
+      body: JSON.stringify({ studyBlockId, userIds })
     });
     return res.json();
   },
 
-  favoriteChoreo: async (id, userId) => {
-    const res = await fetch(`${BASE_URL}/choreos/${id}/favorite`, {
+  getMyAssignments: async () => {
+    const res = await authFetch(`${BASE_URL}/study/my-assignments`);
+    return res.json();
+  },
+
+  postReply: async (formData) => {
+    const res = await authFetch(`${BASE_URL}/study/replies`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId })
-    });
-    return res.json();
-  },
-
-  // Videos
-  getVideos: async () => {
-    const res = await fetch(`${BASE_URL}/videos`);
-    return res.json();
-  },
-
-  saveVideo: async (video, userId, creatorName) => {
-    const res = await fetch(`${BASE_URL}/videos`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...video, userId, creatorName })
-    });
-    return res.json();
-  },
-
-  deleteVideo: async (id, userId) => {
-    const res = await fetch(`${BASE_URL}/videos/${id}?userId=${userId}`, {
-      method: 'DELETE'
-    });
-    return res.json();
-  },
-
-  likeVideo: async (id, userId) => {
-    const res = await fetch(`${BASE_URL}/videos/${id}/like`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId })
-    });
-    return res.json();
-  },
-
-  favoriteVideo: async (id, userId) => {
-    const res = await fetch(`${BASE_URL}/videos/${id}/favorite`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId })
+      body: formData
     });
     return res.json();
   }

@@ -71,10 +71,10 @@ const HomeView = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-background z-[-1]" />
 
         <div className="text-center px-4 animate-in fade-in slide-in-from-bottom-10 duration-1000">
-          <h1 className="text-7xl md:text-8xl lg:text-9xl font-black italic tracking-tighter text-primary drop-shadow-[0_20px_20px_rgba(0,0,0,0.7)] leading-none">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black italic tracking-tighter text-primary drop-shadow-[0_10px_10px_rgba(0,0,0,0.7)] leading-none">
             DANCING FLOW
           </h1>
-          <p className="mt-8 text-2xl md:text-3xl font-light text-white uppercase tracking-[0.4em] drop-shadow-md">
+          <p className="mt-4 text-lg md:text-xl font-light text-white uppercase tracking-[0.3em] drop-shadow-md">
             Mastery & Mentorship
           </p>
         </div>
@@ -87,7 +87,7 @@ const HomeView = () => {
 
       {/* Teachers Parallax Section */}
       {teachers.map((teacher, idx) => (
-        <section key={idx} className="relative min-h-[120vh] flex items-center justify-center md:justify-start px-6 md:px-32 py-32 overflow-hidden">
+        <section key={idx} className="relative min-h-[100vh] flex items-center justify-center md:justify-start px-6 md:px-24 py-20 overflow-hidden">
           <div
             className="absolute inset-0 z-[-1] bg-cover bg-center"
             style={{
@@ -98,25 +98,25 @@ const HomeView = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent z-[-1]" />
 
-          <div className="max-w-3xl bg-surface-glass backdrop-blur-3xl p-12 md:p-16 lg:p-20 rounded-[3.5rem] border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] animate-in slide-in-from-left-20 duration-1000">
-            <p className="text-primary font-black uppercase tracking-[0.4em] text-xs mb-4">Mentor Principal</p>
-            <h2 className="text-6xl md:text-7xl lg:text-8xl font-black mb-8 text-white italic tracking-tighter">{teacher.name}</h2>
-            <div className="h-1 w-24 bg-primary mb-12" />
-            <p className="text-white leading-relaxed text-2xl md:text-2xl lg:text-3xl mb-12 font-medium italic opacity-90">
+          <div className="max-w-xl bg-surface-glass backdrop-blur-3xl p-6 md:p-8 lg:p-10 rounded-[2rem] border border-white/10 shadow-2xl animate-in slide-in-from-left-20 duration-1000">
+            <p className="text-primary font-black uppercase tracking-[0.3em] text-[9px] mb-2">Mentor Principal</p>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-white italic tracking-tighter leading-tight">{teacher.name}</h2>
+            <div className="h-1 w-12 bg-primary mb-6" />
+            <p className="text-white leading-snug text-lg md:text-xl lg:text-xl mb-6 font-medium italic opacity-90">
               "{teacher.bio}"
             </p>
-            <p className="text-zinc-400 leading-relaxed text-lg lg:text-xl mb-12 border-l-2 border-white/10 pl-8">
+            <p className="text-zinc-400 leading-relaxed text-base lg:text-lg mb-8 border-l-2 border-white/10 pl-6">
               {teacher.career}
             </p>
-            <div className="flex gap-8">
-              <a href={teacher.socials.instagram} className="p-4 bg-white/5 rounded-2xl hover:bg-primary hover:text-background transition-all duration-500 scale-110">
-                <Instagram size={32} />
+            <div className="flex gap-6">
+              <a href={teacher.socials.instagram} className="p-3 bg-white/5 rounded-xl hover:bg-primary hover:text-background transition-all duration-500">
+                <Instagram size={24} />
               </a>
-              <a href={teacher.socials.twitter} className="p-4 bg-white/5 rounded-2xl hover:bg-primary hover:text-background transition-all duration-500 scale-110">
-                <Twitter size={32} />
+              <a href={teacher.socials.twitter} className="p-3 bg-white/5 rounded-xl hover:bg-primary hover:text-background transition-all duration-500">
+                <Twitter size={24} />
               </a>
-              <a href={teacher.socials.facebook} className="p-4 bg-white/5 rounded-2xl hover:bg-primary hover:text-background transition-all duration-500 scale-110">
-                <Facebook size={32} />
+              <a href={teacher.socials.facebook} className="p-3 bg-white/5 rounded-xl hover:bg-primary hover:text-background transition-all duration-500">
+                <Facebook size={24} />
               </a>
             </div>
           </div>
@@ -124,14 +124,14 @@ const HomeView = () => {
       ))}
 
       {/* Testimonials Carousel */}
-      <section className="py-24 md:py-32 lg:py-48 bg-background px-6 relative overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] z-0" />
+      <section className="py-20 md:py-24 lg:py-32 bg-background px-6 relative overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] z-0" />
 
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-            <p className="text-primary font-black uppercase tracking-[0.4em] text-xs mb-6">Comunidad</p>
-            <h2 className="text-4xl md:text-5xl lg:text-7xl font-black mb-24 italic tracking-tight text-white">HISTORIAS <span className="text-primary">FLOW</span></h2>
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+            <p className="text-primary font-black uppercase tracking-[0.3em] text-[9px] mb-3">Comunidad</p>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-black mb-12 italic tracking-tight text-white">HISTORIAS <span className="text-primary">FLOW</span></h2>
 
-            <div className="relative min-h-[300px] md:min-h-[350px] flex items-center justify-center">
+            <div className="relative min-h-[200px] md:min-h-[250px] flex items-center justify-center">
                 {testimonials.map((t, i) => (
                     <div
                         key={i}
@@ -139,14 +139,14 @@ const HomeView = () => {
                             activeTestimonial === i ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
                         }`}
                     >
-                        <div className="flex text-primary mb-10 gap-2">
-                            {[...Array(t.stars)].map((_, s) => <Star key={s} size={24} md:size={28} fill="currentColor" />)}
+                        <div className="flex text-primary mb-6 gap-1.5">
+                            {[...Array(t.stars)].map((_, s) => <Star key={s} size={20} fill="currentColor" />)}
                         </div>
-                        <p className="text-2xl md:text-3xl lg:text-4xl italic text-white mb-12 font-light leading-tight max-w-4xl">
+                        <p className="text-xl md:text-2xl lg:text-3xl italic text-white mb-8 font-light leading-snug max-w-3xl">
                             "{t.text}"
                         </p>
-                        <p className="font-black text-primary text-xl md:text-2xl uppercase tracking-[0.3em]">
-                           <span className="text-zinc-700 mr-4">—</span> {t.name}
+                        <p className="font-black text-primary text-lg md:text-xl uppercase tracking-[0.2em]">
+                           <span className="text-zinc-700 mr-3">—</span> {t.name}
                         </p>
                     </div>
                 ))}
@@ -167,26 +167,26 @@ const HomeView = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-32 bg-black border-t border-white/5 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-20">
+      <footer className="py-16 bg-black border-t border-white/5 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
             <div className="text-center md:text-left">
-                <h2 className="text-4xl md:text-5xl font-black italic text-primary mb-4 tracking-tighter">DANCING FLOW</h2>
-                <p className="text-zinc-500 text-sm tracking-[0.4em] uppercase font-bold">Evolution through mentorship</p>
+                <h2 className="text-2xl md:text-3xl font-black italic text-primary mb-2 tracking-tighter">DANCING FLOW</h2>
+                <p className="text-zinc-500 text-[9px] tracking-[0.3em] uppercase font-bold">Evolution through mentorship</p>
             </div>
 
-            <div className="flex gap-16">
-                <div className="flex flex-col items-center gap-6">
-                    <p className="text-[10px] uppercase tracking-[0.3em] font-black text-zinc-600">Andrés</p>
-                    <div className="flex gap-6 text-zinc-400">
-                        <Instagram size={24} className="hover:text-primary transition-colors cursor-pointer" />
-                        <Twitter size={24} className="hover:text-primary transition-colors cursor-pointer" />
+            <div className="flex gap-12">
+                <div className="flex flex-col items-center gap-4">
+                    <p className="text-[9px] uppercase tracking-[0.2em] font-black text-zinc-600">Andrés</p>
+                    <div className="flex gap-4 text-zinc-400">
+                        <Instagram size={20} className="hover:text-primary transition-colors cursor-pointer" />
+                        <Twitter size={20} className="hover:text-primary transition-colors cursor-pointer" />
                     </div>
                 </div>
-                <div className="flex flex-col items-center gap-6">
-                    <p className="text-[10px] uppercase tracking-[0.3em] font-black text-zinc-600">Elena</p>
-                    <div className="flex gap-6 text-zinc-400">
-                        <Instagram size={24} className="hover:text-primary transition-colors cursor-pointer" />
-                        <Facebook size={24} className="hover:text-primary transition-colors cursor-pointer" />
+                <div className="flex flex-col items-center gap-4">
+                    <p className="text-[9px] uppercase tracking-[0.2em] font-black text-zinc-600">Elena</p>
+                    <div className="flex gap-4 text-zinc-400">
+                        <Instagram size={20} className="hover:text-primary transition-colors cursor-pointer" />
+                        <Facebook size={20} className="hover:text-primary transition-colors cursor-pointer" />
                     </div>
                 </div>
             </div>

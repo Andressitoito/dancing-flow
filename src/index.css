@@ -10,7 +10,7 @@
 }
 
 :root {
-  --df-primary: #ff0000;
+  --df-primary: #ff3333; /* Slightly lighter and more vibrant red */
   --df-secondary: #ff9800;
   --df-accent: #ffc340;
   --df-bg: #0a0a0a;
@@ -19,7 +19,7 @@
   --df-border: rgba(255, 255, 255, 0.1);
 
   background-color: var(--df-bg);
-  color: white;
+  color: #e5e5e5; /* Zinc-200 equivalent for better general contrast */
 }
 
 body {
@@ -39,4 +39,13 @@ body {
 
 .step-block {
   transition: all 0.2s ease-in-out;
+}
+
+/* Form inputs readability improvements */
+input, textarea, select {
+  color: #ffffff !important;
+}
+
+label {
+  color: #d1d5db !important; /* gray-300 */
 }

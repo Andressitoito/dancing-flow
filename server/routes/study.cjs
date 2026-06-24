@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { StudyBlock, Assignment, Reply, User } = require('../models/index.cjs');
 const multer = require('multer');
-const path = require('path');
 const fs = require('fs');
+const { authMiddleware, profesorMiddleware } = require('../middlewares/auth.cjs');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -18,16 +18,19 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+// All study routes require authentication
+router.use(authMiddleware);
+
 // Create Study Block (Admin)
-router.post('/blocks', upload.single('file'), async (req, res) => {
+router.post('/blocks', profesorMiddleware, upload.single('file'), async (req, res) => {
   try {
-    const { title, description, type, level, creatorId } = req.body;
+    const { title, description, type, level } = req.body;
     const block = await StudyBlock.create({
       title,
       description,
       type,
       level,
-      creatorId,
+      creatorId: req.user.id,
       contentUrl: req.file ? `/uploads/content/${req.file.filename}` : null
     });
     res.json(block);
@@ -37,7 +40,7 @@ router.post('/blocks', upload.single('file'), async (req, res) => {
 });
 
 // Assign to students (Admin)
-router.post('/assignments', async (req, res) => {
+router.post('/assignments', profesorMiddleware, async (req, res) => {
   try {
     const { studyBlockId, userIds } = req.body;
     const assignments = await Promise.all(userIds.map(userId =>
@@ -49,12 +52,11 @@ router.post('/assignments', async (req, res) => {
   }
 });
 
-// Get blocks for a student
+// Get blocks for the logged-in student
 router.get('/my-assignments', async (req, res) => {
   try {
-    const { userId } = req.query;
     const assignments = await Assignment.findAll({
-      where: { userId },
+      where: { userId: req.user.id },
       include: [
         { model: StudyBlock },
         {
@@ -72,29 +74,31 @@ router.get('/my-assignments', async (req, res) => {
 // Post a reply (Student or Master)
 router.post('/replies', upload.fields([{ name: 'audio', maxCount: 1 }, { name: 'video', maxCount: 1 }]), async (req, res) => {
   try {
-    const { assignmentId, userId, content, type, parentReplyId } = req.body;
+    const { assignmentId, content, type, parentReplyId } = req.body;
+
+    // Verify assignment belongs to user or user is professor
+    const assignment = await Assignment.findByPk(assignmentId);
+    if (!assignment) return res.status(404).json({ error: 'Asignación no encontrada' });
+
+    if (assignment.userId !== req.user.id && req.user.role !== 'profesor') {
+      return res.status(403).json({ error: 'No tienes permiso para replicar en esta asignación' });
+    }
 
     let finalType = type || 'text';
-    if (req.files['audio']) finalType = 'audio';
-    if (req.files['video']) finalType = 'video';
+    if (req.files && req.files['audio']) finalType = 'audio';
+    if (req.files && req.files['video']) finalType = 'video';
 
     const reply = await Reply.create({
       assignmentId,
-      userId,
+      userId: req.user.id,
       content,
       type: finalType,
-      audioUrl: req.files['audio'] ? `/uploads/content/${req.files['audio'][0].filename}` : null,
-      videoUrl: req.files['video'] ? `/uploads/content/${req.files['video'][0].filename}` : null,
+      audioUrl: (req.files && req.files['audio']) ? `/uploads/content/${req.files['audio'][0].filename}` : null,
+      videoUrl: (req.files && req.files['video']) ? `/uploads/content/${req.files['video'][0].filename}` : null,
       parentReplyId: parentReplyId || null,
-      isReadByMaster: false, // Should logic for role be here? Yes.
+      isReadByMaster: req.user.role === 'profesor',
+      isReadByUser: req.user.role !== 'profesor'
     });
-
-    const user = await User.findByPk(userId);
-    if (user.role === 'profesor') {
-      reply.isReadByMaster = true;
-      reply.isReadByUser = false;
-      await reply.save();
-    }
 
     res.json(reply);
   } catch (e) {
@@ -102,8 +106,8 @@ router.post('/replies', upload.fields([{ name: 'audio', maxCount: 1 }, { name: '
   }
 });
 
-// Get all blocks (Admin)
-router.get('/blocks', async (req, res) => {
+// Get all blocks (Admin only)
+router.get('/blocks', profesorMiddleware, async (req, res) => {
   try {
     const blocks = await StudyBlock.findAll({
       include: [{

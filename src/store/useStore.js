@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { API_BASE_URL } from '../services/constants';
 import io from 'socket.io-client';
+import { api } from '../services/api';
 
 const useStore = create((set, get) => ({
   user: null,
@@ -33,7 +33,7 @@ const useStore = create((set, get) => ({
   },
 
   fetchInitialData: async () => {
-    const { isInitialLoad } = get();
+    const { isInitialLoad, user } = get();
     if (isInitialLoad) set({ loading: true });
 
     // Initial Palette setup
@@ -46,18 +46,30 @@ const useStore = create((set, get) => ({
 
     // Restore Session
     const savedUser = localStorage.getItem('dancing_user');
-    if (savedUser) {
-      const user = JSON.parse(savedUser);
-      set({ user, questionnaire: user.Questionnaire });
-      get().initSocket(user.id);
+    let currentUser = user;
+    if (savedUser && !currentUser) {
+      currentUser = JSON.parse(savedUser);
+      set({ user: currentUser, questionnaire: currentUser.Questionnaire });
+      get().initSocket(currentUser.id);
+    }
+
+    if (!currentUser) {
+      set({ loading: false });
+      return;
     }
 
     try {
-      const usersRes = await fetch(`${API_BASE_URL}/users/all`);
-      const users = await usersRes.json();
-      set({ users, isInitialLoad: false });
+      // Only fetch users if profesor
+      if (currentUser.role === 'profesor') {
+        const users = await api.getUsers();
+        if (Array.isArray(users)) {
+          set({ users });
+        }
+      }
+
+      set({ isInitialLoad: false });
     } catch (e) {
-      console.error(e);
+      console.error('Error fetching initial data:', e);
     } finally {
       set({ loading: false });
     }
@@ -65,41 +77,31 @@ const useStore = create((set, get) => ({
 
   login: async (username, password) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/auth/login-user`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        set({ user: data, questionnaire: data.Questionnaire });
-        localStorage.setItem('dancing_user', JSON.stringify(data));
-        get().initSocket(data.id);
-        return { success: true };
-      }
-      return { success: false, error: data.error };
+      const data = await api.login(username, password);
+      set({ user: data, questionnaire: data.Questionnaire });
+      localStorage.setItem('dancing_user', JSON.stringify(data));
+      get().initSocket(data.id);
+      return { success: true };
     } catch (e) {
-      return { success: false, error: 'Error de conexión' };
+      return { success: false, error: e.message };
     }
   },
 
   signup: async (formData) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/auth/signup-user`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      const data = await res.json();
-      if (res.ok) {
-        set({ user: data, questionnaire: data.Questionnaire });
-        localStorage.setItem('dancing_user', JSON.stringify(data));
-        get().initSocket(data.id);
-        return { success: true };
-      }
-      return { success: false, error: data.error };
+      const data = await api.register(
+        formData.username,
+        formData.password,
+        formData.token,
+        formData.gender,
+        formData.level
+      );
+      set({ user: data, questionnaire: data.Questionnaire });
+      localStorage.setItem('dancing_user', JSON.stringify(data));
+      get().initSocket(data.id);
+      return { success: true };
     } catch (e) {
-      return { success: false, error: 'Error de conexión' };
+      return { success: false, error: e.message };
     }
   },
 
@@ -107,7 +109,7 @@ const useStore = create((set, get) => ({
     const { socket } = get();
     if (socket) socket.disconnect();
     localStorage.removeItem('dancing_user');
-    set({ user: null, questionnaire: null, socket: null });
+    set({ user: null, questionnaire: null, socket: null, users: [], assignments: [] });
   },
 
   initSocket: (userId) => {
@@ -115,12 +117,10 @@ const useStore = create((set, get) => ({
     socket.emit('authenticate', userId);
     socket.on('online_users', (list) => set({ onlineUsers: list }));
 
-    // Listen for new messages to update state in real-time
     socket.on('new_message', (reply) => {
       const { assignments } = get();
       const updated = assignments.map(a => {
         if (a.id === reply.assignmentId) {
-          // Check if reply already exists to avoid duplicates
           if (a.Replies?.some(r => r.id === reply.id)) return a;
           return { ...a, Replies: [...(a.Replies || []), reply] };
         }
@@ -133,28 +133,36 @@ const useStore = create((set, get) => ({
   },
 
   updateQuestionnaire: async (data) => {
-    const { user } = get();
-    const res = await fetch(`${API_BASE_URL}/users/me/questionnaire`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...data, userId: user.id })
-    });
-    const updated = await res.json();
-    set({ questionnaire: updated });
+    try {
+      const updated = await api.saveQuestionnaire(data);
+      set({ questionnaire: updated });
+
+      // Also update the cached user object in localStorage
+      const { user } = get();
+      if (user) {
+        const newUser = { ...user, Questionnaire: updated };
+        set({ user: newUser });
+        localStorage.setItem('dancing_user', JSON.stringify(newUser));
+      }
+    } catch (e) {
+      console.error('Error updating questionnaire:', e);
+    }
   },
 
   fetchAssignments: async () => {
     const { user, socket } = get();
     if (!user) return;
-    const res = await fetch(`${API_BASE_URL}/study/my-assignments?userId=${user.id}`);
-    const data = await res.json();
-    set({ assignments: data });
+    try {
+      const data = await api.getMyAssignments();
+      set({ assignments: data });
 
-    // Join rooms for all assignments to receive real-time updates
-    if (socket) {
-      data.forEach(asgn => {
-        socket.emit('join_assignment', asgn.id);
-      });
+      if (socket && Array.isArray(data)) {
+        data.forEach(asgn => {
+          socket.emit('join_assignment', asgn.id);
+        });
+      }
+    } catch (e) {
+      console.error('Error fetching assignments:', e);
     }
   },
 
@@ -162,30 +170,28 @@ const useStore = create((set, get) => ({
     const { user, socket } = get();
     const formData = new FormData();
     formData.append('assignmentId', assignmentId);
-    formData.append('userId', user.id);
     formData.append('content', content);
     if (audioFile) formData.append('audio', audioFile);
     if (videoFile) formData.append('video', videoFile);
 
-    const res = await fetch(`${API_BASE_URL}/study/replies`, {
-      method: 'POST',
-      body: formData
-    });
-    const newReply = await res.json();
+    try {
+      const newReply = await api.postReply(formData);
 
-    // Emit via socket for real-time
-    if (socket) {
-      socket.emit('send_message', { ...newReply, User: { username: user.username, role: user.role } });
-    }
-
-    const { assignments } = get();
-    const updated = assignments.map(a => {
-      if (a.id === assignmentId) {
-        return { ...a, Replies: [...(a.Replies || []), { ...newReply, User: user }] };
+      if (socket) {
+        socket.emit('send_message', { ...newReply, User: { username: user.username, role: user.role } });
       }
-      return a;
-    });
-    set({ assignments: updated });
+
+      const { assignments } = get();
+      const updated = assignments.map(a => {
+        if (a.id === assignmentId) {
+          return { ...a, Replies: [...(a.Replies || []), { ...newReply, User: user }] };
+        }
+        return a;
+      });
+      set({ assignments: updated });
+    } catch (e) {
+      console.error('Error posting reply:', e);
+    }
   }
 }));
 

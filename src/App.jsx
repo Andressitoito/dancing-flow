@@ -39,7 +39,13 @@ function App() {
       case 'about':
         return <AboutUsView />;
       case 'login':
-        return <LoginView onLoginSuccess={() => setActiveTab('profile')} />;
+        return <LoginView onLoginSuccess={(loggedInUser) => {
+          if (loggedInUser?.role === 'profesor') {
+            setActiveTab('admin');
+          } else {
+            setActiveTab('profile');
+          }
+        }} />;
       case 'profile':
         return <StudentProfileView />;
       case 'training':

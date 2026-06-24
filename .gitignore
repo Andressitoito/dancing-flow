@@ -12,9 +12,11 @@ dist
 build
 dist-ssr
 *.local
+.env
 
 # Application Data
 db/*.json
+db/*.sqlite
 uploads/*
 !db/README.md
 
