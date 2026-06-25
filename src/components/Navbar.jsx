@@ -19,42 +19,48 @@ const Navbar = ({ activeTab, onTabChange }) => {
     tabs.push({ id: 'login', icon: LogIn, label: 'Entrar' });
   } else {
     if (user.role === 'profesor') {
-      tabs.push({ id: 'admin', icon: LayoutGrid, label: 'Profesor' });
+      tabs.push({ id: 'admin', icon: LayoutGrid, label: 'Panel' });
     } else {
-      tabs.push({ id: 'profile', icon: User, label: 'Mi Perfil' });
+      tabs.push({ id: 'profile', icon: User, label: 'Perfil' });
       tabs.push({ id: 'training', icon: GraduationCap, label: 'Clases' });
     }
   }
 
   return (
-    <nav className="fixed bottom-0 md:top-0 md:bottom-auto left-0 right-0 w-full bg-surface/90 backdrop-blur-xl border-t md:border-t-0 md:border-b border-white/5 p-4 z-50 shadow-2xl flex justify-around md:justify-center md:gap-12 items-center">
-      <div className="flex justify-around md:justify-center md:gap-12 items-center w-full max-w-7xl">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => onTabChange(tab.id)}
-              className={`flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-5 py-2.5 rounded-2xl transition-all duration-300 ${
-                isActive ? 'bg-primary/20 text-primary md:bg-primary md:text-background shadow-lg' : 'text-zinc-400 hover:text-primary hover:bg-white/5'
-              }`}
-            >
-              <Icon size={22} strokeWidth={isActive ? 3 : 2} />
-              <span className="text-sm font-black uppercase tracking-widest leading-none">{tab.label}</span>
-            </button>
-          );
-        })}
+    <nav className="fixed bottom-0 md:top-0 md:bottom-auto left-0 right-0 w-full h-14 md:h-16 bg-surface/95 backdrop-blur-xl border-t md:border-t-0 md:border-b border-white/5 z-50 shadow-xl flex items-center">
+      <div className="flex justify-around md:justify-end md:gap-4 items-center w-full max-w-7xl mx-auto px-4">
+        <div className="flex-1 hidden md:block">
+           <span className="text-primary font-black italic tracking-tighter text-xl">DANCING FLOW</span>
+        </div>
 
-        {user && (
-          <button
-            onClick={handleLogout}
-            className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-5 py-2.5 rounded-2xl text-zinc-500 hover:text-red-400 hover:bg-red-400/5 transition-all duration-300"
-          >
-            <LogOut size={22} />
-            <span className="text-sm font-black uppercase tracking-widest leading-none">Salir</span>
-          </button>
-        )}
+        <div className="flex justify-around md:justify-end md:gap-2 flex-1 md:flex-none">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => onTabChange(tab.id)}
+                  className={`flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 px-4 py-1.5 md:py-2 rounded-xl transition-all duration-200 ${
+                    isActive ? 'text-primary md:bg-white/5' : 'text-zinc-500 hover:text-white'
+                  }`}
+                >
+                  <Icon size={18} strokeWidth={isActive ? 2.5 : 2} />
+                  <span className="text-[10px] md:text-sm font-bold uppercase md:capitalize tracking-wider">{tab.label}</span>
+                </button>
+              );
+            })}
+
+            {user && (
+              <button
+                onClick={handleLogout}
+                className="flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 px-4 py-1.5 md:py-2 rounded-xl text-zinc-500 hover:text-red-400 transition-all duration-200"
+              >
+                <LogOut size={18} />
+                <span className="text-[10px] md:text-sm font-bold uppercase md:capitalize tracking-wider">Salir</span>
+              </button>
+            )}
+        </div>
       </div>
     </nav>
   );

@@ -27,7 +27,7 @@ function App() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-background text-white">
-        <div className="animate-spin h-12 w-12 border-t-2 border-primary rounded-full"></div>
+        <div className="animate-spin h-8 w-8 border-t-2 border-primary rounded-full"></div>
       </div>
     );
   }
@@ -58,11 +58,13 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-white pb-24 md:pb-10 md:pt-28">
-      <main className="relative z-10 w-full max-w-7xl mx-auto md:px-6 lg:px-8">
+    <div className="min-h-screen bg-background text-white flex flex-col">
+      <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
+
+      {/* Content area with normalized padding */}
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 mt-0 md:mt-16 mb-14 md:mb-0">
         {renderContent()}
       </main>
-      <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
     </div>
   );
 }
