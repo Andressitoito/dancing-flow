@@ -57,12 +57,13 @@ function App() {
     }
   };
 
+  const isFullBleed = ['home', 'about'].includes(activeTab);
+
   return (
-    <div className="min-h-screen bg-background text-white flex flex-col">
+    <div className="min-h-screen bg-background text-white flex flex-col overflow-x-hidden">
       <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
 
-      {/* Content area with normalized padding */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 mt-0 md:mt-16 mb-14 md:mb-0">
+      <main className={`flex-1 w-full mx-auto ${isFullBleed ? 'max-w-none px-0' : 'max-w-7xl px-4 md:px-6 py-4 md:py-8'} mt-0 md:mt-[80px] mb-[72px] md:mb-0`}>
         {renderContent()}
       </main>
     </div>

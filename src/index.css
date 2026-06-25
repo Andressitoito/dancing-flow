@@ -5,26 +5,19 @@
   --color-secondary: var(--df-secondary);
   --color-accent: var(--df-accent);
   --color-background: var(--df-bg);
-  --color-surface: var(--df-surface);
+  --color-surface: var(--df-surface-glass);
   --color-outline: var(--df-border);
-
-  /* Compact Spacing Scale */
-  --spacing-4: 4px;
-  --spacing-8: 8px;
-  --spacing-12: 12px;
-  --spacing-16: 16px;
-  --spacing-24: 24px;
-  --spacing-32: 32px;
 }
 
 :root {
-  /* SaaS Professional Palette (Zinc-based) */
+  /* Restore Cinematic Palette (More vibrant Rose) */
   --df-primary: #f472b6;
   --df-secondary: #fbbf24;
-  --df-accent: #f43f5e;
-  --df-bg: #09090b; /* Zinc-950 */
-  --df-surface: #18181b; /* Zinc-900 */
-  --df-border: rgba(255, 255, 255, 0.08);
+  --df-accent: #fb7185;
+  --df-bg: #09090b;
+  --df-surface: #18181b;
+  --df-surface-glass: rgba(24, 24, 27, 0.65); /* High transparency for depth */
+  --df-border: rgba(255, 255, 255, 0.06);
 
   background-color: var(--df-bg);
   color: #fafafa;
@@ -35,74 +28,48 @@
 body {
   margin: 0;
   overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
-/* Typography Scale */
-h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; }
-h2 { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; }
-h3 { font-size: 20px; font-weight: 600; line-height: 1.4; }
+/* Restore Cinematic Typography Scale */
+h1 { font-size: 64px; font-weight: 900; font-style: italic; letter-spacing: -0.05em; line-height: 1.0; }
+h2 { font-size: 40px; font-weight: 800; letter-spacing: -0.02em; }
+h3 { font-size: 24px; font-weight: 700; }
 p, div, span, label { font-size: 16px; }
-.text-small { font-size: 14px; color: #a1a1aa; }
 
-/* SaaS UI Components */
-.card {
-  background-color: var(--df-surface);
+/* Custom styles for the interactive course elements */
+.card-premium {
+  background: var(--df-surface-glass);
+  backdrop-filter: blur(20px);
   border: 1px solid var(--df-border);
-  border-radius: 12px;
-  padding: 16px;
-  transition: all 0.2s ease;
+  border-radius: 2rem;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@media (min-width: 768px) {
-  .card { padding: 24px; }
+.card-premium:hover {
+  border-color: rgba(244, 114, 182, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
-.btn-primary {
-  height: 44px;
-  padding: 0 20px;
-  background-color: var(--df-primary);
-  color: #000;
-  font-weight: 700;
-  border-radius: 8px;
-  font-size: 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: all 0.2s;
-}
-
-@media (min-width: 768px) {
-  .btn-primary { height: 40px; }
-}
-
-/* Global Form Reset */
+/* Global Readability Fixes */
 input, textarea, select {
   font-size: 16px !important;
   color: #ffffff !important;
-  background-color: #09090b !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 8px !important;
-  padding: 10px 14px !important;
-  outline: none !important;
-}
-
-input:focus, textarea:focus {
-  border-color: var(--df-primary) !important;
 }
 
 label {
   font-size: 14px !important;
-  font-weight: 600 !important;
-  color: #a1a1aa !important;
-  margin-bottom: 6px !important;
-  display: block !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  color: #71717a !important;
 }
 
-/* Custom Scrollbar (Subtle SaaS style) */
-::-webkit-scrollbar { width: 6px; }
+/* Scrollbar (Restored) */
+::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
   background: #27272a;
@@ -110,9 +77,10 @@ label {
 }
 ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
 
-/* Interactive Utilities */
-.glass {
-  background: rgba(24, 24, 27, 0.8);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+/* Parallax Utilities */
+.parallax-bg {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
