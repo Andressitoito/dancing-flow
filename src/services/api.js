@@ -1,8 +1,11 @@
 const BASE_URL = '/backend-service';
 
+// Standardized storage key
+const STORAGE_KEY = 'dancing_user';
+
 // Helper for authenticated requests
 const authFetch = async (url, options = {}) => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem(STORAGE_KEY));
   const headers = {
     ...options.headers,
     'x-user-id': user?.id || '',
@@ -10,9 +13,8 @@ const authFetch = async (url, options = {}) => {
 
   const res = await fetch(url, { ...options, headers });
   if (res.status === 401 || res.status === 403) {
-    // Optional: handle session expiry/unauthorized globally
-    // localStorage.removeItem('user');
-    // window.location.href = '/login';
+    // Session expired or invalid
+    localStorage.removeItem(STORAGE_KEY);
   }
   return res;
 };

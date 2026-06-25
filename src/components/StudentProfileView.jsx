@@ -22,7 +22,6 @@ const StudentProfileView = () => {
     testimonialStars: 5
   });
 
-  // Re-fetch data on mount to ensure fresh questionnaire state
   useEffect(() => {
     const refreshData = async () => {
       try {
@@ -83,19 +82,19 @@ const StudentProfileView = () => {
   const renderMultiSelect = (field, options) => {
     const selected = formData[field] ? formData[field].split(',') : [];
     return (
-      <div className="grid grid-cols-1 gap-1.5">
+      <div className="grid grid-cols-1 gap-2">
         {options.map(opt => (
           <button
             key={opt.id}
             onClick={() => toggleOption(field, opt.id)}
-            className={`flex items-center justify-between p-2.5 rounded-xl border text-left transition-all ${
+            className={`flex items-center justify-between px-5 py-3 rounded-xl border text-left transition-all ${
               selected.includes(opt.id)
               ? 'bg-primary/20 border-primary text-primary'
               : 'bg-background/40 border-white/5 text-zinc-400 hover:border-white/20'
             }`}
           >
-            <span className="text-xs font-medium">{opt.label}</span>
-            {selected.includes(opt.id) && <Check size={14} />}
+            <span className="text-base font-medium">{opt.label}</span>
+            {selected.includes(opt.id) && <Check size={18} />}
           </button>
         ))}
       </div>
@@ -105,24 +104,24 @@ const StudentProfileView = () => {
   const completion = questionnaire?.completionPercentage || 0;
 
   return (
-    <div className="py-8 pb-32 md:pb-10 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto px-4 md:px-8 lg:px-0">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl md:text-3xl font-black text-white italic uppercase tracking-tighter">Mi Perfil</h1>
+    <div className="py-8 pb-32 md:pb-10 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto px-8 lg:px-0">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-surface p-8 rounded-[2rem] border border-white/5 shadow-2xl">
+        <div className="space-y-4 flex-1">
+          <div className="flex items-center gap-4">
+            <h1 className="text-3xl md:text-4xl font-black text-white italic uppercase tracking-tighter">Mi Perfil</h1>
             {user?.isPro && (
-                <span className="bg-primary text-background text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-widest animate-pulse">PRO</span>
+                <span className="bg-primary text-background text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest animate-pulse">PRO</span>
             )}
           </div>
 
-          <div className="flex flex-col gap-2">
-             <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-zinc-500 px-1">
-                <span className="flex items-center gap-1"><BarChart size={12}/> Progreso del Perfil</span>
+          <div className="space-y-2">
+             <div className="flex items-center justify-between text-xs font-black uppercase tracking-widest text-zinc-500">
+                <span className="flex items-center gap-2"><BarChart size={16}/> Progreso del Perfil</span>
                 <span className={completion === 100 ? 'text-primary' : ''}>{completion}%</span>
              </div>
-             <div className="h-2 w-full max-w-xs bg-white/5 rounded-full overflow-hidden border border-white/5">
+             <div className="h-3 w-full max-w-md bg-white/5 rounded-full overflow-hidden border border-white/5">
                 <div
-                  className="h-full bg-primary transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]"
+                  className="h-full bg-primary transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(244,114,182,0.4)]"
                   style={{ width: `${completion}%` }}
                 />
              </div>
@@ -131,103 +130,103 @@ const StudentProfileView = () => {
 
         <button
           onClick={handleSubmit}
-          className="bg-primary text-background font-black px-8 py-4 rounded-2xl flex items-center justify-center gap-2 shadow-xl hover:scale-105 active:scale-95 transition-all"
+          className="bg-primary text-background font-black px-10 py-5 rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all text-base tracking-widest"
         >
-          <Save size={20} />
+          <Save size={24} />
           GUARDAR CAMBIOS
         </button>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Why Started */}
-        <section className="space-y-3 bg-surface-glass backdrop-blur-xl p-5 lg:p-6 rounded-[1.5rem] border border-white/5 shadow-2xl">
-          <div className="flex items-center gap-2 text-primary mb-1">
-            <User size={18} />
-            <h2 className="text-[9px] font-black uppercase tracking-[0.2em]">¿Por qué empecé a bailar?</h2>
+        <section className="bg-surface p-8 rounded-[2rem] border border-white/5 shadow-xl space-y-6">
+          <div className="flex items-center gap-3 text-primary">
+            <User size={22} />
+            <h2 className="text-sm font-black uppercase tracking-[0.15em]">¿Por qué empecé a bailar?</h2>
           </div>
           {renderMultiSelect('whyStarted', QUESTIONNAIRE_OPTIONS.whyStarted)}
         </section>
 
         {/* Objectives */}
-        <section className="space-y-3 bg-surface-glass backdrop-blur-xl p-5 lg:p-6 rounded-[1.5rem] border border-white/5 shadow-2xl">
-          <div className="flex items-center gap-2 text-primary mb-1">
-            <Target size={18} />
-            <h2 className="text-[9px] font-black uppercase tracking-[0.2em]">¿Cuáles son mis objetivos?</h2>
+        <section className="bg-surface p-8 rounded-[2rem] border border-white/5 shadow-xl space-y-6">
+          <div className="flex items-center gap-3 text-primary">
+            <Target size={22} />
+            <h2 className="text-sm font-black uppercase tracking-[0.15em]">¿Cuáles son mis objetivos?</h2>
           </div>
           {renderMultiSelect('objectives', QUESTIONNAIRE_OPTIONS.objectives)}
         </section>
 
         {/* Hardest Part */}
-        <section className="space-y-3 bg-surface-glass backdrop-blur-xl p-5 lg:p-6 rounded-[1.5rem] border border-white/5 shadow-2xl">
-          <div className="flex items-center gap-2 text-primary mb-1">
-            <Zap size={18} />
-            <h2 className="text-[9px] font-black uppercase tracking-[0.2em]">¿Qué me cuesta más?</h2>
+        <section className="bg-surface p-8 rounded-[2rem] border border-white/5 shadow-xl space-y-6">
+          <div className="flex items-center gap-3 text-primary">
+            <Zap size={22} />
+            <h2 className="text-sm font-black uppercase tracking-[0.15em]">¿Qué me cuesta más?</h2>
           </div>
           {renderMultiSelect('hardestPart', QUESTIONNAIRE_OPTIONS.hardestPart)}
         </section>
 
         {/* Fears */}
-        <section className="space-y-3 bg-surface-glass backdrop-blur-xl p-5 lg:p-6 rounded-[1.5rem] border border-white/5 shadow-2xl">
-          <div className="flex items-center gap-2 text-primary mb-1">
-            <AlertTriangle size={18} />
-            <h2 className="text-[9px] font-black uppercase tracking-[0.2em]">¿Qué miedos tengo?</h2>
+        <section className="bg-surface p-8 rounded-[2rem] border border-white/5 shadow-xl space-y-6">
+          <div className="flex items-center gap-3 text-primary">
+            <AlertTriangle size={22} />
+            <h2 className="text-sm font-black uppercase tracking-[0.15em]">¿Qué miedos tengo?</h2>
           </div>
           {renderMultiSelect('fears', QUESTIONNAIRE_OPTIONS.fears)}
         </section>
 
-        {/* --- NEW QUESTIONS --- */}
-        <section className="space-y-4 bg-surface-glass backdrop-blur-xl p-5 lg:p-6 rounded-[1.5rem] border border-white/5 shadow-2xl md:col-span-2">
-           <div className="flex items-center gap-3 text-primary mb-2">
-              <Activity size={20} />
-              <h2 className="text-lg font-black uppercase tracking-[0.1em] italic">Detalles Adicionales</h2>
+        {/* Aditional Details Section */}
+        <section className="bg-surface p-8 rounded-[2rem] border border-white/5 shadow-xl md:col-span-2 space-y-8">
+           <div className="flex items-center gap-4 text-primary">
+              <Activity size={24} />
+              <h2 className="text-2xl font-black uppercase tracking-tight italic">Detalles Adicionales</h2>
            </div>
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-widest text-zinc-500 flex items-center gap-2">
-                  <BookOpen size={12}/> Nivel de Experiencia
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-3">
+                <label className="flex items-center gap-2">
+                  <BookOpen size={16}/> Nivel de Experiencia
                 </label>
                 <input
                   type="text"
                   value={formData.experienceLevel}
                   onChange={e => setFormData({...formData, experienceLevel: e.target.value})}
                   placeholder="¿Cuánto tiempo llevas bailando?"
-                  className="w-full bg-background border border-white/10 rounded-xl p-3 text-xs outline-none focus:border-primary transition-all"
+                  className="w-full bg-background border border-white/10 rounded-2xl p-4 focus:border-primary transition-all shadow-inner"
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-widest text-zinc-500 flex items-center gap-2">
-                  <Music size={12}/> Estilos Preferidos
+              <div className="space-y-3">
+                <label className="flex items-center gap-2">
+                  <Music size={16}/> Estilos Preferidos
                 </label>
                 <input
                   type="text"
                   value={formData.preferredStyles}
                   onChange={e => setFormData({...formData, preferredStyles: e.target.value})}
                   placeholder="Bachata, Salsa, Contemporáneo..."
-                  className="w-full bg-background border border-white/10 rounded-xl p-3 text-xs outline-none focus:border-primary transition-all"
+                  className="w-full bg-background border border-white/10 rounded-2xl p-4 focus:border-primary transition-all shadow-inner"
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-widest text-zinc-500 flex items-center gap-2">
-                  <Calendar size={12}/> Dedicación Semanal
+              <div className="space-y-3">
+                <label className="flex items-center gap-2">
+                  <Calendar size={16}/> Dedicación Semanal
                 </label>
                 <input
                   type="text"
                   value={formData.weeklyDedication}
                   onChange={e => setFormData({...formData, weeklyDedication: e.target.value})}
                   placeholder="¿Cuántas horas o días a la semana?"
-                  className="w-full bg-background border border-white/10 rounded-xl p-3 text-xs outline-none focus:border-primary transition-all"
+                  className="w-full bg-background border border-white/10 rounded-2xl p-4 focus:border-primary transition-all shadow-inner"
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-widest text-red-500/50 flex items-center gap-2">
-                  <AlertTriangle size={12}/> Limitaciones Físicas o Lesiones
+              <div className="space-y-3">
+                <label className="flex items-center gap-2 !text-red-400">
+                  <AlertTriangle size={16}/> Limitaciones Físicas o Lesiones
                 </label>
                 <input
                   type="text"
                   value={formData.physicalLimitations}
                   onChange={e => setFormData({...formData, physicalLimitations: e.target.value})}
                   placeholder="Ej. Lesión en rodilla, espalda..."
-                  className="w-full bg-background border border-white/10 rounded-xl p-3 text-xs outline-none focus:border-red-500/50 transition-all"
+                  className="w-full bg-background border border-white/10 rounded-2xl p-4 focus:border-red-400/50 transition-all shadow-inner"
                 />
               </div>
            </div>
@@ -235,73 +234,71 @@ const StudentProfileView = () => {
       </div>
 
       {/* Recording Preferences */}
-      <section className="px-4 md:px-0">
-        <div className="bg-surface-glass backdrop-blur-xl p-6 md:p-8 rounded-[2rem] border border-white/5 shadow-2xl">
-          <div className="flex items-center gap-3 text-primary mb-6">
-            <Video size={24} />
-            <h2 className="text-lg font-black uppercase tracking-[0.15em] italic">Preferencias de Entrenamiento</h2>
-          </div>
+      <section className="bg-surface p-8 rounded-[2rem] border border-white/5 shadow-2xl space-y-10">
+        <div className="flex items-center gap-4 text-primary">
+          <Video size={28} />
+          <h2 className="text-2xl font-black uppercase tracking-tight italic">Preferencias de Entrenamiento</h2>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {QUESTIONNAIRE_OPTIONS.recordingPreference.map((opt) => {
-              const isActive = formData.recordingPreference === opt.id;
-              return (
-                <button
-                  key={opt.id}
-                  onClick={() => setSingleOption('recordingPreference', opt.id)}
-                  className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-300 text-left ${
-                    isActive
-                    ? 'bg-primary border-primary text-background shadow-lg scale-[1.02]'
-                    : 'bg-background/40 border-white/5 text-zinc-400 hover:border-primary/30 hover:bg-background/60'
-                  }`}
-                >
-                  <span className="font-bold text-xs uppercase tracking-tight">{opt.label}</span>
-                  {isActive && <CheckCircle2 size={18} className="ml-auto" />}
-                </button>
-              );
-            })}
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {QUESTIONNAIRE_OPTIONS.recordingPreference.map((opt) => {
+            const isActive = formData.recordingPreference === opt.id;
+            return (
+              <button
+                key={opt.id}
+                onClick={() => setSingleOption('recordingPreference', opt.id)}
+                className={`flex items-center gap-4 p-5 rounded-2xl border-2 transition-all duration-300 text-left ${
+                  isActive
+                  ? 'bg-primary border-primary text-background shadow-lg scale-[1.03]'
+                  : 'bg-background/40 border-white/5 text-zinc-400 hover:border-primary/30 hover:bg-background/60'
+                }`}
+              >
+                <span className="font-bold text-base uppercase tracking-tight leading-tight">{opt.label}</span>
+                {isActive && <CheckCircle2 size={24} className="ml-auto" />}
+              </button>
+            );
+          })}
+        </div>
 
-          <div className="mt-8 pt-8 border-t border-white/5 space-y-3">
-             <div className="flex items-center gap-3 text-primary mb-2">
-                <Target size={20} />
-                <h2 className="text-[10px] font-black uppercase tracking-[0.2em]">¿Cómo me siento hoy con el baile?</h2>
-             </div>
-             <textarea
-                value={formData.personalFeeling}
-                onChange={(e) => setFormData({...formData, personalFeeling: e.target.value})}
-                placeholder="Comparte tus sensaciones personales..."
-                className="w-full bg-background/50 border border-white/10 rounded-xl p-4 text-sm focus:border-primary outline-none min-h-[100px] transition-colors"
-             />
-          </div>
+        <div className="pt-10 border-t border-white/5 space-y-4">
+           <div className="flex items-center gap-3 text-primary">
+              <Activity size={22} />
+              <h2 className="text-sm font-black uppercase tracking-[0.15em]">¿Cómo me siento hoy con el baile?</h2>
+           </div>
+           <textarea
+              value={formData.personalFeeling}
+              onChange={(e) => setFormData({...formData, personalFeeling: e.target.value})}
+              placeholder="Comparte tus sensaciones personales..."
+              className="w-full bg-background/50 border border-white/10 rounded-[1.5rem] p-6 text-base focus:border-primary outline-none min-h-[150px] transition-colors shadow-inner"
+           />
+        </div>
 
-          <div className="mt-8 pt-8 border-t border-white/5 space-y-3">
-             <div className="flex items-center gap-3 text-secondary mb-2">
-                <Award size={20} />
-                <h2 className="text-[10px] font-black uppercase tracking-[0.2em]">Tu Testimonio para la Web</h2>
-             </div>
-             <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest px-1">Tu opinión ayuda a otros alumnos a motivarse. ¡Cuéntanos tu experiencia!</p>
-             <textarea
-                value={formData.testimonial}
-                onChange={(e) => setFormData({...formData, testimonial: e.target.value})}
-                placeholder="Escribe tu testimonio aquí..."
-                className="w-full bg-background/50 border border-white/10 rounded-xl p-4 text-sm focus:border-secondary outline-none min-h-[80px] transition-colors"
-             />
-             <div className="flex items-center gap-4 px-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Puntuación:</span>
-                <div className="flex gap-2">
-                    {[1, 2, 3, 4, 5].map(star => (
-                        <button
-                            key={star}
-                            onClick={() => setFormData({...formData, testimonialStars: star})}
-                            className={`transition-all ${formData.testimonialStars >= star ? 'text-secondary scale-110' : 'text-zinc-800 hover:text-secondary/40'}`}
-                        >
-                            <Award size={20} fill={formData.testimonialStars >= star ? 'currentColor' : 'none'} />
-                        </button>
-                    ))}
-                </div>
-             </div>
-          </div>
+        <div className="pt-10 border-t border-white/5 space-y-6">
+           <div className="flex items-center gap-3 text-secondary">
+              <Award size={26} />
+              <h2 className="text-xl font-black uppercase tracking-tight italic">Tu Testimonio para la Web</h2>
+           </div>
+           <p className="text-zinc-500 text-base font-medium">Tu opinión ayuda a otros alumnos a motivarse. ¡Cuéntanos tu experiencia!</p>
+           <textarea
+              value={formData.testimonial}
+              onChange={(e) => setFormData({...formData, testimonial: e.target.value})}
+              placeholder="Escribe tu testimonio aquí..."
+              className="w-full bg-background/50 border border-white/10 rounded-[1.5rem] p-6 text-base focus:border-secondary outline-none min-h-[120px] transition-colors shadow-inner"
+           />
+           <div className="flex items-center gap-6 bg-background/40 p-4 rounded-2xl w-fit border border-white/5">
+              <span className="text-xs font-black uppercase tracking-widest text-zinc-400">Puntuación</span>
+              <div className="flex gap-3">
+                  {[1, 2, 3, 4, 5].map(star => (
+                      <button
+                          key={star}
+                          onClick={() => setFormData({...formData, testimonialStars: star})}
+                          className={`transition-all ${formData.testimonialStars >= star ? 'text-secondary scale-125' : 'text-zinc-800 hover:text-secondary/40'}`}
+                      >
+                          <Award size={28} fill={formData.testimonialStars >= star ? 'currentColor' : 'none'} />
+                      </button>
+                  ))}
+              </div>
+           </div>
         </div>
       </section>
     </div>

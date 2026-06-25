@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { ChevronDown, Star, Instagram, Twitter, Facebook } from 'lucide-react';
-import useStore from '../store/useStore';
+import { api } from '../services/api';
 
 const HomeView = () => {
   const [scrollY, setScrollY] = useState(0);
-  const { users } = useStore();
-  const [testimonials, setTestimonials] = useState([]);
+  const [testimonials, setTestimonials] = useState([
+    { name: 'Carlos R.', text: 'Increíble metodología. He avanzado más en un mes que en un año de clases grupales.', stars: 5 },
+    { name: 'María G.', text: 'El feedback personalizado de Andrés es oro puro. Muy recomendado.', stars: 5 },
+    { name: 'Juan P.', text: 'La plataforma es súper intuitiva y me ayuda a ver mis errores claramente.', stars: 5 }
+  ]);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
   useEffect(() => {
@@ -15,21 +18,19 @@ const HomeView = () => {
   }, []);
 
   useEffect(() => {
-    if (users && users.length > 0) {
-      const filtered = users
-        .filter(u => u.Questionnaire && u.Questionnaire.testimonial)
-        .map(u => ({
-          name: u.username,
-          text: u.Questionnaire.testimonial,
-          stars: u.Questionnaire.testimonialStars || 5
-        }));
-      setTestimonials(filtered.length > 0 ? filtered : [
-        { name: 'Carlos R.', text: 'Increíble metodología. He avanzado más en un mes que en un año de clases grupales.', stars: 5 },
-        { name: 'María G.', text: 'El feedback personalizado de Andrés es oro puro. Muy recomendado.', stars: 5 },
-        { name: 'Juan P.', text: 'La plataforma es súper intuitiva y me ayuda a ver mis errores claramente.', stars: 5 }
-      ]);
-    }
-  }, [users]);
+    const fetchTestimonials = async () => {
+      try {
+        const res = await fetch('/backend-service/users/testimonials');
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setTestimonials(data);
+        }
+      } catch (e) {
+        console.error("Error fetching testimonials:", e);
+      }
+    };
+    fetchTestimonials();
+  }, []);
 
   useEffect(() => {
     if (testimonials.length > 0) {
@@ -71,52 +72,52 @@ const HomeView = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-background z-[-1]" />
 
         <div className="text-center px-4 animate-in fade-in slide-in-from-bottom-10 duration-1000">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black italic tracking-tighter text-primary drop-shadow-[0_10px_10px_rgba(0,0,0,0.7)] leading-none">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black italic tracking-tighter text-primary drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] leading-none">
             DANCING FLOW
           </h1>
-          <p className="mt-4 text-lg md:text-xl font-light text-white uppercase tracking-[0.3em] drop-shadow-md">
+          <p className="mt-6 text-xl md:text-2xl font-light text-white uppercase tracking-[0.4em] drop-shadow-md opacity-80">
             Mastery & Mentorship
           </p>
         </div>
 
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 text-primary opacity-60 group cursor-pointer hover:opacity-100 transition-opacity">
-          <span className="text-[10px] uppercase tracking-[0.3em] font-black">Conoce a tus mentores</span>
-          <ChevronDown className="animate-bounce" size={32} />
+        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 text-primary opacity-60 group cursor-pointer hover:opacity-100 transition-opacity">
+          <span className="text-xs uppercase tracking-[0.4em] font-black">Conoce a tus mentores</span>
+          <ChevronDown className="animate-bounce" size={40} />
         </div>
       </section>
 
       {/* Teachers Parallax Section */}
       {teachers.map((teacher, idx) => (
-        <section key={idx} className="relative min-h-[100vh] flex items-center justify-center md:justify-start px-6 md:px-24 py-20 overflow-hidden">
+        <section key={idx} className="relative min-h-[100vh] flex items-center justify-center md:justify-start px-8 md:px-24 py-32 overflow-hidden">
           <div
             className="absolute inset-0 z-[-1] bg-cover bg-center"
             style={{
                 backgroundImage: `url(${teacher.image})`,
                 backgroundAttachment: 'fixed',
-                opacity: 0.4
+                opacity: 0.35
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent z-[-1]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent z-[-1]" />
 
-          <div className="max-w-xl bg-surface-glass backdrop-blur-3xl p-6 md:p-8 lg:p-10 rounded-[2rem] border border-white/10 shadow-2xl animate-in slide-in-from-left-20 duration-1000">
-            <p className="text-primary font-black uppercase tracking-[0.3em] text-[9px] mb-2">Mentor Principal</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-white italic tracking-tighter leading-tight">{teacher.name}</h2>
-            <div className="h-1 w-12 bg-primary mb-6" />
-            <p className="text-white leading-snug text-lg md:text-xl lg:text-xl mb-6 font-medium italic opacity-90">
+          <div className="max-w-2xl bg-surface-glass backdrop-blur-3xl p-10 md:p-12 lg:p-14 rounded-[3rem] border border-white/10 shadow-2xl animate-in slide-in-from-left-20 duration-1000">
+            <p className="text-primary font-black uppercase tracking-[0.4em] text-[11px] mb-4">Mentor Principal</p>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-white italic tracking-tighter leading-none">{teacher.name}</h2>
+            <div className="h-1.5 w-16 bg-primary mb-8 rounded-full" />
+            <p className="text-white leading-relaxed text-xl md:text-2xl mb-8 font-medium italic opacity-95">
               "{teacher.bio}"
             </p>
-            <p className="text-zinc-400 leading-relaxed text-base lg:text-lg mb-8 border-l-2 border-white/10 pl-6">
+            <p className="text-zinc-400 leading-relaxed text-lg mb-10 border-l-4 border-primary/20 pl-8">
               {teacher.career}
             </p>
-            <div className="flex gap-6">
-              <a href={teacher.socials.instagram} className="p-3 bg-white/5 rounded-xl hover:bg-primary hover:text-background transition-all duration-500">
-                <Instagram size={24} />
+            <div className="flex gap-8">
+              <a href={teacher.socials.instagram} className="p-4 bg-white/5 rounded-2xl hover:bg-primary hover:text-background transition-all duration-500 shadow-lg">
+                <Instagram size={28} />
               </a>
-              <a href={teacher.socials.twitter} className="p-3 bg-white/5 rounded-xl hover:bg-primary hover:text-background transition-all duration-500">
-                <Twitter size={24} />
+              <a href={teacher.socials.twitter} className="p-4 bg-white/5 rounded-2xl hover:bg-primary hover:text-background transition-all duration-500 shadow-lg">
+                <Twitter size={28} />
               </a>
-              <a href={teacher.socials.facebook} className="p-3 bg-white/5 rounded-xl hover:bg-primary hover:text-background transition-all duration-500">
-                <Facebook size={24} />
+              <a href={teacher.socials.facebook} className="p-4 bg-white/5 rounded-2xl hover:bg-primary hover:text-background transition-all duration-500 shadow-lg">
+                <Facebook size={28} />
               </a>
             </div>
           </div>
@@ -124,41 +125,41 @@ const HomeView = () => {
       ))}
 
       {/* Testimonials Carousel */}
-      <section className="py-20 md:py-24 lg:py-32 bg-background px-6 relative overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] z-0" />
+      <section className="py-32 md:py-40 bg-background px-8 relative overflow-hidden border-t border-white/5">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] z-0" />
 
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-            <p className="text-primary font-black uppercase tracking-[0.3em] text-[9px] mb-3">Comunidad</p>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-black mb-12 italic tracking-tight text-white">HISTORIAS <span className="text-primary">FLOW</span></h2>
+        <div className="max-w-5xl mx-auto text-center relative z-10">
+            <p className="text-primary font-black uppercase tracking-[0.4em] text-xs mb-4">Comunidad</p>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-16 italic tracking-tight text-white uppercase">HISTORIAS <span className="text-primary">FLOW</span></h2>
 
-            <div className="relative min-h-[200px] md:min-h-[250px] flex items-center justify-center">
+            <div className="relative min-h-[300px] md:min-h-[350px] flex items-center justify-center">
                 {testimonials.map((t, i) => (
                     <div
                         key={i}
-                        className={`absolute inset-0 transition-all duration-1000 ease-in-out flex flex-col items-center justify-center px-4 ${
-                            activeTestimonial === i ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
+                        className={`absolute inset-0 transition-all duration-1000 ease-in-out flex flex-col items-center justify-center px-6 ${
+                            activeTestimonial === i ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
                         }`}
                     >
-                        <div className="flex text-primary mb-6 gap-1.5">
-                            {[...Array(t.stars)].map((_, s) => <Star key={s} size={20} fill="currentColor" />)}
+                        <div className="flex text-primary mb-8 gap-2">
+                            {[...Array(t.stars)].map((_, s) => <Star key={s} size={28} fill="currentColor" />)}
                         </div>
-                        <p className="text-xl md:text-2xl lg:text-3xl italic text-white mb-8 font-light leading-snug max-w-3xl">
+                        <p className="text-2xl md:text-3xl lg:text-4xl italic text-zinc-100 mb-10 font-light leading-tight max-w-4xl">
                             "{t.text}"
                         </p>
-                        <p className="font-black text-primary text-lg md:text-xl uppercase tracking-[0.2em]">
-                           <span className="text-zinc-700 mr-3">—</span> {t.name}
+                        <p className="font-black text-primary text-xl md:text-2xl uppercase tracking-[0.3em]">
+                           <span className="text-zinc-800 mr-4 opacity-50">—</span> {t.name}
                         </p>
                     </div>
                 ))}
             </div>
 
-            <div className="flex justify-center gap-4 mt-20">
+            <div className="flex justify-center gap-6 mt-24">
                 {testimonials.map((_, i) => (
                     <button
                         key={i}
                         onClick={() => setActiveTestimonial(i)}
-                        className={`h-1 transition-all duration-500 rounded-full ${
-                            activeTestimonial === i ? 'bg-primary w-16' : 'bg-zinc-800 w-8 hover:bg-zinc-700'
+                        className={`h-1.5 transition-all duration-700 rounded-full ${
+                            activeTestimonial === i ? 'bg-primary w-24' : 'bg-zinc-900 w-12 hover:bg-zinc-800'
                         }`}
                     />
                 ))}
@@ -167,31 +168,31 @@ const HomeView = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-16 bg-black border-t border-white/5 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+      <footer className="py-24 bg-black border-t border-white/5 px-8">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-16">
             <div className="text-center md:text-left">
-                <h2 className="text-2xl md:text-3xl font-black italic text-primary mb-2 tracking-tighter">DANCING FLOW</h2>
-                <p className="text-zinc-500 text-[9px] tracking-[0.3em] uppercase font-bold">Evolution through mentorship</p>
+                <h2 className="text-3xl md:text-4xl font-black italic text-primary mb-4 tracking-tighter">DANCING FLOW</h2>
+                <p className="text-zinc-500 text-xs tracking-[0.4em] uppercase font-bold opacity-60">Evolution through mentorship</p>
             </div>
 
-            <div className="flex gap-12">
-                <div className="flex flex-col items-center gap-4">
-                    <p className="text-[9px] uppercase tracking-[0.2em] font-black text-zinc-600">Andrés</p>
-                    <div className="flex gap-4 text-zinc-400">
-                        <Instagram size={20} className="hover:text-primary transition-colors cursor-pointer" />
-                        <Twitter size={20} className="hover:text-primary transition-colors cursor-pointer" />
+            <div className="flex gap-20">
+                <div className="flex flex-col items-center gap-6">
+                    <p className="text-xs uppercase tracking-[0.3em] font-black text-zinc-500">Andrés</p>
+                    <div className="flex gap-6 text-zinc-400">
+                        <Instagram size={24} className="hover:text-primary transition-colors cursor-pointer" />
+                        <Twitter size={24} className="hover:text-primary transition-colors cursor-pointer" />
                     </div>
                 </div>
-                <div className="flex flex-col items-center gap-4">
-                    <p className="text-[9px] uppercase tracking-[0.2em] font-black text-zinc-600">Elena</p>
-                    <div className="flex gap-4 text-zinc-400">
-                        <Instagram size={20} className="hover:text-primary transition-colors cursor-pointer" />
-                        <Facebook size={20} className="hover:text-primary transition-colors cursor-pointer" />
+                <div className="flex flex-col items-center gap-6">
+                    <p className="text-xs uppercase tracking-[0.3em] font-black text-zinc-500">Elena</p>
+                    <div className="flex gap-6 text-zinc-400">
+                        <Instagram size={24} className="hover:text-primary transition-colors cursor-pointer" />
+                        <Facebook size={24} className="hover:text-primary transition-colors cursor-pointer" />
                     </div>
                 </div>
             </div>
 
-            <div className="text-zinc-700 text-[10px] uppercase tracking-[0.3em] font-bold">
+            <div className="text-zinc-800 text-xs uppercase tracking-[0.4em] font-bold">
                 © 2026 DANCING FLOW.
             </div>
         </div>

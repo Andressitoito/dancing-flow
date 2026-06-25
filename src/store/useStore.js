@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import io from 'socket.io-client';
 import { api } from '../services/api';
 
+const STORAGE_KEY = 'dancing_user';
+
 const useStore = create((set, get) => ({
   user: null,
   users: [],
@@ -45,7 +47,7 @@ const useStore = create((set, get) => ({
     }
 
     // Restore Session
-    const savedUser = localStorage.getItem('dancing_user');
+    const savedUser = localStorage.getItem(STORAGE_KEY);
     let currentUser = user;
     if (savedUser && !currentUser) {
       currentUser = JSON.parse(savedUser);
@@ -64,6 +66,11 @@ const useStore = create((set, get) => ({
         const users = await api.getUsers();
         if (Array.isArray(users)) {
           set({ users });
+        } else {
+          // Handle 401/error by checking response
+          if (users?.error === 'Unauthorized' || users?.error === 'No autenticado') {
+            get().logout();
+          }
         }
       }
 
@@ -79,7 +86,7 @@ const useStore = create((set, get) => ({
     try {
       const data = await api.login(username, password);
       set({ user: data, questionnaire: data.Questionnaire });
-      localStorage.setItem('dancing_user', JSON.stringify(data));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
       get().initSocket(data.id);
       return { success: true };
     } catch (e) {
@@ -97,7 +104,7 @@ const useStore = create((set, get) => ({
         formData.level
       );
       set({ user: data, questionnaire: data.Questionnaire });
-      localStorage.setItem('dancing_user', JSON.stringify(data));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
       get().initSocket(data.id);
       return { success: true };
     } catch (e) {
@@ -108,7 +115,7 @@ const useStore = create((set, get) => ({
   logout: () => {
     const { socket } = get();
     if (socket) socket.disconnect();
-    localStorage.removeItem('dancing_user');
+    localStorage.removeItem(STORAGE_KEY);
     set({ user: null, questionnaire: null, socket: null, users: [], assignments: [] });
   },
 
@@ -142,7 +149,7 @@ const useStore = create((set, get) => ({
       if (user) {
         const newUser = { ...user, Questionnaire: updated };
         set({ user: newUser });
-        localStorage.setItem('dancing_user', JSON.stringify(newUser));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
       }
     } catch (e) {
       console.error('Error updating questionnaire:', e);
@@ -154,15 +161,19 @@ const useStore = create((set, get) => ({
     if (!user) return;
     try {
       const data = await api.getMyAssignments();
-      set({ assignments: data });
-
-      if (socket && Array.isArray(data)) {
-        data.forEach(asgn => {
-          socket.emit('join_assignment', asgn.id);
-        });
+      if (Array.isArray(data)) {
+        set({ assignments: data });
+        if (socket) {
+          data.forEach(asgn => {
+            socket.emit('join_assignment', asgn.id);
+          });
+        }
+      } else {
+        set({ assignments: [] });
       }
     } catch (e) {
       console.error('Error fetching assignments:', e);
+      set({ assignments: [] });
     }
   },
 

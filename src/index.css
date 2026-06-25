@@ -7,45 +7,67 @@
   --color-background: var(--df-bg);
   --color-surface: var(--df-surface-glass);
   --color-outline: var(--df-border);
+
+  /* Spacing Scale (8px based) */
+  --spacing-xs: 8px;
+  --spacing-sm: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 32px;
+  --spacing-xl: 48px;
+  --spacing-xxl: 64px;
 }
 
 :root {
-  --df-primary: #ff3333; /* Slightly lighter and more vibrant red */
-  --df-secondary: #ff9800;
-  --df-accent: #ffc340;
-  --df-bg: #0a0a0a;
-  --df-surface: #1a1a1a;
-  --df-surface-glass: rgba(26, 26, 26, 0.6);
-  --df-border: rgba(255, 255, 255, 0.1);
+  /* Professional Palette (Softer pink/rose) */
+  --df-primary: #f472b6;
+  --df-secondary: #fbbf24;
+  --df-accent: #fb7185;
+  --df-bg: #09090b; /* Zinc-950 */
+  --df-surface: #18181b; /* Zinc-900 */
+  --df-surface-glass: rgba(24, 24, 27, 0.7);
+  --df-border: rgba(255, 255, 255, 0.08);
 
   background-color: var(--df-bg);
-  color: #e5e5e5; /* Zinc-200 equivalent for better general contrast */
+  color: #fafafa;
+  line-height: 1.5;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 body {
   margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
 }
 
-/* Custom styles for the sequencer */
-.slot {
-  aspect-ratio: 1/1;
-  border: 1px solid #333;
-}
+/* Typography Scale */
+h1 { font-size: 40px; font-weight: 900; letter-spacing: -0.02em; }
+h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+h3 { font-size: 20px; font-weight: 700; }
+p, div, span, label { font-size: 16px; }
+.text-label { font-size: 14px; color: #a1a1aa; }
 
-.step-block {
-  transition: all 0.2s ease-in-out;
-}
-
-/* Form inputs readability improvements */
+/* Global Readability Fixes */
 input, textarea, select {
+  font-size: 16px !important;
   color: #ffffff !important;
+  line-height: 1.5 !important;
 }
 
 label {
-  color: #d1d5db !important; /* gray-300 */
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  color: #a1a1aa !important;
 }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover { background: #3f3f46; }

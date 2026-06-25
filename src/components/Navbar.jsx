@@ -27,8 +27,8 @@ const Navbar = ({ activeTab, onTabChange }) => {
   }
 
   return (
-    <nav className="fixed bottom-0 md:top-0 md:bottom-auto left-0 right-0 w-full bg-surface/90 backdrop-blur-xl border-t md:border-t-0 md:border-b border-white/5 p-2 z-50 shadow-2xl flex justify-around md:justify-center md:gap-8 items-center">
-      <div className="flex justify-around md:justify-center md:gap-8 items-center w-full max-w-7xl">
+    <nav className="fixed bottom-0 md:top-0 md:bottom-auto left-0 right-0 w-full bg-surface/90 backdrop-blur-xl border-t md:border-t-0 md:border-b border-white/5 p-4 z-50 shadow-2xl flex justify-around md:justify-center md:gap-12 items-center">
+      <div className="flex justify-around md:justify-center md:gap-12 items-center w-full max-w-7xl">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -36,12 +36,12 @@ const Navbar = ({ activeTab, onTabChange }) => {
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
-              className={`flex flex-col md:flex-row items-center justify-center gap-1 md:gap-3 px-4 py-2 md:py-3 rounded-2xl transition-all duration-300 ${
-                isActive ? 'bg-primary/10 text-primary md:bg-primary md:text-background shadow-lg' : 'text-zinc-500 hover:text-primary hover:bg-white/5'
+              className={`flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-5 py-2.5 rounded-2xl transition-all duration-300 ${
+                isActive ? 'bg-primary/20 text-primary md:bg-primary md:text-background shadow-lg' : 'text-zinc-400 hover:text-primary hover:bg-white/5'
               }`}
             >
-              <Icon size={20} strokeWidth={isActive ? 3 : 2} />
-              <span className="text-[10px] md:text-xs font-black uppercase tracking-widest">{tab.label}</span>
+              <Icon size={22} strokeWidth={isActive ? 3 : 2} />
+              <span className="text-sm font-black uppercase tracking-widest leading-none">{tab.label}</span>
             </button>
           );
         })}
@@ -49,10 +49,10 @@ const Navbar = ({ activeTab, onTabChange }) => {
         {user && (
           <button
             onClick={handleLogout}
-            className="flex flex-col md:flex-row items-center justify-center gap-1 md:gap-3 px-4 py-2 md:py-3 rounded-2xl text-zinc-500 hover:text-red-500 hover:bg-red-500/5 transition-all duration-300"
+            className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-5 py-2.5 rounded-2xl text-zinc-500 hover:text-red-400 hover:bg-red-400/5 transition-all duration-300"
           >
-            <LogOut size={20} />
-            <span className="text-[10px] md:text-xs font-black uppercase tracking-widest">Salir</span>
+            <LogOut size={22} />
+            <span className="text-sm font-black uppercase tracking-widest leading-none">Salir</span>
           </button>
         )}
       </div>

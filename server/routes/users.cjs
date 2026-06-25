@@ -3,6 +3,34 @@ const router = express.Router();
 const { User, Questionnaire } = require('../models/index.cjs');
 const { authMiddleware, profesorMiddleware } = require('../middlewares/auth.cjs');
 
+// Public route for testimonials
+router.get('/testimonials', async (req, res) => {
+  try {
+    const usersWithTestimonials = await User.findAll({
+      include: [{
+        model: Questionnaire,
+        where: {
+          testimonial: {
+            [require('sequelize').Op.ne]: null,
+            [require('sequelize').Op.not]: ''
+          }
+        }
+      }],
+      attributes: ['username']
+    });
+
+    const testimonials = usersWithTestimonials.map(u => ({
+      name: u.username,
+      text: u.Questionnaire.testimonial,
+      stars: u.Questionnaire.testimonialStars
+    }));
+
+    res.json(testimonials);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // Get current user's questionnaire
 router.get('/me/questionnaire', authMiddleware, async (req, res) => {
   try {
