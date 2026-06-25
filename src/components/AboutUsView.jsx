@@ -13,7 +13,7 @@ const AboutUsView = () => {
         'Ponente en congresos europeos y latinoamericanos.',
         'Más de 500 alumnos formados presencialmente.'
       ],
-      image: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?q=80&w=2069&auto=format&fit=crop',
+      image: '/assets/backgrounds/bg-steps.jpg',
       socials: { instagram: '#', twitter: '#', facebook: '#' }
     },
     {
@@ -26,7 +26,7 @@ const AboutUsView = () => {
         'Especialista en técnica de mujer y expresión corporal.',
         'Jueza en competiciones regionales.'
       ],
-      image: 'https://images.unsplash.com/photo-1547153760-18fc86324498?q=80&w=1887&auto=format&fit=crop',
+      image: '/assets/backgrounds/bg-editor.jpg',
       socials: { instagram: '#', facebook: '#' }
     }
   ];

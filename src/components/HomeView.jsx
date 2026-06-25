@@ -46,14 +46,14 @@ const HomeView = () => {
       name: 'Andrés',
       bio: 'Especialista en Bachata Sensual con más de 10 años de trayectoria internacional. Su enfoque se centra en la conexión y la técnica precisa.',
       career: 'Finalista de varios certámenes internacionales y profesor en los congresos más importantes de Europa y Latinoamérica.',
-      image: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?q=80&w=2069&auto=format&fit=crop',
+      image: '/assets/backgrounds/bg-steps.jpg',
       socials: { instagram: '#', twitter: '#', facebook: '#' }
     },
     {
       name: 'Elena',
       bio: 'Coreógrafa y bailarina profesional, experta en técnica de mujer y estilo libre. Apasionada por transmitir la esencia del baile.',
       career: 'Directora de su propia compañía de danza con giras mundiales. Especialista en expresión corporal y musicalidad.',
-      image: 'https://images.unsplash.com/photo-1547153760-18fc86324498?q=80&w=1887&auto=format&fit=crop',
+      image: '/assets/backgrounds/bg-editor.jpg',
       socials: { instagram: '#', twitter: '#', facebook: '#' }
     }
   ];
@@ -65,7 +65,7 @@ const HomeView = () => {
         <div
           className="absolute inset-0 z-[-1] bg-cover bg-center opacity-80"
           style={{
-            backgroundImage: 'url(https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?q=80&w=2070&auto=format&fit=crop)',
+            backgroundImage: 'url(/assets/backgrounds/bg-viewer.jpg)',
             transform: `translateY(${scrollY * 0.4}px)`
           }}
         />
