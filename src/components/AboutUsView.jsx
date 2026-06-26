@@ -1,7 +1,14 @@
-import React from 'react';
-import { Instagram, Twitter, Facebook, Award, Star, Heart } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 
 const AboutUsView = () => {
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const teachers = [
     {
       name: 'Marco Rivera',
@@ -14,7 +21,6 @@ const AboutUsView = () => {
         'Más de 2000 alumnos graduados con éxito.'
       ],
       image: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80',
-      socials: { instagram: '#', twitter: '#', facebook: '#' }
     },
     {
       name: 'Elena Sanchís',
@@ -27,86 +33,88 @@ const AboutUsView = () => {
         'Jueza internacional en competiciones de prestigio.'
       ],
       image: 'https://images.unsplash.com/photo-1547153760-18fc86324498?auto=format&fit=crop&q=80',
-      socials: { instagram: '#', facebook: '#' }
     }
   ];
 
   return (
-    <div className="py-12 pb-32 md:pb-24 max-w-7xl mx-auto px-4 md:px-8 space-y-32">
-      <header className="text-center space-y-6">
-        <span className="label-luxury">Nuestra Historia</span>
-        <h1 className="font-sora text-4xl md:text-8xl font-extrabold text-white italic uppercase tracking-tighter leading-none">
+    <div className="relative text-white overflow-hidden -mx-4 md:-mx-8 -mt-[56px] bg-black">
+      {/* Background Parallax Layer */}
+      <div
+        className="fixed inset-0 z-[-1] bg-cover bg-center bg-no-repeat transition-all duration-1000 ease-in-out"
+        style={{
+          backgroundImage: scrollY < 600 ? 'url(/assets/backgrounds/bg-account.jpg)' : 'url(/assets/backgrounds/bg-videos.jpg)',
+          transform: `scale(${1.1 + (scrollY * 0.0001)})`,
+          filter: 'brightness(0.2)'
+        }}
+      />
+      <div className="fixed inset-0 z-[-1] bg-black/40" />
+
+      <header className="section-padding text-center relative z-10">
+        <span className="label-luxury !text-[10px] mb-4 block">Nuestra Historia</span>
+        <h1 className="font-sora text-5xl md:text-8xl font-extrabold text-white italic uppercase tracking-tighter leading-none">
           QUIENES <span className="text-primary">SOMOS</span>
         </h1>
-        <div className="h-1 w-24 bg-primary mx-auto" />
+        <div className="h-0.5 w-16 bg-primary mx-auto mt-6" />
       </header>
 
-      {teachers.map((teacher, idx) => (
-        <section key={idx} className={`flex flex-col ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-12 md:gap-24 items-center`}>
-          <div className="w-full md:w-1/2 relative group">
-            <div className="absolute -inset-4 bg-primary/10 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 rounded-full" />
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl glass-card border-none">
-              <img
-                src={teacher.image}
-                alt={teacher.name}
-                className="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
-              <div className="absolute bottom-8 left-8">
-                <p className="label-luxury !text-primary !text-[10px] mb-2">{teacher.role}</p>
-                <h2 className="font-sora text-4xl md:text-5xl font-bold text-white italic tracking-tighter leading-none">{teacher.name}</h2>
+      <main className="max-container px-4 md:px-8 space-y-32 pb-32 relative z-10 bg-black/60 backdrop-blur-sm">
+        {teachers.map((teacher, idx) => (
+          <section key={idx} className={`flex flex-col ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-12 md:gap-24 items-center`}>
+            <div className="w-full md:w-1/2 relative group">
+              <div className="absolute -inset-2 bg-primary/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 rounded-lg" />
+              <div className="relative aspect-[4/5] overflow-hidden rounded-lg glass-card border-white/5 bg-white/[0.02]">
+                <img
+                  src={teacher.image}
+                  alt={teacher.name}
+                  className="w-full h-full object-cover grayscale transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+                <div className="absolute bottom-6 left-6">
+                  <p className="label-luxury !text-primary !text-[8px] mb-1">{teacher.role}</p>
+                  <h2 className="font-sora text-3xl md:text-4xl font-bold text-white italic tracking-tighter leading-none uppercase">{teacher.name}</h2>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="w-full md:w-1/2 space-y-12">
-            <div className="space-y-6">
-              <div className="flex gap-1">
-                 {[...Array(5)].map((_, i) => <Star key={i} size={20} className="text-primary" fill="currentColor" />)}
+            <div className="w-full md:w-1/2 space-y-10">
+              <div className="space-y-4">
+                <div className="flex text-primary gap-1">
+                   {[...Array(5)].map((_, i) => <span key={i} className="material-symbols-outlined !text-[20px]">star</span>)}
+                </div>
+                <p className="font-sora text-xl md:text-3xl text-white font-light leading-tight italic opacity-90">
+                  "{teacher.bio}"
+                </p>
               </div>
-              <p className="font-sora text-2xl md:text-4xl text-white font-light leading-tight italic opacity-95">
-                "{teacher.bio}"
-              </p>
-            </div>
 
-            <div className="space-y-6">
-               <h3 className="label-luxury flex items-center gap-4">
-                 <Award size={18} /> TRAYECTORIA & LOGROS
-               </h3>
-               <ul className="space-y-4">
-                 {teacher.career.map((item, i) => (
-                   <li key={i} className="flex items-start gap-4 text-zinc-400 group">
-                      <div className="mt-2.5 w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary transition-colors" />
-                      <span className="font-sora text-lg md:text-xl font-medium group-hover:text-white transition-colors">{item}</span>
-                   </li>
-                 ))}
-               </ul>
-            </div>
+              <div className="space-y-6">
+                 <h3 className="label-luxury flex items-center gap-3 !text-[10px] !text-zinc-500">
+                   <span className="material-symbols-outlined !text-[18px]">verified</span> TRAYECTORIA & LOGROS
+                 </h3>
+                 <ul className="space-y-3">
+                   {teacher.career.map((item, i) => (
+                     <li key={i} className="flex items-start gap-4 text-zinc-400 group">
+                        <div className="mt-2.5 w-1 h-1 rounded-full bg-primary/30 group-hover:bg-primary transition-colors" />
+                        <span className="font-sora text-base md:text-lg font-medium group-hover:text-white transition-colors">{item}</span>
+                     </li>
+                   ))}
+                 </ul>
+              </div>
 
-            <div className="flex gap-6 pt-4">
-              {teacher.socials.instagram && (
-                <a href={teacher.socials.instagram} className="p-4 glass-card border-primary/20 text-zinc-400 hover:text-primary transition-all">
-                  <Instagram size={24} />
-                </a>
-              )}
-              {teacher.socials.twitter && (
-                <a href={teacher.socials.twitter} className="p-4 glass-card border-primary/20 text-zinc-400 hover:text-primary transition-all">
-                  <Twitter size={24} />
-                </a>
-              )}
-              {teacher.socials.facebook && (
-                <a href={teacher.socials.facebook} className="p-4 glass-card border-primary/20 text-zinc-400 hover:text-primary transition-all">
-                  <Facebook size={24} />
-                </a>
-              )}
+              <div className="flex gap-4 pt-4">
+                {['brand_instagram', 'brand_facebook', 'brand_twitter'].map((icon, i) => (
+                  <button key={i} className="w-10 h-10 rounded-md border border-white/5 bg-white/[0.02] flex items-center justify-center text-zinc-500 hover:text-primary hover:border-primary/30 transition-all">
+                    <span className="material-symbols-outlined !text-[20px]">link</span>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
-      ))}
+          </section>
+        ))}
+      </main>
 
-      <footer className="text-center py-24 border-t border-primary/10">
-         <Heart size={48} className="mx-auto text-primary/10 mb-8" />
-         <h3 className="label-luxury !text-zinc-600">Nuestra Pasión es tu Progreso</h3>
+      <footer className="py-24 border-t border-white/5 text-center bg-white/[0.01]">
+         <span className="material-symbols-outlined !text-[48px] text-white/5 mb-6">workspace_premium</span>
+         <h3 className="label-luxury !text-[9px] !text-zinc-600">Excelencia en cada paso</h3>
       </footer>
     </div>
   );

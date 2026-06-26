@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import useStore from '../store/useStore';
-import { Play, Mic, Send, ChevronRight, X, User, MessageSquare, Video, History, GraduationCap, Clock } from 'lucide-react';
 import { getMediaUrl } from '../services/constants';
 import Swal from 'sweetalert2';
 
@@ -36,13 +35,7 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
       setVideoFile(null);
       fetchAssignments();
     } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error al enviar',
-        background: '#051424',
-        color: '#D4AF37',
-        customClass: { popup: 'glass-card border-primary/40' }
-      });
+      Swal.fire({ icon: 'error', title: 'Error al enviar' });
     }
   };
 
@@ -60,9 +53,7 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
       };
       mediaRecorder.start();
       setIsRecording(true);
-    } catch (err) {
-      console.error("Error micro:", err);
-    }
+    } catch (err) { console.error(err); }
   };
 
   const stopRecording = () => {
@@ -77,72 +68,68 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
 
   if (!selectedAssignment) {
     return (
-      <div className="space-y-12 pb-24">
+      <div className="space-y-8 pb-12">
         {!isAdminPreview && (
-          <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-primary/10 pb-12">
-            <div className="space-y-4">
-              <span className="label-luxury">Plan de Estudio</span>
-              <h1 className="font-sora text-4xl md:text-6xl font-extrabold text-white italic uppercase tracking-tighter leading-none">Mis <span className="text-primary">Clases</span></h1>
-              <p className="font-sora text-zinc-500 text-lg font-light">Seguimiento personalizado para tu evolución artística.</p>
+          <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-8">
+            <div>
+              <span className="label-luxury !text-[9px]">Plan de Estudio</span>
+              <h1 className="font-sora text-4xl md:text-5xl font-extrabold text-white italic uppercase tracking-tighter leading-none mt-1">Mis <span className="text-primary">Clases</span></h1>
+              <p className="font-sora text-zinc-500 text-sm font-light mt-2">Seguimiento personalizado para tu evolución artística.</p>
             </div>
 
-            <div className="flex items-center gap-8 glass-card px-8 py-6 rounded-2xl">
+            <div className="flex items-center gap-6 bg-white/5 px-6 py-3 rounded-lg border border-white/5">
                <div className="flex flex-col items-center">
-                  <span className="font-sora text-2xl font-bold text-white">{safeAssignments.length}</span>
-                  <span className="label-luxury !text-[8px] !text-zinc-500">Módulos</span>
+                  <span className="font-sora text-xl font-bold text-white">{safeAssignments.length}</span>
+                  <span className="label-luxury !text-[7px] !text-zinc-600">Total</span>
                </div>
-               <div className="w-[1px] h-10 bg-primary/20" />
+               <div className="w-[1px] h-6 bg-white/10" />
                <div className="flex flex-col items-center">
-                  <span className="font-sora text-2xl font-bold text-primary">
+                  <span className="font-sora text-xl font-bold text-primary">
                     {safeAssignments.filter(a => a.Replies?.length > 0).length}
                   </span>
-                  <span className="label-luxury !text-[8px] !text-zinc-500">Activos</span>
+                  <span className="label-luxury !text-[7px] !text-zinc-600">Activas</span>
                </div>
             </div>
           </header>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {safeAssignments.map((asgn) => (
             <button
               key={asgn.id}
               onClick={() => setSelectedAssignment(asgn)}
-              className="group glass-card border-none overflow-hidden hover:border-primary/20 transition-all duration-500 flex flex-col text-left"
+              className="group glass-card border-white/5 bg-white/[0.01] overflow-hidden hover:border-primary/30 transition-all duration-300 flex flex-col text-left"
             >
-              <div className="aspect-video bg-black relative overflow-hidden flex items-center justify-center border-b border-primary/10">
+              <div className="aspect-video bg-black relative flex items-center justify-center border-b border-white/5">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-                {asgn.StudyBlock?.type === 'video' ? (
-                   <div className="p-4 bg-primary/10 rounded-full text-primary group-hover:scale-110 group-hover:bg-primary group-hover:text-black transition-all duration-500 z-20">
-                     <Play size={24} fill="currentColor" />
-                   </div>
-                ) : (
-                  <MessageSquare size={32} className="text-zinc-800 z-20" />
-                )}
-                <div className="absolute top-4 left-4 z-20 bg-black/60 text-primary label-luxury !text-[8px] px-3 py-1 rounded border border-primary/20 backdrop-blur-md">
+                <span className="material-symbols-outlined !text-[40px] text-zinc-800 z-20 group-hover:text-primary transition-colors group-hover:scale-110">
+                  {asgn.StudyBlock?.type === 'video' ? 'play_circle' : 'chat_bubble'}
+                </span>
+                <div className="absolute top-3 left-3 z-20 bg-black/80 text-primary label-luxury !text-[7px] px-2 py-0.5 rounded border border-primary/20 backdrop-blur-md">
                   {asgn.StudyBlock?.level}
                 </div>
               </div>
 
-              <div className="p-8 space-y-4 flex-1">
-                <h3 className="font-sora text-xl font-bold text-white uppercase italic tracking-tighter group-hover:text-primary transition-colors">{asgn.StudyBlock?.title}</h3>
-                <p className="text-zinc-500 text-sm line-clamp-2 leading-relaxed">{asgn.StudyBlock?.description}</p>
+              <div className="p-6 space-y-2 flex-1">
+                <h3 className="font-sora text-lg font-bold text-white uppercase italic tracking-tighter group-hover:text-primary transition-colors leading-tight">{asgn.StudyBlock?.title}</h3>
+                <p className="text-zinc-500 text-xs line-clamp-2 leading-relaxed">{asgn.StudyBlock?.description}</p>
               </div>
 
-              <div className="p-8 pt-0 flex items-center justify-between border-t border-primary/5 mt-4 pt-6">
-                 <div className="flex items-center gap-3">
-                    <MessageSquare size={14} className="text-primary/40" />
-                    <span className="label-luxury !text-[8px] !text-zinc-500">{asgn.Replies?.length || 0} Mensajes</span>
+              <div className="px-6 py-4 flex items-center justify-between border-t border-white/5 mt-2 bg-white/[0.01]">
+                 <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-primary/30 !text-[14px]">forum</span>
+                    <span className="label-luxury !text-[7px] !text-zinc-600">{asgn.Replies?.length || 0} Mensajes</span>
                  </div>
-                 <ChevronRight size={18} className="text-primary translate-x-[-10px] opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500" />
+                 <span className="material-symbols-outlined text-primary !text-[18px] translate-x-[-4px] opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">chevron_right</span>
               </div>
             </button>
           ))}
 
           {safeAssignments.length === 0 && (
-            <div className="col-span-full py-32 text-center glass-card border-dashed">
-              <History size={48} className="mx-auto text-zinc-800 mb-6" />
+            <div className="col-span-full py-20 text-center glass-card border-dashed border-white/5">
+              <span className="material-symbols-outlined !text-[48px] text-zinc-900 mb-4">history</span>
               <h3 className="label-luxury !text-zinc-600">Esperando nuevas clases</h3>
-              <p className="font-sora text-zinc-500 text-sm mt-2">Tu mentor te asignará contenido pronto.</p>
+              <p className="font-sora text-zinc-500 text-xs mt-1">Tu mentor te asignará contenido pronto.</p>
             </div>
           )}
         </div>
@@ -153,32 +140,32 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
   const currentAssignment = safeAssignments.find(a => a.id === selectedAssignment.id) || selectedAssignment;
 
   return (
-    <div className={`fixed inset-0 md:top-[80px] z-40 bg-black/95 flex flex-col md:flex-row animate-in slide-in-from-right duration-500`}>
+    <div className={`fixed inset-0 md:top-[56px] z-40 bg-black flex flex-col md:flex-row animate-in slide-in-from-right duration-300`}>
       {/* Content Area */}
-      <div className="flex-1 flex flex-col overflow-y-auto">
-        <header className="p-6 md:p-10 flex items-center justify-between border-b border-primary/10 bg-black/40">
-          <button onClick={() => setSelectedAssignment(null)} className="btn-secondary !p-3 !rounded">
-            <X size={20} strokeWidth={3} />
+      <div className="flex-1 flex flex-col overflow-y-auto custom-scrollbar">
+        <header className="p-4 md:p-6 flex items-center justify-between border-b border-white/5 bg-white/[0.02]">
+          <button onClick={() => setSelectedAssignment(null)} className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-zinc-500 hover:text-white transition-all">
+            <span className="material-symbols-outlined !text-[20px]">close</span>
           </button>
-          <div className="text-right space-y-1">
-            <span className="label-luxury !text-[8px] !text-primary">{currentAssignment.StudyBlock?.level}</span>
-            <h2 className="font-sora text-2xl md:text-3xl font-bold text-white italic uppercase tracking-tighter leading-none">{currentAssignment.StudyBlock?.title}</h2>
+          <div className="text-right">
+            <span className="label-luxury !text-[7px] !text-primary uppercase">{currentAssignment.StudyBlock?.level}</span>
+            <h2 className="font-sora text-xl md:text-2xl font-bold text-white italic uppercase tracking-tighter leading-none mt-1">{currentAssignment.StudyBlock?.title}</h2>
           </div>
         </header>
 
-        <div className="flex-1 flex flex-col p-6 md:p-12 gap-10 max-w-5xl mx-auto w-full">
+        <div className="flex-1 flex flex-col p-4 md:p-10 gap-8 max-w-5xl mx-auto w-full">
            {currentAssignment.StudyBlock?.type === 'video' && currentAssignment.StudyBlock?.contentUrl && (
-             <div className="aspect-video bg-black rounded-xl overflow-hidden border border-primary/20 shadow-2xl relative group">
+             <div className="aspect-video bg-black rounded-lg overflow-hidden border border-white/5 shadow-2xl relative group">
                 <video src={getMediaUrl(currentAssignment.StudyBlock.contentUrl)} controls className="w-full h-full object-contain" />
              </div>
            )}
 
-           <div className="glass-card p-8 md:p-12 space-y-6">
-              <div className="flex items-center gap-4 text-primary">
-                <GraduationCap size={24} />
-                <h3 className="label-luxury">Guía de Entrenamiento</h3>
+           <div className="glass-card p-6 md:p-10 space-y-4 border-white/5 bg-white/[0.02]">
+              <div className="flex items-center gap-2 text-primary">
+                <span className="material-symbols-outlined !text-[20px]">school</span>
+                <h3 className="label-luxury !text-[10px]">Guía de Entrenamiento</h3>
               </div>
-              <p className="font-sora text-zinc-300 text-lg md:text-xl leading-relaxed italic opacity-95">
+              <p className="font-sora text-zinc-300 text-base md:text-xl leading-relaxed italic opacity-95">
                 "{currentAssignment.StudyBlock?.description}"
               </p>
            </div>
@@ -186,46 +173,40 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
       </div>
 
       {/* Chat Area */}
-      <div className="w-full md:w-[450px] bg-surface flex flex-col border-l border-primary/10 shadow-2xl">
-        <div className="p-8 border-b border-primary/10 flex items-center justify-between bg-black/40">
-           <div className="space-y-1">
-            <h3 className="font-sora text-xl font-bold text-white italic tracking-tight">Mentoría <span className="text-primary neon-gold">Flow</span></h3>
-            <p className="label-luxury !text-[8px] !text-zinc-600">Feedback Directo</p>
+      <div className="w-full md:w-[400px] bg-black flex flex-col border-l border-white/5">
+        <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
+           <div className="space-y-0.5">
+            <h3 className="font-sora text-lg font-bold text-white italic tracking-tight uppercase">Mentoría <span className="text-primary">Directa</span></h3>
+            <p className="label-luxury !text-[7px] !text-zinc-600">Feedback en tiempo real</p>
            </div>
-           <MessageSquare size={20} className="text-primary/40" />
+           <span className="material-symbols-outlined text-primary/30 !text-[20px]">forum</span>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 custom-scrollbar">
           {currentAssignment.Replies?.map((reply, i) => (
             <div key={i} className={`flex flex-col ${reply.User?.role === 'profesor' ? 'items-start' : 'items-end'}`}>
-              <div className={`max-w-[90%] p-6 rounded-lg transition-all duration-500 ${
+              <div className={`max-w-[85%] p-4 rounded-lg transition-all ${
                 reply.User?.role === 'profesor'
-                ? 'bg-white/5 border border-primary/20 text-zinc-200'
+                ? 'bg-white/5 border border-white/10 text-zinc-200'
                 : 'bg-primary text-black font-bold'
               }`}>
-                {reply.content && <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap">{reply.content}</p>}
+                {reply.content && <p className="text-xs md:text-sm leading-relaxed whitespace-pre-wrap">{reply.content}</p>}
 
                 {reply.type === 'audio' && (
-                   <div className="mt-4 bg-black/20 p-2 rounded border border-white/10">
-                        <audio src={getMediaUrl(reply.audioUrl)} controls className={`w-full h-8 ${reply.User?.role === 'profesor' ? 'invert' : ''}`} />
+                   <div className="mt-3 bg-black/40 p-1.5 rounded-md border border-white/10">
+                        <audio src={getMediaUrl(reply.audioUrl)} controls className={`w-full h-6 ${reply.User?.role === 'profesor' ? 'invert' : ''}`} />
                    </div>
                 )}
 
                 {reply.type === 'video' && (
-                   <div className="mt-4 rounded overflow-hidden border border-white/10">
+                   <div className="mt-3 rounded-md overflow-hidden border border-white/10">
                         <video src={getMediaUrl(reply.videoUrl)} controls className="w-full" />
                    </div>
                 )}
 
-                <div className={`flex items-center justify-between mt-4 gap-4 label-luxury !text-[8px] ${reply.User?.role === 'profesor' ? '!text-zinc-600' : '!text-black/60'}`}>
-                  <div className="flex items-center gap-2">
-                      <User size={10} strokeWidth={4} />
-                      <span>{reply.User?.role === 'profesor' ? 'Mentor' : 'Mi Avance'}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                      <Clock size={10} strokeWidth={4} />
-                      <span>{new Date(reply.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                  </div>
+                <div className={`flex items-center justify-between mt-3 gap-4 label-luxury !text-[6px] ${reply.User?.role === 'profesor' ? '!text-zinc-600' : '!text-black/50'}`}>
+                  <span>{reply.User?.role === 'profesor' ? 'MENTOR' : 'MI AVANCE'}</span>
+                  <span>{new Date(reply.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                 </div>
               </div>
             </div>
@@ -233,51 +214,51 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
           <div ref={chatEndRef} />
         </div>
 
-        <div className="p-6 md:p-8 bg-black/40 border-t border-primary/10 space-y-4">
+        <div className="p-4 md:p-6 bg-white/[0.02] border-t border-white/5 space-y-3">
           {(audioBlob || videoFile) && (
-            <div className="bg-primary/10 border border-primary/30 text-primary label-luxury !text-[8px] p-4 rounded flex items-center justify-between">
-               <div className="flex items-center gap-3">
-                   {audioBlob ? <Mic size={14} /> : <Video size={14} />}
+            <div className="bg-primary/5 border border-primary/20 text-primary label-luxury !text-[7px] px-3 py-2 rounded-md flex items-center justify-between">
+               <div className="flex items-center gap-2">
+                   <span className="material-symbols-outlined !text-[14px]">{audioBlob ? 'mic' : 'videocam'}</span>
                    {audioBlob ? 'Audio Listo' : `Video: ${videoFile.name}`}
                </div>
-               <button onClick={() => {setAudioBlob(null); setVideoFile(null)}}>
-                   <X size={16} strokeWidth={3} />
+               <button onClick={() => {setAudioBlob(null); setVideoFile(null)}} className="hover:text-white transition-colors">
+                   <span className="material-symbols-outlined !text-[14px]">close</span>
                </button>
             </div>
           )}
 
-          <div className="flex items-end gap-3">
-            <div className="flex-1 bg-black rounded p-3 flex flex-col gap-3">
+          <div className="flex items-end gap-2">
+            <div className="flex-1 bg-black rounded-lg border border-white/10 p-2.5 flex flex-col gap-2.5">
               <textarea
                 rows="1"
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
-                placeholder="Escribe tu mensaje..."
+                placeholder="Mensaje..."
                 disabled={isAdminPreview}
-                className="flex-1 !bg-transparent !p-2 !border-none !text-sm placeholder:text-zinc-800"
+                className="flex-1 !bg-transparent !p-1 !border-none !text-xs placeholder:text-zinc-800"
               />
-              <div className="flex items-center gap-4 px-2">
+              <div className="flex items-center gap-3 px-1">
                 {user?.isPro && (
-                  <button onClick={() => !isAdminPreview && videoInputRef.current?.click()} className="text-zinc-700 hover:text-primary transition-colors">
-                    <Video size={18} />
+                  <button onClick={() => !isAdminPreview && videoInputRef.current?.click()} className="text-zinc-600 hover:text-primary transition-colors">
+                    <span className="material-symbols-outlined !text-[18px]">videocam</span>
                     <input type="file" ref={videoInputRef} className="hidden" accept="video/*" onChange={(e) => setVideoFile(e.target.files[0])} />
                   </button>
                 )}
                 <button
                   onMouseDown={startRecording} onMouseUp={stopRecording}
                   onTouchStart={startRecording} onTouchEnd={stopRecording}
-                  className={`transition-colors ${isRecording ? 'text-red-500 scale-125 animate-pulse' : 'text-zinc-700 hover:text-primary'}`}
+                  className={`transition-all ${isRecording ? 'text-red-500 scale-110 animate-pulse' : 'text-zinc-600 hover:text-primary'}`}
                 >
-                  <Mic size={18} />
+                  <span className="material-symbols-outlined !text-[18px]">mic</span>
                 </button>
               </div>
             </div>
             <button
               onClick={handleSendReply}
               disabled={(!replyText.trim() && !audioBlob && !videoFile) || isAdminPreview}
-              className="btn-primary !p-4 !h-auto"
+              className="btn-primary !w-11 !h-11 !p-0 !rounded-lg flex items-center justify-center flex-shrink-0"
             >
-              <Send size={20} strokeWidth={3} />
+              <span className="material-symbols-outlined !text-[20px]">send</span>
             </button>
           </div>
         </div>

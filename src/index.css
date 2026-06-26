@@ -21,7 +21,7 @@
 }
 
 :root {
-  /* Oro y Negro Premium Palette */
+  /* Oro y Negro Premium Palette - Refined for High Density */
   --df-primary: #D4AF37;
   --df-primary-hover: #F9E498;
   --df-secondary: #EAC249;
@@ -29,13 +29,13 @@
   --df-bg: #000000;
   --df-surface: #051424;
   --df-surface-glass: rgba(5, 20, 36, 0.7);
-  --df-border: rgba(212, 175, 55, 0.2);
+  --df-border: rgba(212, 175, 55, 0.15);
   --df-text-main: #E0E0E0;
   --df-text-dim: #99907C;
 
   background-color: var(--df-bg);
   color: var(--df-text-main);
-  line-height: 1.5;
+  line-height: 1.4; /* Slightly tighter for density */
   font-family: var(--font-inter);
 }
 
@@ -48,126 +48,182 @@ body {
   background-color: var(--df-bg);
 }
 
-/* Luxury Typography Scale */
+/* High Density Typography Scale */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-sora);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em; /* Tighter tracking */
   font-weight: 700;
 }
 
-h1 { font-size: clamp(48px, 8vw, 80px); line-height: 1.1; font-style: italic; }
-h2 { font-size: clamp(32px, 5vw, 48px); line-height: 1.2; }
-h3 { font-size: 24px; }
+h1 { font-size: clamp(40px, 6vw, 64px); line-height: 1; font-style: italic; }
+h2 { font-size: 28px; line-height: 1.1; }
+h3 { font-size: 20px; line-height: 1.2; }
 
-/* Luxury Watchmaking Labels */
+/* Luxury Watchmaking Labels - Dense */
 .label-luxury {
   font-family: var(--font-sora);
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.25em;
   color: var(--df-primary);
 }
 
-/* Glassmorphism & Borders */
+/* Glassmorphism & Borders - Precision Edge */
 .glass-card {
   background: var(--df-surface-glass);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(16px);
   border: 1px solid var(--df-border);
-  border-radius: 1rem;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0.5rem; /* Reduced for sharpness */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-card:hover {
-  border-color: rgba(212, 175, 55, 0.5);
-  box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.08);
 }
 
 .smoked-gold-glass {
-  background: rgba(5, 20, 36, 0.85);
-  backdrop-filter: blur(25px);
+  background: rgba(5, 20, 36, 0.8);
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--df-border);
 }
 
-/* Premium Buttons */
+/* Dense Layout Utilities */
+.max-container {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+.section-padding {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+/* Premium Buttons - Compact */
 .btn-primary {
   background: linear-gradient(135deg, #D4AF37 0%, #F9E498 100%);
   color: #000000;
   font-family: var(--font-sora);
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
   border-radius: 0.25rem;
-  padding: 0.75rem 1.5rem;
-  transition: all 0.3s ease;
+  padding: 0.5rem 1rem; /* Reduced padding */
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
   border: none;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
-  background: linear-gradient(135deg, #F9E498 0%, #D4AF37 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
 }
 
 .btn-secondary {
   background: transparent;
   color: var(--df-primary);
-  border: 1.5px solid var(--df-primary);
+  border: 1px solid var(--df-primary);
   font-family: var(--font-sora);
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
   border-radius: 0.25rem;
-  padding: 0.75rem 1.5rem;
-  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
 }
 
 .btn-secondary:hover {
   background: rgba(212, 175, 55, 0.1);
 }
 
-/* Input Styles */
+/* Input Styles - Clean & High Density */
 input, textarea, select {
-  background: #051424;
-  border: none;
-  border-bottom: 1px solid var(--df-border);
-  border-radius: 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--df-border);
+  border-radius: 0.25rem;
   color: #ffffff;
-  padding: 0.75rem 0.5rem;
+  padding: 0.5rem 0.75rem;
   width: 100%;
   font-family: var(--font-inter);
+  font-size: 0.875rem;
+  transition: border-color 0.2s;
 }
 
 input:focus, textarea:focus {
   outline: none;
-  border-bottom: 2px solid var(--df-primary);
-  box-shadow: none;
+  border-color: var(--df-primary);
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
+/* Scrollbar - Minimal */
+::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #000000; }
 ::-webkit-scrollbar-thumb {
-  background: #1f1f1f;
-  border-radius: 10px;
+  background: #2a2a2a;
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--df-primary); }
 
-/* Parallax */
-.parallax-bg {
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
+/* Material Symbols Adjustments */
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 300,
+  'GRAD' 0,
+  'opsz' 20;
+  font-size: 20px;
+}
+
+/* SweetAlert2 Theme Overrides */
+.swal2-popup {
+  background: #051424 !important;
+  color: #E0E0E0 !important;
+  border: 1px solid var(--df-border) !important;
+  border-radius: 0.5rem !important;
+  font-family: var(--font-inter) !important;
+}
+
+.swal2-title {
+  font-family: var(--font-sora) !important;
+  color: var(--df-primary) !important;
+}
+
+.swal2-confirm {
+  background: linear-gradient(135deg, #D4AF37 0%, #F9E498 100%) !important;
+  color: #000000 !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+}
+
+.swal2-cancel {
+  background: transparent !important;
+  border: 1px solid var(--df-border) !important;
+  color: #E0E0E0 !important;
+}
+
+/* Parallax Transitions */
+.parallax-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-parallax {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
   background-size: cover;
-}
-
-/* Animations */
-@keyframes gold-glow {
-  0%, 100% { filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3)); }
-  50% { filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
-}
-
-.neon-gold {
-  animation: gold-glow 3s infinite ease-in-out;
+  background-position: center;
+  transition: opacity 1s ease-in-out;
+  will-change: transform, opacity;
 }

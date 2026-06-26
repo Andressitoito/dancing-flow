@@ -22,12 +22,13 @@ function App() {
       return;
     }
     setActiveTab(tab);
+    window.scrollTo(0, 0);
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-background text-white">
-        <div className="animate-spin h-8 w-8 border-t-2 border-primary rounded-full"></div>
+        <div className="animate-spin h-6 w-6 border-t-2 border-primary rounded-full"></div>
       </div>
     );
   }
@@ -63,7 +64,7 @@ function App() {
     <div className="min-h-screen bg-background text-df-text-main flex flex-col overflow-x-hidden">
       <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
 
-      <main className={`flex-1 w-full mx-auto ${isFullBleed ? 'max-w-none px-0' : 'max-w-7xl px-4 md:px-8 py-8'} mt-[64px] md:mt-[80px]`}>
+      <main className={`flex-1 w-full mx-auto ${isFullBleed ? 'max-w-none px-0' : 'max-container px-4 md:px-8 py-6'} mt-[56px]`}>
         {renderContent()}
       </main>
     </div>

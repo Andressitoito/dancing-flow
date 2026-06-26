@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import useStore from '../store/useStore';
-import { Target, Zap, Video, Award, Check, Activity, Star } from 'lucide-react';
 import { QUESTIONNAIRE_OPTIONS } from '../services/constants';
 import { api } from '../services/api';
 import Swal from 'sweetalert2';
@@ -42,9 +41,7 @@ const StudentProfileView = () => {
             testimonialStars: quest.testimonialStars || 5
           });
         }
-      } catch (e) {
-        console.error("Error refreshing questionnaire:", e);
-      }
+      } catch (e) { console.error(e); }
     };
     refreshData();
   }, []);
@@ -68,31 +65,27 @@ const StudentProfileView = () => {
     Swal.fire({
       icon: 'success',
       title: 'Perfil Actualizado',
-      text: 'Tus objetivos se han guardado correctamente.',
       timer: 1500,
       showConfirmButton: false,
-      background: '#051424',
-      color: '#D4AF37',
-      customClass: { popup: 'glass-card border-primary/40' }
     });
   };
 
   const renderMultiSelect = (field, options) => {
     const selected = formData[field] ? formData[field].split(',') : [];
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {options.map(opt => (
           <button
             key={opt.id}
             onClick={() => toggleOption(field, opt.id)}
-            className={`flex items-center justify-between px-6 py-4 rounded glass-card text-left transition-all duration-300 border-none ${
+            className={`flex items-center justify-between px-4 py-3 rounded-md transition-all duration-200 border text-left ${
               selected.includes(opt.id)
-              ? 'bg-primary/20 text-primary shadow-[0_0_15px_rgba(212,175,55,0.2)] scale-[1.02]'
-              : 'bg-white/5 text-zinc-500 hover:bg-white/10'
+              ? 'bg-primary/10 border-primary/40 text-primary'
+              : 'bg-white/5 border-white/5 text-zinc-500 hover:text-white hover:bg-white/[0.08]'
             }`}
           >
-            <span className="label-luxury !text-[10px] !tracking-[0.1em] !color-inherit">{opt.label}</span>
-            {selected.includes(opt.id) && <Check size={16} strokeWidth={3} />}
+            <span className="label-luxury !text-[9px] !tracking-[0.1em] !color-inherit">{opt.label}</span>
+            {selected.includes(opt.id) && <span className="material-symbols-outlined !text-[16px]">check</span>}
           </button>
         ))}
       </div>
@@ -102,181 +95,174 @@ const StudentProfileView = () => {
   const completion = questionnaire?.completionPercentage || 0;
 
   return (
-    <div className="space-y-12 pb-24">
+    <div className="space-y-8 pb-12">
       {/* Header */}
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-primary/10 pb-12">
-        <div className="space-y-4">
-          <span className="label-luxury">Gestión Personal</span>
-          <div className="flex items-center gap-6">
-            <h1 className="font-sora text-4xl md:text-6xl font-extrabold text-white italic uppercase tracking-tighter leading-none">Mi <span className="text-primary">Perfil</span></h1>
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-8">
+        <div>
+          <span className="label-luxury !text-[9px]">Gestión Personal</span>
+          <div className="flex items-center gap-4 mt-1">
+            <h1 className="font-sora text-4xl md:text-5xl font-extrabold text-white italic uppercase tracking-tighter leading-none">Mi <span className="text-primary">Perfil</span></h1>
             {user?.isPro && (
-                <span className="bg-primary/10 text-primary text-[10px] font-bold px-4 py-1.5 rounded-full border border-primary/30 uppercase tracking-widest neon-gold">PRO</span>
+                <span className="bg-primary/10 text-primary text-[8px] font-bold px-3 py-1 rounded border border-primary/20 uppercase tracking-widest">PRO</span>
             )}
           </div>
-          <p className="font-sora text-zinc-500 text-lg font-light">Personaliza tu experiencia y objetivos de maestría.</p>
+          <p className="font-sora text-zinc-500 text-sm font-light mt-2">Personaliza tu experiencia y objetivos de maestría.</p>
         </div>
 
-        <div className="flex items-center gap-8 glass-card p-6 rounded-2xl">
-           <div className="hidden sm:block w-48 space-y-3">
-              <div className="flex justify-between label-luxury !text-[9px] !text-zinc-500">
-                 <span>Progreso de Perfil</span>
+        <div className="flex items-center gap-6 bg-white/5 p-4 rounded-lg border border-white/5">
+           <div className="hidden sm:block w-40 space-y-2">
+              <div className="flex justify-between label-luxury !text-[8px] !text-zinc-500">
+                 <span>Completado</span>
                  <span className={completion === 100 ? 'text-primary' : ''}>{completion}%</span>
               </div>
               <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                 <div className="h-full bg-primary transition-all duration-1000 ease-out" style={{ width: `${completion}%` }} />
+                 <div className="h-full bg-primary transition-all duration-700 ease-out" style={{ width: `${completion}%` }} />
               </div>
            </div>
-           <button onClick={handleSubmit} className="btn-primary h-14">
+           <button onClick={handleSubmit} className="btn-primary !h-10 !px-8 !text-[9px]">
              Guardar
            </button>
         </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <div className="lg:col-span-2 space-y-12">
-          {/* Section 1 */}
-          <section className="glass-card p-8 md:p-12 space-y-10">
-             <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded text-primary">
-                    <Target size={24} />
-                </div>
-                <h3 className="font-sora text-2xl font-bold uppercase italic text-white">Objetivos de Baile</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          {/* Objectives */}
+          <section className="glass-card p-6 md:p-8 space-y-8 border-white/5 bg-white/[0.02]">
+             <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-primary !text-[20px]">target</span>
+                <h3 className="font-sora text-lg font-bold uppercase italic text-white">Objetivos</h3>
              </div>
-             <div className="space-y-12">
-                <div className="space-y-6">
-                   <label className="label-luxury !text-zinc-500">¿Por qué empezaste?</label>
+             <div className="space-y-8">
+                <div className="space-y-4">
+                   <label className="label-luxury !text-[8px] !text-zinc-500">¿Por qué empezaste?</label>
                    {renderMultiSelect('whyStarted', QUESTIONNAIRE_OPTIONS.whyStarted)}
                 </div>
-                <div className="space-y-6">
-                   <label className="label-luxury !text-zinc-500">Objetivos actuales</label>
+                <div className="space-y-4">
+                   <label className="label-luxury !text-[8px] !text-zinc-500">Metas actuales</label>
                    {renderMultiSelect('objectives', QUESTIONNAIRE_OPTIONS.objectives)}
                 </div>
              </div>
           </section>
 
-          {/* Section 2 */}
-          <section className="glass-card p-8 md:p-12 space-y-10">
-             <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded text-primary">
-                    <Zap size={24} />
-                </div>
-                <h3 className="font-sora text-2xl font-bold uppercase italic text-white">Desafíos y Miedos</h3>
+          {/* Challenges */}
+          <section className="glass-card p-6 md:p-8 space-y-8 border-white/5 bg-white/[0.02]">
+             <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-primary !text-[20px]">bolt</span>
+                <h3 className="font-sora text-lg font-bold uppercase italic text-white">Desafíos</h3>
              </div>
-             <div className="space-y-12">
-                <div className="space-y-6">
-                   <label className="label-luxury !text-zinc-500">¿Qué es lo que más te cuesta?</label>
+             <div className="space-y-8">
+                <div className="space-y-4">
+                   <label className="label-luxury !text-[8px] !text-zinc-500">¿Qué es lo que más te cuesta?</label>
                    {renderMultiSelect('hardestPart', QUESTIONNAIRE_OPTIONS.hardestPart)}
                 </div>
-                <div className="space-y-6">
-                   <label className="label-luxury !text-zinc-500">Miedos o barreras</label>
+                <div className="space-y-4">
+                   <label className="label-luxury !text-[8px] !text-zinc-500">Miedos o barreras</label>
                    {renderMultiSelect('fears', QUESTIONNAIRE_OPTIONS.fears)}
                 </div>
              </div>
           </section>
 
-          {/* Section 3 */}
-          <section className="glass-card p-8 md:p-12 space-y-10">
-             <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded text-primary">
-                    <Activity size={24} />
-                </div>
-                <h3 className="font-sora text-2xl font-bold uppercase italic text-white">Detalles Técnicos</h3>
+          {/* Technical Info */}
+          <section className="glass-card p-6 md:p-8 space-y-8 border-white/5 bg-white/[0.02]">
+             <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-primary !text-[20px]">monitoring</span>
+                <h3 className="font-sora text-lg font-bold uppercase italic text-white">Ficha Técnica</h3>
              </div>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div className="space-y-4">
-                   <label className="label-luxury !text-zinc-500">Nivel de Experiencia</label>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                   <label className="label-luxury !text-[8px] !text-zinc-500">Nivel de Experiencia</label>
                    <input
                       type="text"
+                      className="h-10 text-xs"
                       value={formData.experienceLevel}
                       onChange={e => setFormData({...formData, experienceLevel: e.target.value})}
                       placeholder="Ej. 6 meses, 2 años..."
                    />
                 </div>
-                <div className="space-y-4">
-                   <label className="label-luxury !text-zinc-500">Estilos Preferidos</label>
+                <div className="space-y-2">
+                   <label className="label-luxury !text-[8px] !text-zinc-500">Estilos Preferidos</label>
                    <input
                       type="text"
+                      className="h-10 text-xs"
                       value={formData.preferredStyles}
                       onChange={e => setFormData({...formData, preferredStyles: e.target.value})}
                       placeholder="Bachata, Salsa..."
                    />
                 </div>
-                <div className="md:col-span-2 space-y-4">
-                   <label className="label-luxury !text-zinc-500">Dedicación Semanal</label>
+                <div className="md:col-span-2 space-y-2">
+                   <label className="label-luxury !text-[8px] !text-zinc-500">Dedicación Semanal</label>
                    <input
                       type="text"
+                      className="h-10 text-xs"
                       value={formData.weeklyDedication}
                       onChange={e => setFormData({...formData, weeklyDedication: e.target.value})}
                       placeholder="¿Cuántas horas o días a la semana?"
                    />
                 </div>
-                <div className="md:col-span-2 space-y-4">
-                   <label className="label-luxury !text-red-500/60">Lesiones o Limitaciones</label>
+                <div className="md:col-span-2 space-y-2">
+                   <label className="label-luxury !text-[8px] !text-red-400/50 uppercase">Lesiones o Limitaciones</label>
                    <textarea
                       value={formData.physicalLimitations}
                       onChange={e => setFormData({...formData, physicalLimitations: e.target.value})}
                       placeholder="Detalla cualquier limitación para adaptar tu entrenamiento..."
-                      className="min-h-[120px]"
+                      className="min-h-[80px] text-xs"
                    />
                 </div>
              </div>
           </section>
         </div>
 
-        <div className="space-y-12">
-          {/* Recording Pref */}
-          <section className="glass-card p-8 space-y-10">
-             <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded text-primary">
-                    <Video size={24} />
-                </div>
-                <h3 className="font-sora text-xl font-bold uppercase italic text-white">Grabación</h3>
+        <div className="space-y-6">
+          {/* Recording */}
+          <section className="glass-card p-6 space-y-6 border-white/5 bg-white/[0.02]">
+             <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-primary !text-[20px]">videocam</span>
+                <h3 className="font-sora text-base font-bold uppercase italic text-white">Grabación</h3>
              </div>
-             <div className="space-y-3">
+             <div className="space-y-2">
                 {QUESTIONNAIRE_OPTIONS.recordingPreference.map((opt) => (
                   <button
                     key={opt.id}
                     onClick={() => setSingleOption('recordingPreference', opt.id)}
-                    className={`w-full text-left px-6 py-4 rounded transition-all duration-300 border-none ${
+                    className={`w-full text-left px-4 py-3 rounded-md transition-all duration-200 border text-xs ${
                       formData.recordingPreference === opt.id
-                      ? 'bg-primary/20 text-primary shadow-lg scale-[1.02]'
-                      : 'bg-white/5 text-zinc-500 hover:bg-white/10'
+                      ? 'bg-primary/10 border-primary/30 text-primary'
+                      : 'bg-black/40 border-white/5 text-zinc-500 hover:text-white'
                     }`}
                   >
-                    <span className="label-luxury !text-[9px] !tracking-[0.1em] !color-inherit">{opt.label}</span>
+                    <span className="label-luxury !text-[8px] !tracking-[0.1em] !color-inherit">{opt.label}</span>
                   </button>
                 ))}
              </div>
           </section>
 
           {/* Testimonial */}
-          <section className="glass-card p-8 space-y-10">
-             <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded text-primary">
-                    <Award size={24} />
-                </div>
-                <h3 className="font-sora text-xl font-bold uppercase italic text-white">Testimonio</h3>
+          <section className="glass-card p-6 space-y-6 border-white/5 bg-white/[0.02]">
+             <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-primary !text-[20px]">stars</span>
+                <h3 className="font-sora text-base font-bold uppercase italic text-white">Testimonio</h3>
              </div>
-             <div className="space-y-8">
-                <div className="space-y-4">
-                    <label className="label-luxury !text-zinc-500">Tu Mensaje Público</label>
+             <div className="space-y-6">
+                <div className="space-y-2">
+                    <label className="label-luxury !text-[8px] !text-zinc-500">Mensaje Público</label>
                     <textarea
                        value={formData.testimonial}
                        onChange={(e) => setFormData({...formData, testimonial: e.target.value})}
-                       placeholder="Comparte tu evolución con la comunidad..."
-                       className="min-h-[160px]"
+                       placeholder="Comparte tu evolución..."
+                       className="min-h-[120px] text-xs"
                     />
                 </div>
-                <div className="space-y-6">
-                   <span className="label-luxury !text-zinc-500 text-center block">Calificación</span>
-                   <div className="flex gap-4 justify-center bg-black/40 py-6 rounded border border-primary/10">
+                <div className="space-y-4">
+                   <span className="label-luxury !text-[8px] !text-zinc-500 text-center block">Calificación</span>
+                   <div className="flex gap-2 justify-center bg-black/40 py-4 rounded-lg border border-white/5">
                        {[1, 2, 3, 4, 5].map(star => (
                            <button
                                key={star}
                                onClick={() => setFormData({...formData, testimonialStars: star})}
-                               className={`transition-all duration-300 hover:scale-125 ${formData.testimonialStars >= star ? 'text-primary' : 'text-zinc-900'}`}
+                               className={`transition-all duration-200 hover:scale-110 ${formData.testimonialStars >= star ? 'text-primary' : 'text-zinc-800'}`}
                            >
-                               <Star size={24} fill={formData.testimonialStars >= star ? 'currentColor' : 'none'} />
+                               <span className="material-symbols-outlined" style={{ fontVariationSettings: `'FILL' ${formData.testimonialStars >= star ? 1 : 0}` }}>star</span>
                            </button>
                        ))}
                    </div>
