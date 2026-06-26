@@ -29,38 +29,38 @@ export const APP_COLORS = [
 
 export const QUESTIONNAIRE_OPTIONS = {
   whyStarted: [
-    { id: 'social', label: 'Socializar y conocer gente' },
-    { id: 'hobby', label: 'Hobby y diversión' },
-    { id: 'sport', label: 'Deporte y salud' },
-    { id: 'profession', label: 'Carrera profesional' },
-    { id: 'emotional', label: 'Desahogo emocional / Terapia' }
+    { id: 'social', label: 'CONEXIÓN SOCIAL' },
+    { id: 'hobby', label: 'HOBBY & PASIÓN' },
+    { id: 'sport', label: 'BIENESTAR FÍSICO' },
+    { id: 'profession', label: 'MAESTRÍA PROFESIONAL' },
+    { id: 'emotional', label: 'EVOLUCIÓN EMOCIONAL' }
   ],
   objectives: [
-    { id: 'social_dance', label: 'Bailar mejor en el social' },
-    { id: 'shows', label: 'Hacer shows y coreografías' },
-    { id: 'teacher', label: 'Formarme como profesor' },
-    { id: 'technique', label: 'Perfeccionar mi técnica' },
-    { id: 'competition', label: 'Competir' }
+    { id: 'social_dance', label: 'MAESTRÍA EN EL SOCIAL' },
+    { id: 'shows', label: 'PERFORMANCE & ESCENARIO' },
+    { id: 'teacher', label: 'FORMACIÓN DOCENTE' },
+    { id: 'technique', label: 'PERFECCIONAMIENTO TÉCNICO' },
+    { id: 'competition', label: 'ÉLITE COMPETITIVA' }
   ],
   hardestPart: [
-    { id: 'rhythm', label: 'El ritmo y la música' },
-    { id: 'technique', label: 'La técnica de pasos' },
-    { id: 'connection', label: 'La conexión en pareja' },
-    { id: 'expression', label: 'La expresión corporal' },
-    { id: 'memory', label: 'Memorizar secuencias' }
+    { id: 'rhythm', label: 'MUSICALIDAD & RITMO' },
+    { id: 'technique', label: 'PRECISIÓN TÉCNICA' },
+    { id: 'connection', label: 'CONEXIÓN & LEAD/FOLLOW' },
+    { id: 'expression', label: 'EXPRESIÓN CORPORAL' },
+    { id: 'memory', label: 'RETENCIÓN DE SECUENCIAS' }
   ],
   fears: [
-    { id: 'ridicule', label: 'Hacer el ridículo' },
-    { id: 'camera', label: 'La cámara / Grabarme' },
-    { id: 'mistakes', label: 'Equivocarme y molestar a la pareja' },
-    { id: 'judgment', label: 'El juicio de los demás' },
-    { id: 'not_learning', label: 'No ser capaz de aprender' }
+    { id: 'ridicule', label: 'JUICIO EXTERNO' },
+    { id: 'camera', label: 'LENTE & CÁMARA' },
+    { id: 'mistakes', label: 'ERROR EN EJECUCIÓN' },
+    { id: 'judgment', label: 'BLOQUEO CREATIVO' },
+    { id: 'not_learning', label: 'MESETA DE APRENDIZAJE' }
   ],
   recordingPreference: [
-    { id: 'alone', label: 'Prefiero grabar solo' },
-    { id: 'couple', label: 'Quiero grabar en pareja' },
-    { id: 'shy', label: 'Me da vergüenza la cámara' },
-    { id: 'show', label: 'Quiero hacer shows' },
-    { id: 'training_teacher', label: 'Entrenando para profesor' }
+    { id: 'alone', label: 'SESIÓN INDIVIDUAL' },
+    { id: 'couple', label: 'ENTRENAMIENTO EN PAREJA' },
+    { id: 'shy', label: 'PERFIL BAJO (PRIVADO)' },
+    { id: 'show', label: 'ENFOQUE PERFORMANCE' },
+    { id: 'training_teacher', label: 'PROGRAMA DE PROFESORADO' }
   ]
 };
