@@ -306,10 +306,10 @@ const AdminClassesView = () => {
                                     </div>
                                     <div>
                                         <p className="font-sora font-black text-xl text-white italic uppercase tracking-tighter leading-none group-hover/asgn:text-primary transition-colors">{asgn.User.username}</p>
-                                        <p className="font-sora text-[9px] text-zinc-600 font-black tracking-widest uppercase mt-2">Seguimiento Activo</p>
+                                        <p className="font-sora text-label-sm text-zinc-600 font-black tracking-widest uppercase mt-2">Seguimiento Activo</p>
                                     </div>
                                 </div>
-                                <div className={`h-8 px-4 flex items-center rounded-full font-sora text-[9px] font-black italic uppercase tracking-tighter ${asgn.Replies?.some(r => !r.isReadByMaster) ? 'bg-primary text-black shadow-lg animate-pulse' : 'bg-black/40 text-zinc-700 border border-white/5'}`}>
+                                <div className={`h-8 px-4 flex items-center rounded-full font-sora text-label-sm font-black italic uppercase tracking-tighter ${asgn.Replies?.some(r => !r.isReadByMaster) ? 'bg-primary text-black shadow-lg animate-pulse' : 'bg-black/40 text-zinc-700 border border-white/5'}`}>
                                     {asgn.Replies?.some(r => !r.isReadByMaster) ? 'NUEVO MENSAJE' : 'SIN NOVEDAD'}
                                 </div>
                             </div>
@@ -325,7 +325,7 @@ const AdminClassesView = () => {
                                         <div key={i} className={`flex flex-col ${r.userId === user.id ? 'items-end' : 'items-start'}`}>
                                             <div className={`p-4 rounded-2xl text-sm max-w-[90%] shadow-lg ${r.userId === user.id ? 'bg-primary/10 border border-primary/20 text-primary rounded-tr-none' : 'bg-surface-bright border border-white/10 text-zinc-300 rounded-tl-none'}`}>
                                                 <p className="tracking-tight leading-relaxed">{r.content}</p>
-                                                <div className="mt-2 flex items-center justify-between gap-4 font-sora text-[8px] font-black italic opacity-40 uppercase tracking-widest">
+                                                <div className="mt-2 flex items-center justify-between gap-4 font-sora text-label-sm font-black italic opacity-40 uppercase tracking-widest">
                                                     <span>{r.userId === user.id ? 'YO' : 'ALUMNO'}</span>
                                                     <span>{new Date(r.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                                 </div>

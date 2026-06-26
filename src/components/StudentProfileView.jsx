@@ -84,7 +84,7 @@ const StudentProfileView = () => {
               : 'bg-white/5 border-white/5 text-zinc-500 hover:text-white hover:bg-white/[0.08]'
             }`}
           >
-            <span className="label-luxury !text-[9px] !tracking-[0.1em] !color-inherit">{opt.label}</span>
+            <span className="label-luxury !text-label-sm !tracking-[0.1em] !color-inherit">{opt.label}</span>
             {selected.includes(opt.id) && <span className="material-symbols-outlined !text-[16px]">check</span>}
           </button>
         ))}
@@ -115,7 +115,7 @@ const StudentProfileView = () => {
 
         <div className="flex items-center gap-8 bg-surface-container p-6 rounded-2xl border border-white/5 shadow-2xl">
            <div className="hidden sm:block w-48 space-y-3">
-              <div className="flex justify-between label-luxury !text-[9px] !text-zinc-400">
+              <div className="flex justify-between label-luxury !text-label-sm !text-zinc-400">
                  <span>PROGRESO PERFIL</span>
                  <span className={completion === 100 ? 'text-primary font-bold' : ''}>{completion}%</span>
               </div>
@@ -144,11 +144,11 @@ const StudentProfileView = () => {
              </div>
              <div className="space-y-10 relative z-10">
                 <div className="space-y-6">
-                   <label className="label-luxury !text-[9px] !text-zinc-500 border-l-2 border-primary/30 pl-3">¿Qué te impulsó a comenzar?</label>
+                   <label className="label-luxury !text-label-sm !text-zinc-500 border-l-2 border-primary/30 pl-3">¿Qué te impulsó a comenzar?</label>
                    {renderMultiSelect('whyStarted', QUESTIONNAIRE_OPTIONS.whyStarted)}
                 </div>
                 <div className="space-y-6">
-                   <label className="label-luxury !text-[9px] !text-zinc-500 border-l-2 border-primary/30 pl-3">Tus objetivos actuales</label>
+                   <label className="label-luxury !text-label-sm !text-zinc-500 border-l-2 border-primary/30 pl-3">Tus objetivos actuales</label>
                    {renderMultiSelect('objectives', QUESTIONNAIRE_OPTIONS.objectives)}
                 </div>
              </div>
@@ -167,11 +167,11 @@ const StudentProfileView = () => {
              </div>
              <div className="space-y-10 relative z-10">
                 <div className="space-y-6">
-                   <label className="label-luxury !text-[9px] !text-zinc-500 border-l-2 border-primary/30 pl-3">¿Cuáles son tus mayores obstáculos?</label>
+                   <label className="label-luxury !text-label-sm !text-zinc-500 border-l-2 border-primary/30 pl-3">¿Cuáles son tus mayores obstáculos?</label>
                    {renderMultiSelect('hardestPart', QUESTIONNAIRE_OPTIONS.hardestPart)}
                 </div>
                 <div className="space-y-6">
-                   <label className="label-luxury !text-[9px] !text-zinc-500 border-l-2 border-primary/30 pl-3">Barreras psicológicas o miedos</label>
+                   <label className="label-luxury !text-label-sm !text-zinc-500 border-l-2 border-primary/30 pl-3">Barreras psicológicas o miedos</label>
                    {renderMultiSelect('fears', QUESTIONNAIRE_OPTIONS.fears)}
                 </div>
              </div>
@@ -187,7 +187,7 @@ const StudentProfileView = () => {
              </div>
              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">
-                   <label className="label-luxury !text-[9px] !text-zinc-500">Nivel de Experiencia</label>
+                   <label className="label-luxury !text-label-sm !text-zinc-500">Nivel de Experiencia</label>
                    <input
                       type="text"
                       className="h-12 text-sm bg-black/40 border-white/10 rounded-xl focus:border-primary transition-all px-4"
@@ -197,7 +197,7 @@ const StudentProfileView = () => {
                    />
                 </div>
                 <div className="space-y-3">
-                   <label className="label-luxury !text-[9px] !text-zinc-500">Estilos de Interés</label>
+                   <label className="label-luxury !text-label-sm !text-zinc-500">Estilos de Interés</label>
                    <input
                       type="text"
                       className="h-12 text-sm bg-black/40 border-white/10 rounded-xl focus:border-primary transition-all px-4"
@@ -207,7 +207,7 @@ const StudentProfileView = () => {
                    />
                 </div>
                 <div className="md:col-span-2 space-y-3">
-                   <label className="label-luxury !text-[9px] !text-zinc-500">Dedicación Estimada</label>
+                   <label className="label-luxury !text-label-sm !text-zinc-500">Dedicación Estimada</label>
                    <input
                       type="text"
                       className="h-12 text-sm bg-black/40 border-white/10 rounded-xl focus:border-primary transition-all px-4"
@@ -217,7 +217,7 @@ const StudentProfileView = () => {
                    />
                 </div>
                 <div className="md:col-span-2 space-y-3">
-                   <label className="label-luxury !text-[9px] !text-red-400/60 uppercase">Condiciones Médicas o Limitaciones</label>
+                   <label className="label-luxury !text-label-sm !text-red-400/60 uppercase">Condiciones Médicas o Limitaciones</label>
                    <textarea
                       value={formData.physicalLimitations}
                       onChange={e => setFormData({...formData, physicalLimitations: e.target.value})}
@@ -249,7 +249,7 @@ const StudentProfileView = () => {
                       : 'bg-black/40 border-white/5 text-zinc-500 hover:border-primary/50 hover:text-zinc-200'
                     }`}
                   >
-                    <span className="label-luxury !text-[9px] !tracking-[0.1em] !color-inherit">{opt.label}</span>
+                    <span className="label-luxury !text-label-sm !tracking-[0.1em] !color-inherit">{opt.label}</span>
                   </button>
                 ))}
              </div>
@@ -268,7 +268,7 @@ const StudentProfileView = () => {
              </div>
              <div className="space-y-8 relative z-10">
                 <div className="space-y-3">
-                    <label className="label-luxury !text-[9px] !text-zinc-500">Tu experiencia en la Academia</label>
+                    <label className="label-luxury !text-label-sm !text-zinc-500">Tu experiencia en la Academia</label>
                     <textarea
                        value={formData.testimonial}
                        onChange={(e) => setFormData({...formData, testimonial: e.target.value})}
@@ -277,7 +277,7 @@ const StudentProfileView = () => {
                     />
                 </div>
                 <div className="space-y-5">
-                   <span className="label-luxury !text-[9px] !text-zinc-500 text-center block uppercase tracking-widest">Calificación General</span>
+                   <span className="label-luxury !text-label-sm !text-zinc-500 text-center block uppercase tracking-widest">Calificación General</span>
                    <div className="flex gap-3 justify-center bg-black/40 py-6 rounded-2xl border border-white/5 shadow-inner">
                        {[1, 2, 3, 4, 5].map(star => (
                            <button

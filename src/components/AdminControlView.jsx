@@ -60,79 +60,221 @@ const AdminControlView = () => {
     const unidentified = safeUsers.filter(u => u.gender === 'unidentified').length;
 
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          { label: 'Total Alumnos', value: total, icon: 'group', color: 'text-primary' },
-          { label: 'Femenino', value: females, icon: 'female', color: 'text-pink-500' },
-          { label: 'Masculino', value: males, icon: 'male', color: 'text-blue-500' },
-          { label: 'Sin Datos', value: unidentified, icon: 'help_outline', color: 'text-zinc-600' },
-        ].map((stat, i) => (
-          <div key={i} className="bg-surface-container rounded-[2rem] p-8 flex flex-col items-center text-center gap-4 group border border-white/5 hover:border-primary/20 transition-all duration-500 shadow-xl">
-              <div className={`w-14 h-14 rounded-2xl bg-black/40 border border-white/5 flex items-center justify-center ${stat.color} group-hover:scale-110 transition-transform`}>
-                <span className="material-symbols-outlined !text-[32px]">{stat.icon}</span>
+      <div className="space-y-10">
+        {/* Stats Grid */}
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: 'Total Alumnos', value: total, icon: 'person', color: 'text-primary' },
+            { label: 'Comunidad Femenina', value: females, icon: 'female', color: 'text-primary' },
+            { label: 'Comunidad Masculina', value: males, icon: 'male', color: 'text-zinc-400' },
+            { label: 'No Identificados', value: unidentified, icon: 'help', color: 'text-zinc-600' },
+          ].map((stat, i) => (
+            <div key={i} className="glass-card p-6 flex flex-col items-center justify-center text-center group hover:border-primary transition-all duration-300">
+                <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <span className={`material-symbols-outlined ${stat.color}`}>{stat.icon}</span>
+                </div>
+                <span className="text-title-sm text-zinc-500 tracking-[0.15em] uppercase mb-2">{stat.label}</span>
+                <span className="text-headline-lg text-primary kinetic-italic leading-none">{stat.value}</span>
+            </div>
+          ))}
+        </section>
+
+        {/* Main Content Canvas */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          {/* Left Panel: Activity Chart */}
+          <div className="lg:col-span-8 glass-card overflow-hidden flex flex-col">
+            <div className="p-6 border-b border-white/10 flex justify-between items-center">
+              <h3 className="text-title-sm uppercase tracking-wider text-white">Actividad Semanal</h3>
+              <div className="flex gap-4">
+                <span className="flex items-center gap-2 text-label-sm text-zinc-500">
+                  <span className="w-2 h-2 rounded-full bg-primary"></span> Bachata
+                </span>
+                <span className="flex items-center gap-2 text-label-sm text-zinc-500">
+                  <span className="w-2 h-2 rounded-full bg-zinc-400"></span> Salsa
+                </span>
               </div>
-              <div>
-                <p className="font-sora text-[10px] font-black tracking-[0.2em] text-zinc-500 uppercase">{stat.label}</p>
-                <p className="font-sora text-5xl font-black text-white mt-2 italic tracking-tighter leading-none">{stat.value}</p>
+            </div>
+            <div className="relative h-[300px] w-full p-6 overflow-hidden">
+              <div className="absolute inset-x-6 bottom-10 h-48 flex items-end justify-between gap-4">
+                {[
+                  { p: 'h-3/4', s: 'h-1/2' },
+                  { p: 'h-2/3', s: 'h-1/3' },
+                  { p: 'h-5/6', s: 'h-2/3' },
+                  { p: 'h-1/2', s: 'h-1/4' },
+                  { p: 'h-4/5', s: 'h-3/5' }
+                ].map((bar, i) => (
+                  <div key={i} className="flex-1 bg-white/5 rounded-t-sm relative group">
+                    <div className={`absolute bottom-0 w-full bg-primary ${bar.p} rounded-t-sm transition-all duration-500 hover:brightness-110`}></div>
+                    <div className={`absolute bottom-0 w-full bg-zinc-400 ${bar.s} rounded-t-sm opacity-60`}></div>
+                  </div>
+                ))}
               </div>
+              <div className="absolute inset-x-6 bottom-4 flex justify-between text-label-sm text-zinc-600 uppercase tracking-tighter">
+                <span>Lunes</span><span>Martes</span><span>Miércoles</span><span>Jueves</span><span>Viernes</span>
+              </div>
+            </div>
           </div>
-        ))}
+
+          {/* Right Panel: Upcoming Classes */}
+          <div className="lg:col-span-4 flex flex-col gap-4">
+            <div className="glass-card p-6 flex-1">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-title-sm uppercase tracking-wider text-white">Próximas Clases</h3>
+                <span className="material-symbols-outlined text-primary cursor-pointer hover:rotate-90 transition-transform">sync</span>
+              </div>
+              <div className="space-y-4">
+                {[
+                  { day: '14', month: 'Mar', title: 'Bachata Sensual III', time: '19:30', room: 'Studio A' },
+                  { day: '15', month: 'Mie', title: 'Salsa On2 Advanced', time: '21:00', room: 'Main Hall' }
+                ].map((clase, i) => (
+                  <div key={i} className="flex items-center gap-4 p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group">
+                    <div className="w-12 h-12 rounded bg-black/40 flex flex-col items-center justify-center border border-white/10 shrink-0">
+                      <span className="text-label-sm text-primary uppercase leading-none">{clase.month}</span>
+                      <span className="text-body-lg font-bold text-white leading-none mt-1">{clase.day}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-label-md text-white truncate">{clase.title}</p>
+                      <p className="text-label-sm text-zinc-500 flex items-center gap-1 mt-1">
+                        <span className="material-symbols-outlined !text-[14px]">schedule</span> {clase.time} - {clase.room}
+                      </p>
+                    </div>
+                    <span className="material-symbols-outlined text-zinc-600 group-hover:text-primary transition-colors">chevron_right</span>
+                  </div>
+                ))}
+              </div>
+              <button className="w-full mt-6 border border-white/10 py-2 rounded text-label-md text-zinc-400 hover:bg-primary/10 hover:text-primary transition-all">
+                Ver Agenda Completa
+              </button>
+            </div>
+
+            {/* Quick Action Card */}
+            <div className="bg-gradient-to-br from-primary to-amber-700 rounded-2xl p-6 flex flex-col gap-2 relative overflow-hidden group">
+              <span className="material-symbols-outlined absolute -right-4 -bottom-4 !text-[120px] opacity-10 group-hover:rotate-12 transition-transform text-white">grade</span>
+              <h4 className="text-headline-md text-black kinetic-italic leading-tight">Nueva<br/>Inscripción</h4>
+              <p className="text-label-md text-black/70 max-w-[140px]">Agrega un nuevo talento a la comunidad hoy mismo.</p>
+              <button className="mt-4 bg-black text-primary w-fit px-6 py-2 rounded-xl text-label-md font-bold hover:scale-105 active:scale-95 transition-all">
+                Registrar
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Detailed Segmentation Section */}
+        <section>
+          <h3 className="text-title-sm uppercase tracking-[0.2em] text-white mb-6 flex items-center gap-4">
+            Segmentación Detallada <div className="h-px flex-1 bg-white/10"></div>
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Level of Mastery */}
+            <div className="glass-card p-6">
+              <p className="text-label-md text-zinc-500 mb-6 uppercase tracking-widest">Nivel de Dominio</p>
+              <div className="space-y-6">
+                {[
+                  { label: 'Iniciado', value: 45, color: 'bg-primary' },
+                  { label: 'Intermedio', value: 38, color: 'bg-zinc-400' },
+                  { label: 'Avanzado', value: 17, color: 'bg-green-500' }
+                ].map((level, i) => (
+                  <div key={i} className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-body-md text-white">{level.label}</span>
+                      <span className={`text-label-md ${level.label === 'Iniciado' ? 'text-primary' : 'text-white'}`}>{level.value}%</span>
+                    </div>
+                    <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                      <div className={`h-full ${level.color}`} style={{ width: `${level.value}%` }}></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Retention */}
+            <div className="glass-card p-6 flex flex-col justify-between">
+              <div>
+                <p className="text-label-md text-zinc-500 mb-6 uppercase tracking-widest">Retención Mensual</p>
+                <div className="flex items-baseline gap-2 mb-2">
+                  <span className="text-display-lg text-white kinetic-italic">94%</span>
+                  <span className="text-green-500 flex items-center text-label-md font-bold">
+                    <span className="material-symbols-outlined !text-[16px]">trending_up</span> +2.4%
+                  </span>
+                </div>
+                <p className="text-label-sm text-zinc-400">Excelente tasa de permanencia comparado al mes anterior.</p>
+              </div>
+              <div className="mt-8 h-12 flex items-center justify-center bg-white/5 rounded border border-dashed border-white/10 hover:border-primary/50 transition-colors cursor-pointer group">
+                <span className="text-label-sm text-zinc-500 group-hover:text-primary">Reporte de Deserción</span>
+              </div>
+            </div>
+
+            {/* Gallery Card */}
+            <div className="glass-card overflow-hidden group cursor-pointer relative min-h-[240px]">
+              <img
+                className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0bwlYy9khgvPzUA0nKRcuTuAWlKZco-_NBCp3hqKb8znB7XM47pG4nNHPhuLXh8q24Tk0J1DtL9eKFO_jd-YA5Et4QnwDZOUhLUHg49FYbj2eT5i44CW2CxsieL0SuQTzBqLb1ftLQc_3whZrjr3szRhxnLS4Mj1oBVLpQIc3yVjO8r6n0t11Cui3OqjGBwsXaOKcjppmaUy9x1cBahIFxb2uEdadoYEBYURDpZMKq7Kvx-4X57Z_JhVn5uknwdDjSOqcPtAQF3sF"
+                alt="Workshop Madrid 2024"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+              <div className="absolute bottom-6 left-6">
+                <span className="text-title-sm text-primary uppercase">Nueva Galería</span>
+                <h4 className="text-headline-md text-white kinetic-italic leading-tight">Workshop<br/>Madrid 2024</h4>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     );
   };
 
   const renderSegmentation = () => {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {QUESTIONNAIRE_OPTIONS.recordingPreference.map(pref => {
           const filtered = safeUsers.filter(u => u.Questionnaire?.recordingPreference === pref.id);
           const males = filtered.filter(u => u.gender === 'male');
           const females = filtered.filter(u => u.gender === 'female');
 
           return (
-            <div key={pref.id} className="bg-surface-container rounded-[2.5rem] p-8 md:p-10 space-y-8 group border border-white/5 shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-10 opacity-[0.02]">
-                 <span className="material-symbols-outlined !text-[120px]">filter_list</span>
+            <div key={pref.id} className="glass-card p-6 space-y-6 group relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-6 opacity-[0.02]">
+                 <span className="material-symbols-outlined !text-[80px]">filter_list</span>
               </div>
-              <div className="flex items-center justify-between border-b border-white/5 pb-6 relative z-10">
+              <div className="flex items-center justify-between border-b border-white/5 pb-4 relative z-10">
                   <div>
-                    <h3 className="font-sora text-2xl font-black text-white uppercase italic tracking-tighter leading-none">{pref.label}</h3>
-                    <p className="font-sora text-[10px] text-zinc-500 mt-2 font-black tracking-widest uppercase">Segmentación de Privacidad</p>
+                    <h3 className="text-headline-md text-white uppercase italic leading-none">{pref.label}</h3>
+                    <p className="text-label-sm text-zinc-500 mt-2 tracking-widest uppercase">Segmentación de Privacidad</p>
                   </div>
-                  <div className="w-12 h-12 bg-primary/10 rounded-2xl border border-primary/20 text-primary flex items-center justify-center font-sora text-xl font-black italic">
+                  <div className="w-10 h-10 bg-primary/10 rounded-lg border border-primary/20 text-primary flex items-center justify-center text-label-md font-bold italic">
                     {filtered.length}
                   </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 relative z-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 relative z-10">
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-blue-500">
+                  <div className="flex items-center gap-2 text-zinc-400">
                     <span className="material-symbols-outlined !text-[16px]">male</span>
-                    <span className="font-sora text-[10px] font-black tracking-widest uppercase">HOMBRES ({males.length})</span>
+                    <span className="text-label-sm tracking-widest uppercase">HOMBRES ({males.length})</span>
                   </div>
                   <div className="space-y-2">
                     {males.slice(0, 5).map(u => (
-                      <button key={u.id} onClick={() => setViewingUser(u)} className="w-full text-left font-sora text-sm text-zinc-400 hover:text-primary transition-all flex items-center gap-3 bg-black/20 p-2 rounded-lg border border-white/5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500/50"></span>
+                      <button key={u.id} onClick={() => setViewingUser(u)} className="w-full text-left text-body-md text-zinc-500 hover:text-primary transition-all flex items-center gap-3 bg-black/20 p-2 rounded border border-white/5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary/50"></span>
                           <span className="truncate italic font-bold uppercase">{u.username}</span>
                       </button>
                     ))}
-                    {males.length > 5 && <p className="text-[10px] text-zinc-700 font-bold italic ml-2">... Y {males.length - 5} MÁS</p>}
+                    {males.length > 5 && <p className="text-label-sm text-zinc-700 font-bold italic ml-2">... Y {males.length - 5} MÁS</p>}
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-pink-500">
+                  <div className="flex items-center gap-2 text-primary">
                     <span className="material-symbols-outlined !text-[16px]">female</span>
-                    <span className="font-sora text-[10px] font-black tracking-widest uppercase">MUJERES ({females.length})</span>
+                    <span className="text-label-sm tracking-widest uppercase text-primary">MUJERES ({females.length})</span>
                   </div>
                   <div className="space-y-2">
                     {females.slice(0, 5).map(u => (
-                      <button key={u.id} onClick={() => setViewingUser(u)} className="w-full text-left font-sora text-sm text-zinc-400 hover:text-primary transition-all flex items-center gap-3 bg-black/20 p-2 rounded-lg border border-white/5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-pink-500/50"></span>
+                      <button key={u.id} onClick={() => setViewingUser(u)} className="w-full text-left text-body-md text-zinc-500 hover:text-primary transition-all flex items-center gap-3 bg-black/20 p-2 rounded border border-white/5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
                           <span className="truncate italic font-bold uppercase">{u.username}</span>
                       </button>
                     ))}
-                    {females.length > 5 && <p className="text-[10px] text-zinc-700 font-bold italic ml-2">... Y {females.length - 5} MÁS</p>}
+                    {females.length > 5 && <p className="text-label-sm text-zinc-700 font-bold italic ml-2">... Y {females.length - 5} MÁS</p>}
                   </div>
                 </div>
               </div>
@@ -146,29 +288,29 @@ const AdminControlView = () => {
   const filteredUsers = safeUsers.filter(u => u.username.toLowerCase().includes(searchTerm.toLowerCase()));
 
   const renderUsersList = () => (
-    <div className="space-y-8">
-      <section className="flex flex-wrap items-center gap-6">
+    <div className="space-y-6">
+      <section className="flex flex-wrap items-center gap-4">
         <div className="relative flex-1 min-w-[300px]">
-          <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-zinc-500">search</span>
+          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500">search</span>
           <input
             type="text"
             placeholder="Buscar por nombre de alumno..."
-            className="w-full h-14 bg-surface-container border border-white/10 rounded-2xl pl-14 pr-6 focus:border-primary focus:ring-1 focus:ring-primary transition-all font-sora text-sm text-white placeholder:text-zinc-700 outline-none"
+            className="w-full h-12 bg-black/40 border border-white/10 rounded-xl pl-12 pr-4 focus:border-primary focus:ring-1 focus:ring-primary transition-all text-body-md text-white placeholder:text-zinc-700 outline-none"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />
         </div>
-        <div className="flex items-center gap-4 bg-surface-container p-4 rounded-2xl border border-white/5">
-            <span className="font-sora text-[10px] font-black text-zinc-500 tracking-[0.2em] uppercase">TOTAL REGISTRADOS</span>
-            <div className="w-10 h-10 bg-black/40 rounded-xl flex items-center justify-center text-primary font-black italic">
+        <div className="flex items-center gap-4 bg-white/5 px-4 h-12 rounded-xl border border-white/5">
+            <span className="text-label-sm text-zinc-500 tracking-[0.2em] uppercase">TOTAL REGISTRADOS</span>
+            <div className="text-primary font-bold italic text-body-lg">
                 {filteredUsers.length}
             </div>
         </div>
       </section>
 
-      <section className="bg-surface-container rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl">
+      <section className="glass-card overflow-hidden">
         {/* Table Header */}
-        <div className="grid grid-cols-[64px_1fr_120px_120px_180px] gap-6 px-8 py-5 bg-black/40 border-b border-white/10 font-sora text-[10px] font-black text-zinc-500 uppercase tracking-widest">
+        <div className="grid grid-cols-[48px_1fr_120px_120px_180px] gap-4 px-6 py-4 bg-white/5 border-b border-white/10 text-label-sm text-zinc-500 uppercase tracking-widest">
           <div></div>
           <div>Identidad</div>
           <div className="hidden md:block">Evolución</div>
@@ -177,42 +319,42 @@ const AdminControlView = () => {
         </div>
 
         {/* List Container */}
-        <div className="max-h-[700px] overflow-y-auto custom-scrollbar">
+        <div className="max-h-[600px] overflow-y-auto custom-scrollbar">
           {filteredUsers.map(u => (
-              <div key={u.id} className="grid grid-cols-[64px_1fr_120px_120px_180px] gap-6 px-8 py-4 items-center hover:bg-white/[0.03] transition-all duration-300 border-b border-white/5 group">
-                  <div className="w-12 h-12 rounded-xl bg-black/60 flex items-center justify-center font-black text-primary/40 italic border border-white/10 group-hover:border-primary/40 group-hover:text-primary transition-all">
+              <div key={u.id} className="grid grid-cols-[48px_1fr_120px_120px_180px] gap-4 px-6 py-3 items-center hover:bg-white/5 transition-all duration-300 border-b border-white/5 group">
+                  <div className="w-10 h-10 rounded-lg bg-black/60 flex items-center justify-center font-bold text-primary/40 italic border border-white/10 group-hover:border-primary/40 group-hover:text-primary transition-all">
                       {u.username[0].toUpperCase()}
                   </div>
-                  <div>
-                      <div className="flex items-center gap-3">
-                          <p className="font-sora text-lg font-black italic text-white uppercase tracking-tighter group-hover:text-primary transition-colors leading-none">{u.username}</p>
-                          {u.isPro && <span className="bg-primary text-black text-[9px] font-black px-2 py-0.5 rounded italic uppercase kinetic-skew">PRO</span>}
+                  <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                          <p className="text-body-lg font-bold italic text-white uppercase truncate group-hover:text-primary transition-colors leading-none">{u.username}</p>
+                          {u.isPro && <span className="bg-primary text-black text-label-sm font-black px-2 py-0.5 rounded italic uppercase">PRO</span>}
                       </div>
-                      <p className="font-sora text-[9px] text-zinc-500 uppercase mt-2 font-bold md:hidden">{u.level || 'Principiante'} • {u.role}</p>
+                      <p className="text-label-sm text-zinc-500 uppercase mt-1 font-bold md:hidden">{u.level || 'Principiante'} • {u.role}</p>
                   </div>
-                  <div className="hidden md:block font-sora text-xs text-zinc-400 italic font-bold">{u.level || 'Principiante'}</div>
-                  <div className={`hidden md:block font-sora text-[10px] font-black tracking-widest uppercase ${u.role === 'profesor' ? 'text-primary' : 'text-blue-500'}`}>
+                  <div className="hidden md:block text-label-md text-zinc-400 italic font-bold">{u.level || 'Principiante'}</div>
+                  <div className={`hidden md:block text-label-sm font-bold tracking-widest uppercase ${u.role === 'profesor' ? 'text-primary' : 'text-zinc-500'}`}>
                     {u.role === 'profesor' ? 'MASTER' : 'ALUMNO'}
                   </div>
 
-                  <div className="flex items-center justify-end gap-3">
+                  <div className="flex items-center justify-end gap-2">
                       {u.role === 'alumno' && (
                           <button
                               onClick={() => handleTogglePro(u)}
-                              className={`hidden lg:block text-[9px] font-black border-2 px-4 py-1.5 rounded-xl transition-all duration-300 kinetic-skew ${
+                              className={`hidden lg:block text-[10px] font-bold border px-3 py-1.5 rounded transition-all duration-300 ${
                                   u.isPro
-                                  ? 'bg-primary/10 border-primary text-primary shadow-[0_0_15px_rgba(212,175,55,0.2)]'
+                                  ? 'bg-primary/10 border-primary text-primary active-glow'
                                   : 'border-white/10 text-zinc-600 hover:border-primary hover:text-primary'
                               }`}
                           >
                               {u.isPro ? 'PRO' : 'HACER PRO'}
                           </button>
                       )}
-                      <button onClick={() => setViewingUser(u)} className="w-10 h-10 rounded-xl bg-black/40 border border-white/5 flex items-center justify-center text-zinc-500 hover:text-primary hover:border-primary/40 transition-all shadow-lg">
-                        <span className="material-symbols-outlined !text-[20px]">visibility</span>
+                      <button onClick={() => setViewingUser(u)} className="w-9 h-9 rounded bg-black/40 border border-white/5 flex items-center justify-center text-zinc-500 hover:text-primary hover:border-primary transition-all">
+                        <span className="material-symbols-outlined !text-[18px]">visibility</span>
                       </button>
-                      <button onClick={() => handleDeleteUser(u.id)} className="w-10 h-10 rounded-xl bg-black/40 border border-white/5 flex items-center justify-center text-red-900/40 hover:text-red-500 hover:border-red-500/40 transition-all shadow-lg">
-                        <span className="material-symbols-outlined !text-[20px]">delete</span>
+                      <button onClick={() => handleDeleteUser(u.id)} className="w-9 h-9 rounded bg-black/40 border border-white/5 flex items-center justify-center text-zinc-800 hover:text-red-500 hover:border-red-500 transition-all">
+                        <span className="material-symbols-outlined !text-[18px]">delete</span>
                       </button>
                   </div>
               </div>
@@ -220,7 +362,7 @@ const AdminControlView = () => {
           {filteredUsers.length === 0 && (
             <div className="py-20 text-center opacity-30">
                <span className="material-symbols-outlined !text-[48px] mb-4">search_off</span>
-               <p className="font-sora text-sm uppercase font-black italic">No se encontraron alumnos con ese nombre</p>
+               <p className="text-label-md uppercase font-bold italic">No se encontraron alumnos</p>
             </div>
           )}
         </div>
@@ -276,15 +418,15 @@ const AdminControlView = () => {
                     <div className="border-t border-white/10 pt-10">
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                              <div className="bg-black/20 p-6 rounded-2xl border border-white/5 text-center">
-                                <span className="font-sora text-[9px] font-black text-zinc-600 uppercase tracking-widest block mb-2">Dedicación</span>
+                                <span className="label-luxury text-zinc-600 block mb-2">Dedicación</span>
                                 <p className="font-sora text-xl text-white font-black italic uppercase tracking-tight">{viewingUser.Questionnaire?.weeklyDedication || '---'}</p>
                              </div>
                              <div className="bg-black/20 p-6 rounded-2xl border border-white/5 text-center">
-                                <span className="font-sora text-[9px] font-black text-zinc-600 uppercase tracking-widest block mb-2">Preferencia</span>
+                                <span className="label-luxury text-zinc-600 block mb-2">Preferencia</span>
                                 <p className="font-sora text-base text-primary font-black italic uppercase tracking-tighter leading-none">{getLabels('recordingPreference', viewingUser.Questionnaire?.recordingPreference)}</p>
                              </div>
                              <div className="bg-black/20 p-6 rounded-2xl border border-white/5 text-center">
-                                <span className="font-sora text-[9px] font-black text-zinc-600 uppercase tracking-widest block mb-2">Nivel Base</span>
+                                <span className="label-luxury text-zinc-600 block mb-2">Nivel Base</span>
                                 <p className="font-sora text-xl text-white font-black italic uppercase tracking-tight">{viewingUser.Questionnaire?.experienceLevel || 'Principiante'}</p>
                              </div>
                         </div>
@@ -311,38 +453,39 @@ const AdminControlView = () => {
   }
 
   return (
-    <div className="space-y-12 pb-20 max-w-[1440px] mx-auto">
-      <header className="py-10 flex flex-col lg:flex-row lg:items-end justify-between gap-8 border-b border-white/10">
-        <div>
-          <h2 className="font-sora text-xs md:text-sm text-primary uppercase tracking-[0.3em] mb-4 font-bold">Gestión de Maestría</h2>
-          <div className="flex items-baseline gap-4">
-            <h1 className="font-sora text-[48px] md:text-[80px] font-extrabold italic uppercase leading-[0.85] tracking-tighter text-white">Panel</h1>
-            <span className="font-sora text-2xl md:text-4xl text-primary italic font-black uppercase tracking-tighter">PROFESOR</span>
+    <div className="pb-20 max-w-[1440px] mx-auto px-4 md:px-16">
+      <header className="py-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="space-y-1">
+            <span className="text-title-sm text-primary uppercase tracking-[0.2em]">Administración Academy</span>
+            <h1 className="text-display-lg kinetic-italic text-white flex items-baseline gap-2">
+              PANEL <span className="text-label-md text-primary uppercase tracking-widest italic opacity-80 font-bold">Profesor</span>
+            </h1>
+            <p className="text-body-md text-zinc-400 max-w-xl">Control general de la comunidad, estadísticas y segmentación de alumnos en tiempo real.</p>
           </div>
-          <p className="font-sora text-zinc-500 text-sm md:text-base font-light mt-6 max-w-xl">Control absoluto de la comunidad, métricas de evolución y segmentación estratégica.</p>
-        </div>
 
-        {/* Contextual Tabs */}
-        <div className="bg-surface-container p-1.5 rounded-[1.5rem] flex flex-wrap gap-1 shadow-2xl border border-white/5">
-          {[
-            { id: 'stats', icon: 'analytics', label: 'STATS' },
-            { id: 'segmentation', icon: 'filter_list', label: 'SEGS' },
-            { id: 'users', icon: 'group', label: 'ALUMS' },
-            { id: 'classes', icon: 'school', label: 'CLASES' }
-          ].map(t => (
-            <button
-                key={t.id}
-                onClick={() => setActiveSubTab(t.id)}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-500 font-sora text-[10px] font-black tracking-widest ${
-                    activeSubTab === t.id
-                    ? 'bg-primary text-black shadow-[0_0_20px_rgba(212,175,55,0.3)] kinetic-skew'
-                    : 'text-zinc-500 hover:text-white hover:bg-white/5'
-                }`}
-            >
-              <span className="material-symbols-outlined !text-[18px]" style={{ fontVariationSettings: activeSubTab === t.id ? "'FILL' 1" : "'FILL' 0" }}>{t.icon}</span>
-              {t.label}
-            </button>
-          ))}
+          {/* View Switcher */}
+          <div className="flex bg-black/40 p-1 rounded-xl border border-white/10 h-fit">
+            {[
+              { id: 'stats', icon: 'equalizer', label: 'STATS' },
+              { id: 'segmentation', icon: 'filter_list', label: 'SEGS' },
+              { id: 'users', icon: 'groups', label: 'ALUMS' },
+              { id: 'classes', icon: 'school', label: 'CLASES' }
+            ].map(t => (
+              <button
+                  key={t.id}
+                  onClick={() => setActiveSubTab(t.id)}
+                  className={`flex items-center gap-2 px-4 md:px-6 py-2 rounded-lg transition-all duration-300 text-label-md ${
+                      activeSubTab === t.id
+                      ? 'bg-primary text-black font-bold active-glow'
+                      : 'text-zinc-400 hover:bg-white/5'
+                  }`}
+              >
+                <span className="material-symbols-outlined !text-[18px]">{t.icon}</span>
+                {t.label}
+              </button>
+            ))}
+          </div>
         </div>
       </header>
 
