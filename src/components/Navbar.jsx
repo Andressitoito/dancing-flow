@@ -19,7 +19,7 @@ const Navbar = ({ activeTab, onTabChange }) => {
     tabs.push({ id: 'login', icon: LogIn, label: 'Entrar' });
   } else {
     if (user.role === 'profesor') {
-      tabs.push({ id: 'admin', icon: LayoutGrid, label: 'Profesor' });
+      tabs.push({ id: 'admin', icon: LayoutGrid, label: 'Panel' });
     } else {
       tabs.push({ id: 'profile', icon: User, label: 'Mi Perfil' });
       tabs.push({ id: 'training', icon: GraduationCap, label: 'Clases' });
@@ -27,41 +27,55 @@ const Navbar = ({ activeTab, onTabChange }) => {
   }
 
   return (
-    <nav className="fixed bottom-0 md:top-0 md:bottom-auto left-0 right-0 w-full h-[72px] md:h-[80px] bg-surface/90 backdrop-blur-2xl border-t md:border-t-0 md:border-b border-white/5 z-50 shadow-2xl flex items-center">
-      <div className="flex justify-around md:justify-center md:gap-16 items-center w-full max-w-7xl mx-auto px-6">
-        <div className="flex-1 hidden md:block">
-           <span className="text-primary font-black italic tracking-tighter text-2xl uppercase">DANCING FLOW</span>
+    <nav className="fixed top-0 left-0 right-0 w-full h-[64px] md:h-[80px] smoked-gold-glass z-50 flex items-center px-4 md:px-12">
+      <div className="flex justify-between items-center w-full max-w-[1400px] mx-auto">
+        {/* Logo Section */}
+        <div
+          className="flex items-center cursor-pointer group"
+          onClick={() => onTabChange('home')}
+        >
+          <span className="font-sora text-xl md:text-2xl font-extrabold italic text-primary tracking-tighter neon-gold transition-transform group-hover:scale-105">
+            DANCING FLOW
+          </span>
         </div>
 
-        <div className="flex justify-around md:justify-center md:gap-8 flex-1 md:flex-none">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => onTabChange(tab.id)}
-                  className={`flex flex-col md:flex-row items-center justify-center gap-1.5 md:gap-3 px-6 py-3 rounded-2xl transition-all duration-500 ${
-                    isActive
-                    ? 'bg-primary/15 text-primary md:bg-primary md:text-background shadow-xl scale-105'
-                    : 'text-zinc-500 hover:text-primary hover:bg-white/5'
-                  }`}
-                >
-                  <Icon size={22} strokeWidth={isActive ? 3 : 2} />
-                  <span className="text-[10px] md:text-xs font-black uppercase tracking-widest leading-none">{tab.label}</span>
-                </button>
-              );
-            })}
-
-            {user && (
+        {/* Tabs Section */}
+        <div className="flex items-center gap-2 md:gap-6">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
               <button
-                onClick={handleLogout}
-                className="flex flex-col md:flex-row items-center justify-center gap-1.5 md:gap-3 px-6 py-3 rounded-2xl text-zinc-500 hover:text-red-500 hover:bg-red-500/5 transition-all duration-500"
+                key={tab.id}
+                onClick={() => onTabChange(tab.id)}
+                className={`relative flex items-center gap-2 px-3 md:px-4 py-2 rounded-md transition-all duration-300 group ${
+                  isActive ? 'text-primary' : 'text-df-text-dim hover:text-primary'
+                }`}
               >
-                <LogOut size={22} />
-                <span className="text-[10px] md:text-xs font-black uppercase tracking-widest leading-none">Salir</span>
+                <Icon size={18} className="md:w-5 md:h-5" />
+                <span className="hidden md:block label-luxury !text-[10px] !tracking-[0.2em]">
+                  {tab.label}
+                </span>
+
+                {/* Active Indicator */}
+                {isActive && (
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full shadow-[0_0_8px_rgba(212,175,55,0.8)]" />
+                )}
               </button>
-            )}
+            );
+          })}
+
+          {user && (
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-3 md:px-4 py-2 text-df-text-dim hover:text-red-500 transition-colors"
+            >
+              <LogOut size={18} className="md:w-5 md:h-5" />
+              <span className="hidden md:block label-luxury !text-[10px] !tracking-[0.2em] !color-inherit">
+                Salir
+              </span>
+            </button>
+          )}
         </div>
       </div>
     </nav>

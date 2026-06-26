@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import io from 'socket.io-client';
 import { api } from '../services/api';
+import { APP_PALETTES } from '../services/constants';
 
 const STORAGE_KEY = 'dancing_user';
 
@@ -13,38 +14,27 @@ const useStore = create((set, get) => ({
   loading: false,
   isInitialLoad: true,
   socket: null,
-  palette: {
-    name: 'Clásico Dark',
-    primary: '#e11d48',
-    secondary: '#fbbf24',
-    accent: '#10b981',
-    background: '#111111',
-    surface: '#1f1f1f',
-    border: '#333333'
-  },
+  palette: APP_PALETTES.premium,
 
   setPalette: (p) => {
-    set({ palette: p });
-    localStorage.setItem('dancing_palette', JSON.stringify(p));
-    document.documentElement.style.setProperty('--primary', p.primary);
-    document.documentElement.style.setProperty('--secondary', p.secondary);
-    document.documentElement.style.setProperty('--accent', p.accent);
-    document.documentElement.style.setProperty('--background', p.background);
-    document.documentElement.style.setProperty('--surface', p.surface);
-    document.documentElement.style.setProperty('--outline', p.border);
+    // We lock to premium for now as per requirements
+    const palette = APP_PALETTES.premium;
+    set({ palette });
+
+    document.documentElement.style.setProperty('--df-primary', palette.primary);
+    document.documentElement.style.setProperty('--df-secondary', palette.secondary);
+    document.documentElement.style.setProperty('--df-accent', palette.accent);
+    document.documentElement.style.setProperty('--df-bg', palette.background);
+    document.documentElement.style.setProperty('--df-surface', palette.surface);
+    document.documentElement.style.setProperty('--df-border', palette.border);
   },
 
   fetchInitialData: async () => {
     const { isInitialLoad, user } = get();
     if (isInitialLoad) set({ loading: true });
 
-    // Initial Palette setup
-    const savedPalette = localStorage.getItem('dancing_palette');
-    if (savedPalette) {
-      get().setPalette(JSON.parse(savedPalette));
-    } else {
-      get().setPalette(get().palette);
-    }
+    // Force Premium Palette
+    get().setPalette(APP_PALETTES.premium);
 
     // Restore Session
     const savedUser = localStorage.getItem(STORAGE_KEY);
@@ -61,13 +51,11 @@ const useStore = create((set, get) => ({
     }
 
     try {
-      // Only fetch users if profesor
       if (currentUser.role === 'profesor') {
         const users = await api.getUsers();
         if (Array.isArray(users)) {
           set({ users });
         } else {
-          // Handle 401/error by checking response
           if (users?.error === 'Unauthorized' || users?.error === 'No autenticado') {
             get().logout();
           }
@@ -144,7 +132,6 @@ const useStore = create((set, get) => ({
       const updated = await api.saveQuestionnaire(data);
       set({ questionnaire: updated });
 
-      // Also update the cached user object in localStorage
       const { user } = get();
       if (user) {
         const newUser = { ...user, Questionnaire: updated };
