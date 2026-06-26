@@ -12,12 +12,39 @@
   --font-sora: "Sora", sans-serif;
   --font-inter: "Inter", sans-serif;
 
+  --font-size-display-lg: 48px;
+  --font-size-headline-lg: 32px;
+  --font-size-headline-md: 24px;
+  --font-size-title-sm: 14px;
+  --font-size-body-lg: 16px;
+  --font-size-body-md: 14px;
+  --font-size-label-md: 12px;
+  --font-size-label-sm: 10px;
+
+  --line-height-display-lg: 1.1;
+  --line-height-headline-lg: 1.2;
+  --line-height-headline-md: 1.2;
+  --line-height-title-sm: 1.4;
+  --line-height-body-lg: 1.6;
+  --line-height-body-md: 1.5;
+  --line-height-label-md: 1;
+  --line-height-label-sm: 1;
+
   --border-radius-sm: 0.125rem;
   --border-radius-md: 0.25rem;
   --border-radius-lg: 0.5rem;
   --border-radius-xl: 0.75rem;
   --border-radius-2xl: 1rem;
   --border-radius-3xl: 2rem;
+
+  --spacing-margin-mobile: 16px;
+  --spacing-margin-desktop: 64px;
+  --spacing-gutter: 16px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 40px;
 }
 
 :root {
@@ -59,10 +86,20 @@ h1 { font-size: clamp(40px, 6vw, 64px); line-height: 1; font-style: italic; }
 h2 { font-size: 28px; line-height: 1.1; }
 h3 { font-size: 20px; line-height: 1.2; }
 
+/* High Density Typography Utilities */
+.text-display-lg { font-size: var(--font-size-display-lg); line-height: var(--line-height-display-lg); font-weight: 800; letter-spacing: -0.02em; font-family: var(--font-sora); }
+.text-headline-lg { font-size: var(--font-size-headline-lg); line-height: var(--line-height-headline-lg); font-weight: 700; font-family: var(--font-sora); }
+.text-headline-md { font-size: var(--font-size-headline-md); line-height: var(--line-height-headline-md); font-weight: 700; font-family: var(--font-sora); }
+.text-title-sm { font-size: var(--font-size-title-sm); line-height: var(--line-height-title-sm); font-weight: 700; letter-spacing: 0.1em; font-family: var(--font-sora); }
+.text-body-lg { font-size: var(--font-size-body-lg); line-height: var(--line-height-body-lg); font-weight: 400; font-family: var(--font-inter); }
+.text-body-md { font-size: var(--font-size-body-md); line-height: var(--line-height-body-md); font-weight: 400; font-family: var(--font-inter); }
+.text-label-md { font-size: var(--font-size-label-md); line-height: var(--line-height-label-md); font-weight: 600; font-family: var(--font-inter); }
+.text-label-sm { font-size: var(--font-size-label-sm); line-height: var(--line-height-label-sm); font-weight: 500; font-family: var(--font-inter); }
+
 /* Luxury Watchmaking Labels - Dense */
 .label-luxury {
   font-family: var(--font-sora);
-  font-size: 10px;
+  font-size: var(--font-size-label-sm);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.25em;
@@ -71,10 +108,10 @@ h3 { font-size: 20px; line-height: 1.2; }
 
 /* Glassmorphism & Borders - Precision Edge */
 .glass-card {
-  background: var(--df-surface-glass);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--df-border);
-  border-radius: 0.5rem; /* Reduced for sharpness */
+  background: rgba(18, 18, 18, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  border-radius: 1rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -87,6 +124,15 @@ h3 { font-size: 20px; line-height: 1.2; }
   background: rgba(5, 20, 36, 0.8);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--df-border);
+}
+
+.kinetic-italic {
+    font-style: italic;
+    transform: skewX(-2deg);
+}
+
+.active-glow {
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
 }
 
 /* Dense Layout Utilities */

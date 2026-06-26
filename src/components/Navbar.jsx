@@ -53,7 +53,7 @@ const Navbar = ({ activeTab, onTabChange }) => {
                 <span className="material-symbols-outlined !text-[18px]">
                   {tab.icon}
                 </span>
-                <span className={`hidden md:block label-luxury !text-[9px] !tracking-[0.15em] transition-colors ${
+                <span className={`hidden md:block label-luxury !tracking-[0.15em] transition-colors ${
                   isActive ? '!text-primary' : '!text-df-text-dim group-hover:!text-white'
                 }`}>
                   {tab.label}
@@ -75,7 +75,7 @@ const Navbar = ({ activeTab, onTabChange }) => {
               <span className="material-symbols-outlined !text-[18px]">
                 logout
               </span>
-              <span className="hidden md:block label-luxury !text-[9px] !tracking-[0.15em] !text-inherit">
+              <span className="hidden md:block label-luxury !tracking-[0.15em] !text-inherit">
                 Salir
               </span>
             </button>

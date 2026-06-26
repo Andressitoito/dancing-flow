@@ -36,7 +36,7 @@ function App() {
         </div>
         <div className="text-center">
             <h1 className="font-sora text-2xl font-black italic uppercase tracking-tighter text-white">Dancing <span className="text-primary">Flow</span></h1>
-            <p className="font-sora text-[8px] font-black text-zinc-800 uppercase tracking-[0.4em] mt-2 animate-pulse">Preparando el Templo</p>
+            <p className="font-sora text-label-sm font-black text-zinc-800 uppercase tracking-[0.4em] mt-2 animate-pulse">Preparando el Templo</p>
         </div>
       </div>
     );
@@ -80,10 +80,10 @@ function App() {
       {!isFullBleed && (
         <footer className="py-10 border-t border-white/5 bg-black/40">
            <div className="max-container px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6">
-              <p className="font-sora text-[9px] font-black text-zinc-700 uppercase tracking-[0.2em] italic">© 2024 Dancing Flow Academy. Mastery is a journey.</p>
+              <p className="font-sora text-label-sm font-black text-zinc-700 uppercase tracking-[0.2em] italic">© 2024 Dancing Flow Academy. Mastery is a journey.</p>
               <div className="flex gap-8">
-                 <span className="font-sora text-[9px] font-black text-zinc-800 uppercase tracking-widest italic cursor-pointer hover:text-primary transition-colors">Instagram</span>
-                 <span className="font-sora text-[9px] font-black text-zinc-800 uppercase tracking-widest italic cursor-pointer hover:text-primary transition-colors">TikTok</span>
+                 <span className="font-sora text-label-sm font-black text-zinc-800 uppercase tracking-widest italic cursor-pointer hover:text-primary transition-colors">Instagram</span>
+                 <span className="font-sora text-label-sm font-black text-zinc-800 uppercase tracking-widest italic cursor-pointer hover:text-primary transition-colors">TikTok</span>
               </div>
            </div>
         </footer>

@@ -84,14 +84,14 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
             <div className="flex items-center gap-8 bg-surface-container p-6 rounded-2xl border border-white/5 shadow-2xl">
                <div className="flex flex-col items-center">
                   <span className="font-sora text-2xl font-black text-white">{safeAssignments.length}</span>
-                  <span className="label-luxury !text-[8px] !text-zinc-600 uppercase">Asignadas</span>
+                  <span className="label-luxury !text-label-sm !text-zinc-600 uppercase">Asignadas</span>
                </div>
                <div className="w-[1px] h-10 bg-white/10" />
                <div className="flex flex-col items-center">
                   <span className="font-sora text-2xl font-black text-primary">
                     {safeAssignments.filter(a => a.Replies?.length > 0).length}
                   </span>
-                  <span className="label-luxury !text-[8px] !text-zinc-600 uppercase">Con Feedback</span>
+                  <span className="label-luxury !text-label-sm !text-zinc-600 uppercase">Con Feedback</span>
                </div>
             </div>
           </header>
@@ -109,7 +109,7 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
                 <span className="material-symbols-outlined !text-[56px] text-zinc-800 z-20 group-hover:text-primary transition-all duration-500 group-hover:scale-110 group-hover:rotate-12">
                   {asgn.StudyBlock?.type === 'video' ? 'play_circle' : 'description'}
                 </span>
-                <div className="absolute top-4 left-4 z-20 bg-primary text-black font-black italic text-[9px] px-3 py-1 rounded uppercase tracking-tighter kinetic-skew shadow-lg">
+                <div className="absolute top-4 left-4 z-20 bg-primary text-black font-black italic text-label-sm px-3 py-1 rounded uppercase tracking-tighter kinetic-skew shadow-lg">
                   {asgn.StudyBlock?.level}
                 </div>
               </div>
@@ -126,7 +126,7 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
                             <span className="material-symbols-outlined text-primary !text-[12px]">forum</span>
                         </div>
                     </div>
-                    <span className="label-luxury !text-[9px] !text-zinc-500 uppercase tracking-widest">{asgn.Replies?.length || 0} Interacciones</span>
+                    <span className="label-luxury !text-label-sm !text-zinc-500 uppercase tracking-widest">{asgn.Replies?.length || 0} Interacciones</span>
                  </div>
                  <span className="material-symbols-outlined text-primary !text-[20px] translate-x-[-8px] opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">arrow_forward</span>
               </div>
@@ -159,8 +159,8 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
           </button>
           <div className="text-right">
             <div className="flex items-center justify-end gap-3 mb-1">
-               <span className="bg-primary/10 text-primary text-[9px] font-black italic px-2 py-0.5 rounded border border-primary/20 uppercase tracking-tighter">{currentAssignment.StudyBlock?.level}</span>
-               <span className="label-luxury !text-[9px] !text-zinc-600 uppercase tracking-widest">Módulo de Estudio</span>
+               <span className="bg-primary/10 text-primary text-label-sm font-black italic px-2 py-0.5 rounded border border-primary/20 uppercase tracking-tighter">{currentAssignment.StudyBlock?.level}</span>
+               <span className="label-luxury !text-label-sm !text-zinc-600 uppercase tracking-widest">Módulo de Estudio</span>
             </div>
             <h2 className="font-sora text-2xl md:text-3xl font-black text-white italic uppercase tracking-tighter leading-none">{currentAssignment.StudyBlock?.title}</h2>
           </div>
@@ -195,7 +195,7 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
         <div className="p-8 border-b border-white/5 flex items-center justify-between bg-black/20">
            <div className="space-y-1">
             <h3 className="font-sora text-xl font-black text-white italic tracking-tighter uppercase leading-none">FEEDBACK <span className="text-primary">DIRECTO</span></h3>
-            <p className="label-luxury !text-[8px] !text-zinc-600 uppercase tracking-widest font-bold">Canal Privado de Evolución</p>
+            <p className="label-luxury !text-label-sm !text-zinc-600 uppercase tracking-widest font-bold">Canal Privado de Evolución</p>
            </div>
            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
                 <span className="material-symbols-outlined text-primary/40 !text-[22px]">auto_awesome</span>
@@ -236,7 +236,7 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
 
         <div className="p-6 md:p-8 bg-black/40 border-t border-white/10 space-y-4 backdrop-blur-md">
           {(audioBlob || videoFile) && (
-            <div className="bg-primary/10 border border-primary/30 text-primary label-luxury !text-[8px] px-4 py-3 rounded-xl flex items-center justify-between animate-in fade-in slide-in-from-bottom-2">
+            <div className="bg-primary/10 border border-primary/30 text-primary label-luxury !text-label-sm px-4 py-3 rounded-xl flex items-center justify-between animate-in fade-in slide-in-from-bottom-2">
                <div className="flex items-center gap-3">
                    <span className="material-symbols-outlined !text-[16px] animate-pulse">{audioBlob ? 'mic' : 'videocam'}</span>
                    <span className="font-bold tracking-widest uppercase">{audioBlob ? 'Audio Preparado' : `Video: ${videoFile.name}`}</span>
