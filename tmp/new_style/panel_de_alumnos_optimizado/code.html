@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dancing Flow - Admin Panel</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#D4AF37",
+                        "background": "#050505",
+                        "on-primary": "#000000",
+                        "inverse-surface": "#d4e4fa",
+                        "primary-fixed": "#f8e3a1",
+                        "secondary": "#8fd8ff",
+                        "on-surface": "#d4e4fa",
+                        "outline": "#ab888e",
+                        "surface-bright": "#1c1c1c",
+                        "surface-container-high": "#121212",
+                        "inverse-on-surface": "#0a0a0a",
+                        "secondary-fixed": "#c2e8ff",
+                        "secondary-container": "#00c1fd",
+                        "primary-fixed-dim": "#D4AF37",
+                        "on-secondary": "#003548",
+                        "tertiary-fixed-dim": "#60df72",
+                        "surface-variant": "#1c1c1c",
+                        "error-container": "#93000a",
+                        "error": "#ffb4ab",
+                        "on-error": "#690005",
+                        "on-primary-container": "#3f3000",
+                        "on-secondary-fixed": "#001e2b",
+                        "outline-variant": "#333333",
+                        "surface": "#050505",
+                        "surface-container": "#0f0f0f",
+                        "on-primary-fixed-variant": "#5a4600",
+                        "on-background": "#d4e4fa",
+                        "on-secondary-container": "#004b65",
+                        "tertiary-container": "#1ba741",
+                        "surface-dim": "#050505",
+                        "primary-container": "#D4AF37",
+                        "surface-container-low": "#080808",
+                        "on-secondary-fixed-variant": "#004d67",
+                        "surface-tint": "#D4AF37",
+                        "on-tertiary": "#00390f",
+                        "tertiary-fixed": "#7efd8b",
+                        "surface-container-highest": "#1c1c1c",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#002106",
+                        "on-tertiary-container": "#00320c",
+                        "secondary-fixed-dim": "#75d1ff",
+                        "surface-container-lowest": "#020202",
+                        "on-primary-fixed": "#241d00",
+                        "inverse-primary": "#8e7200",
+                        "tertiary": "#60df72",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "on-surface-variant": "#a1a1a1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "2px",
+                        "lg": "4px",
+                        "xl": "8px",
+                        "full": "12px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "margin-desktop": "64px",
+                        "xl": "40px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Sora"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Sora"],
+                        "body-lg": ["Inter"],
+                        "title-sm": ["Sora"],
+                        "display-lg": ["Sora"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "label-sm": ["10px", {"lineHeight": "1", "fontWeight": "500"}],
+                        "label-md": ["12px", {"lineHeight": "1", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "title-sm": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #050505;
+            color: #d4e4fa;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .material-symbols-outlined {
+            font-size: 20px;
+            vertical-align: middle;
+        }
+        .kinetic-skew {
+            transform: skewX(-10deg);
+        }
+        .glow-active {
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f0f0f;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1c1c1c;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full h-[56px] z-50 bg-surface/80 dark:bg-surface/80 backdrop-blur-md border-b border-surface-variant dark:border-outline-variant flex justify-between items-center px-margin-desktop">
+<div class="flex items-center gap-xl">
+<span class="font-headline-md text-headline-md font-extrabold italic text-primary tracking-tighter">Dancing Flow</span>
+<div class="hidden md:flex gap-lg items-center">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" href="#">Dashboard</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" href="#">Horarios</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" href="#">Finanzas</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" href="#">Staff</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-primary-container text-on-primary-container px-md py-xs rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity">Profesor</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-xs font-label-md text-label-md">
+<span class="material-symbols-outlined">logout</span>
+            Salir
+        </button>
+</div>
+</nav>
+<main class="pt-[56px] px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto pb-lg">
+<!-- Dashboard Header -->
+<header class="py-lg flex flex-col md:flex-row md:items-end justify-between gap-md border-b border-outline-variant/30">
+<div>
+<h2 class="font-title-sm text-title-sm text-primary uppercase tracking-widest mb-xs">Administración Academy</h2>
+<div class="flex items-baseline gap-sm">
+<h1 class="font-display-lg text-display-lg italic uppercase leading-none">Panel</h1>
+<span class="font-headline-md text-headline-md text-primary italic font-bold">PROFESOR</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-sm">Control general de la comunidad, estadísticas y segmentación.</p>
+</div>
+<!-- Contextual Tabs -->
+<div class="bg-surface-container p-xs rounded-xl flex gap-xs">
+<button class="flex items-center gap-xs px-md py-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">analytics</span> STATS
+            </button>
+<button class="flex items-center gap-xs px-md py-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">filter_list</span> SEGS
+            </button>
+<button class="flex items-center gap-xs px-md py-sm rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md glow-active">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span> ALUMS
+            </button>
+<button class="flex items-center gap-xs px-md py-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">school</span> CLASES
+            </button>
+</div>
+</header>
+<!-- Search & Compact Filters -->
+<section class="mt-lg mb-md flex flex-wrap items-center gap-md">
+<div class="relative flex-1 min-w-[300px]">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full h-[40px] bg-surface-container-low border border-outline-variant rounded-xl pl-10 pr-md focus:border-primary focus:ring-1 focus:ring-primary transition-all font-body-md text-body-md text-on-surface outline-none" placeholder="Escribe el nombre del alumno..." type="text"/>
+</div>
+<div class="flex items-center gap-sm">
+<button class="h-[40px] px-md border border-outline-variant rounded-xl text-on-surface-variant hover:border-primary hover:text-primary transition-colors font-label-md text-label-md flex items-center gap-sm">
+<span class="material-symbols-outlined">tune</span> FILTRAR
+            </button>
+<div class="h-6 w-[1px] bg-outline-variant mx-xs"></div>
+<span class="font-label-md text-label-md text-on-surface-variant">TOTAL: 428 ALUMNOS</span>
+</div>
+</section>
+<!-- Students List (Dense Optimized Layout) -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
+<!-- Table Header -->
+<div class="grid grid-cols-[48px_1fr_120px_120px_160px] md:grid-cols-[48px_2fr_1fr_1fr_200px] gap-md px-md py-sm bg-surface-container-high border-b border-outline-variant font-label-md text-label-sm text-outline uppercase tracking-wider">
+<div></div>
+<div>Nombre / Identidad</div>
+<div class="hidden md:block">Nivel</div>
+<div class="hidden md:block">Rol</div>
+<div class="text-right">Acciones</div>
+</div>
+<!-- List Container -->
+<div class="custom-scrollbar max-h-[calc(100vh-420px)] overflow-y-auto">
+<!-- Row 1 -->
+<div class="grid grid-cols-[48px_1fr_120px_120px_160px] md:grid-cols-[48px_2fr_1fr_1fr_200px] gap-md px-md py-sm items-center hover:bg-surface-variant/30 transition-colors border-b border-outline-variant/10 group">
+<div class="w-8 h-8 rounded-lg bg-surface-bright flex items-center justify-center font-bold text-primary italic border border-outline-variant/30">C</div>
+<div>
+<p class="font-headline-md text-body-lg font-extrabold italic text-on-surface group-hover:text-primary transition-colors">CULO1</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase md:hidden">Principiante • Alumno</p>
+</div>
+<div class="hidden md:block font-label-md text-label-md text-on-surface-variant">Principiante</div>
+<div class="hidden md:block font-label-md text-label-md text-secondary">ALUMNO</div>
+<div class="flex items-center justify-end gap-sm">
+<button class="hidden lg:block text-xs font-bold border border-outline-variant px-sm py-1 rounded text-outline hover:border-primary hover:text-primary transition-all uppercase">Activar Pro</button>
+<button class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-on-surface-variant">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center hover:bg-error/20 hover:text-error transition-all text-on-surface-variant">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="grid grid-cols-[48px_1fr_120px_120px_160px] md:grid-cols-[48px_2fr_1fr_1fr_200px] gap-md px-md py-sm items-center hover:bg-surface-variant/30 transition-colors border-b border-outline-variant/10 group">
+<div class="w-8 h-8 rounded-lg bg-surface-bright flex items-center justify-center font-bold text-primary italic border border-outline-variant/30">C</div>
+<div>
+<p class="font-headline-md text-body-lg font-extrabold italic text-on-surface group-hover:text-primary transition-colors">CULO</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase md:hidden">Principiante • Alumno</p>
+</div>
+<div class="hidden md:block font-label-md text-label-md text-on-surface-variant">Principiante</div>
+<div class="hidden md:block font-label-md text-label-md text-secondary">ALUMNO</div>
+<div class="flex items-center justify-end gap-sm">
+<button class="hidden lg:block text-xs font-bold border border-outline-variant px-sm py-1 rounded text-outline hover:border-primary hover:text-primary transition-all uppercase">Activar Pro</button>
+<button class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-on-surface-variant">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center hover:bg-error/20 hover:text-error transition-all text-on-surface-variant">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="grid grid-cols-[48px_1fr_120_120px_160px] md:grid-cols-[48px_2fr_1fr_1fr_200px] gap-md px-md py-sm items-center hover:bg-surface-variant/30 transition-colors border-b border-outline-variant/10 group">
+<div class="w-8 h-8 rounded-lg bg-surface-bright flex items-center justify-center font-bold text-primary italic border border-outline-variant/30">A</div>
+<div>
+<p class="font-headline-md text-body-lg font-extrabold italic text-on-surface group-hover:text-primary transition-colors">ANDRESITO</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase md:hidden">Principiante • Profesor</p>
+</div>
+<div class="hidden md:block font-label-md text-label-md text-on-surface-variant">Principiante</div>
+<div class="hidden md:block font-label-md text-label-md text-primary">PROFESOR</div>
+<div class="flex items-center justify-end gap-sm">
+<button class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-on-surface-variant">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center hover:bg-error/20 hover:text-error transition-all text-on-surface-variant">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<!-- Row Placeholder for loop visualization (Row 4-15) -->
+<script>
+                    const names = ["DANIELA", "MARCOS", "LUCIA", "ROBERTO", "ELENA", "SANTIAGO", "VALENTINA", "JAVIER", "PAULA", "MATIAS", "CARLA", "DIEGO"];
+                    const roles = ["ALUMNO", "PROFESOR"];
+                    const levels = ["Intermedio", "Avanzado", "Principiante"];
+                    
+                    const container = document.querySelector('.custom-scrollbar');
+                    for (let i = 0; i < 12; i++) {
+                        const name = names[i % names.length];
+                        const role = roles[i % roles.length];
+                        const level = levels[i % levels.length];
+                        const letter = name.charAt(0);
+                        
+                        const row = document.createElement('div');
+                        row.className = "grid grid-cols-[48px_1fr_120px_120px_160px] md:grid-cols-[48px_2fr_1fr_1fr_200px] gap-md px-md py-sm items-center hover:bg-surface-variant/30 transition-colors border-b border-outline-variant/10 group";
+                        row.innerHTML = `
+                            <div class="w-8 h-8 rounded-lg bg-surface-bright flex items-center justify-center font-bold text-primary italic border border-outline-variant/30">${letter}</div>
+                            <div>
+                                <p class="font-headline-md text-body-lg font-extrabold italic text-on-surface group-hover:text-primary transition-colors">${name}</p>
+                                <p class="font-label-sm text-label-sm text-on-surface-variant uppercase md:hidden">${level} • ${role}</p>
+                            </div>
+                            <div class="hidden md:block font-label-md text-label-md text-on-surface-variant">${level}</div>
+                            <div class="hidden md:block font-label-md text-label-md ${role === 'PROFESOR' ? 'text-primary' : 'text-secondary'}">${role}</div>
+                            <div class="flex items-center justify-end gap-sm">
+                                <button class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-on-surface-variant">
+                                    <span class="material-symbols-outlined">visibility</span>
+                                </button>
+                                <button class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center hover:bg-error/20 hover:text-error transition-all text-on-surface-variant">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </div>
+                        `;
+                        container.appendChild(row);
+                    }
+                </script>
+</div>
+</section>
+<!-- Pagination / Footer Info -->
+<footer class="mt-md flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="flex items-center gap-sm">
+<button class="bg-surface-container p-xs rounded-lg hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<div class="flex gap-xs">
+<button class="w-8 h-8 bg-primary text-on-primary rounded font-label-md text-label-md">1</button>
+<button class="w-8 h-8 bg-surface-container text-on-surface-variant rounded font-label-md text-label-md hover:bg-surface-variant transition-colors">2</button>
+<button class="w-8 h-8 bg-surface-container text-on-surface-variant rounded font-label-md text-label-md hover:bg-surface-variant transition-colors">3</button>
+<span class="text-on-surface-variant">...</span>
+<button class="w-8 h-8 bg-surface-container text-on-surface-variant rounded font-label-md text-label-md hover:bg-surface-variant transition-colors">24</button>
+</div>
+<button class="bg-surface-container p-xs rounded-lg hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<p class="font-label-sm text-label-sm text-outline italic">© 2024 Dancing Flow Academy. Precision in every step.</p>
+</footer>
+</main>
+<!-- FAB for adding student -->
+<button class="fixed bottom-lg right-lg w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform z-40">
+<span class="material-symbols-outlined" style="font-size: 32px;">person_add</span>
+</button>
+<script>
+    // Micro-interactions
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.classList.add('scale-95');
+            setTimeout(() => this.classList.remove('scale-95'), 100);
+        });
+    });
+</script>
+</body></html>
