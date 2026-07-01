@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
 import useStore from './store/useStore';
-import HomeView from './components/HomeView';
-import LoginView from './components/LoginView';
-import StudentProfileView from './components/StudentProfileView';
-import StudentTrainingView from './components/StudentTrainingView';
-import AdminControlView from './components/AdminControlView';
-import AboutUsView from './components/AboutUsView';
+
+import HomeView from "./views/HomeView";
+import AboutUsView from "./views/AboutUsView";
+import LoginView from "./views/LoginView";
+import StudentProfileView from "./views/StudentProfileView";
+import StudentTrainingView from "./views/StudentTrainingView";
+import AdminControlView from "./views/AdminControlView";
+
+import Navbar from "./components/Navbar";
 
 function App() {
   const { user, fetchInitialData, loading } = useStore();

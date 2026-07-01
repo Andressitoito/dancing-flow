@@ -1,0 +1,194 @@
+/* ==========================================================================
+   Dancing Flow Design System
+   Components
+   ========================================================================== */
+
+/* ==========================================================================
+   Cards
+   ========================================================================== */
+
+.df-card{
+
+    background:var(--df-surface-1);
+
+    border:1px solid var(--df-border);
+
+    border-radius:18px;
+
+    transition:.25s;
+
+}
+
+.df-card:hover{
+
+    border-color:var(--df-border-strong);
+
+    transform:translateY(-2px);
+
+}
+
+.df-stat-card{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:16px;
+
+    min-height:170px;
+
+}
+
+.df-panel{
+
+    background:var(--df-surface-1);
+
+    border:1px solid var(--df-border);
+
+    border-radius:18px;
+
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.df-button{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    height:44px;
+
+    padding-inline:20px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.df-button-primary{
+
+    background:var(--df-primary);
+
+    color:black;
+
+}
+
+.df-button-secondary{
+
+    background:transparent;
+
+    color:var(--df-primary);
+
+    border:1px solid var(--df-border);
+
+}
+
+/* ==========================================================================
+   Tabs
+   ========================================================================== */
+
+.df-tabs{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:6px;
+
+    background:var(--df-surface-1);
+
+    border:1px solid var(--df-border);
+
+    border-radius:14px;
+
+}
+
+.df-tab-button{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    height:42px;
+
+    padding-inline:18px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+}
+
+.df-tab-active{
+
+    background:var(--df-primary);
+
+    color:black;
+
+}
+
+/* ==========================================================================
+   Inputs
+   ========================================================================== */
+
+.df-input{
+
+    height:46px;
+
+    padding-inline:16px;
+
+    background:var(--df-surface-2);
+
+    border:1px solid var(--df-border);
+
+    border-radius:10px;
+
+}
+
+.df-textarea{
+
+    min-height:120px;
+
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+.df-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.df-table tr{
+
+    border-bottom:1px solid var(--df-border-subtle);
+
+}
+
+.df-table tbody tr:hover{
+
+    background:rgba(255,255,255,.02);
+
+}

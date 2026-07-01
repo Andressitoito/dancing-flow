@@ -1,0 +1,225 @@
+/* ==========================================================================
+   Dancing Flow Design System
+   Typography
+   ========================================================================== */
+
+:root{
+
+  --df-font-heading: "Sora", sans-serif;
+  --df-font-body: "Inter", sans-serif;
+
+}
+
+/* ==========================================================================
+   Displays
+   ========================================================================== */
+
+.df-display-xl{
+
+    font-family:var(--df-font-heading);
+
+    font-size:72px;
+
+    line-height:1;
+
+    font-weight:800;
+
+    font-style:italic;
+
+    letter-spacing:-.04em;
+
+}
+
+.df-display-lg{
+
+    font-family:var(--df-font-heading);
+
+    font-size:56px;
+
+    line-height:1.05;
+
+    font-weight:800;
+
+    font-style:italic;
+
+}
+
+.df-display{
+
+    font-family:var(--df-font-heading);
+
+    font-size:44px;
+
+    line-height:1.1;
+
+    font-weight:800;
+
+    font-style:italic;
+
+}
+
+/* ==========================================================================
+   Headings
+   ========================================================================== */
+
+.df-heading-xl{
+
+    font-size:34px;
+
+    font-weight:700;
+
+    line-height:1.2;
+
+}
+
+.df-heading-lg{
+
+    font-size:28px;
+
+    font-weight:700;
+
+}
+
+.df-heading{
+
+    font-size:22px;
+
+    font-weight:700;
+
+}
+
+.df-title{
+
+    font-size:18px;
+
+    font-weight:600;
+
+}
+
+.df-subtitle{
+
+    font-size:16px;
+
+    font-weight:600;
+
+}
+
+/* ==========================================================================
+   Body
+   ========================================================================== */
+
+.df-body-lg{
+
+    font-size:16px;
+
+    line-height:1.7;
+
+}
+
+.df-body{
+
+    font-size:15px;
+
+    line-height:1.6;
+
+}
+
+.df-body-sm{
+
+    font-size:14px;
+
+    line-height:1.5;
+
+}
+
+.df-caption{
+
+    font-size:12px;
+
+    line-height:1.4;
+
+    color:var(--df-text-muted);
+
+}
+
+/* ==========================================================================
+   Interface
+   ========================================================================== */
+
+.df-button-text{
+
+    font-family:var(--df-font-heading);
+
+    font-size:14px;
+
+    font-weight:700;
+
+    letter-spacing:.08em;
+
+    text-transform:uppercase;
+
+}
+
+.df-nav{
+
+    font-family:var(--df-font-heading);
+
+    font-size:14px;
+
+    font-weight:600;
+
+    letter-spacing:.08em;
+
+    text-transform:uppercase;
+
+}
+
+.df-tab{
+
+    font-family:var(--df-font-heading);
+
+    font-size:14px;
+
+    font-weight:600;
+
+    letter-spacing:.08em;
+
+    text-transform:uppercase;
+
+}
+
+.df-label{
+
+    font-family:var(--df-font-heading);
+
+    font-size:12px;
+
+    font-weight:700;
+
+    letter-spacing:.24em;
+
+    text-transform:uppercase;
+
+}
+
+.df-stat-number{
+
+    font-size:44px;
+
+    font-weight:800;
+
+    line-height:1;
+
+}
+
+.df-stat-label{
+
+    font-size:12px;
+
+    letter-spacing:.22em;
+
+    text-transform:uppercase;
+
+    color:var(--df-text-muted);
+
+}
