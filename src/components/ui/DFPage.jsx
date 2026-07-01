@@ -1,23 +1,16 @@
-import DFSection from "./DFSection";
+import React from 'react';
+import clsx from 'clsx';
 
-const DFPage = ({
-  children,
-}) => {
-
+const DFPage = ({ children, className = "", fullBleed = false }) => {
   return (
-
-    <DFSection spacing="md">
-
-      <div className="space-y-8">
-
-        {children}
-
-      </div>
-
-    </DFSection>
-
+    <div className={clsx(
+      "min-h-[calc(100vh-80px)] w-full flex flex-col",
+      !fullBleed && "py-6 md:py-10",
+      className
+    )}>
+      {children}
+    </div>
   );
-
 };
 
 export default DFPage;

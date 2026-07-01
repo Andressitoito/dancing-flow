@@ -1,29 +1,23 @@
-import clsx from "clsx";
-
-const sizes = {
-  xs: "max-w-3xl",
-  sm: "max-w-5xl",
-  md: "max-w-7xl",
-  lg: "max-w-[1600px]",
-  full: "w-full",
-};
+import React from 'react';
+import clsx from 'clsx';
 
 const DFContainer = ({
   children,
   className = "",
-  size = "md",
-  as: Component = "div",
+  size = "xl" // xl = 1440px
 }) => {
+  const sizes = {
+    sm: "max-w-3xl",
+    md: "max-w-5xl",
+    lg: "max-w-7xl",
+    xl: "max-w-[1440px]",
+    full: "max-w-none"
+  };
+
   return (
-    <Component
-      className={clsx(
-        "mx-auto w-full px-4 md:px-6 xl:px-8",
-        sizes[size],
-        className
-      )}
-    >
+    <div className={clsx("w-full mx-auto px-4 sm:px-6 lg:px-8", sizes[size], className)}>
       {children}
-    </Component>
+    </div>
   );
 };
 
