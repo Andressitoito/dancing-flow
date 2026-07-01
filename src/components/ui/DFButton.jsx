@@ -1,10 +1,10 @@
 import clsx from "clsx";
 
 const variants = {
-  primary: "btn-primary",
-  secondary: "btn-secondary",
-  ghost: "btn-ghost",
-  danger: "btn-danger",
+  primary: "df-button-primary",
+  secondary: "df-button-secondary",
+  ghost: "df-button-ghost",
+  danger: "df-button-danger",
 };
 
 const sizes = {
@@ -33,7 +33,7 @@ const DFButton = ({
     <Component
       disabled={disabled || loading}
       className={clsx(
-        "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-200 select-none whitespace-nowrap",
+        "df-button df-button-text",
         variants[variant],
         sizes[size],
         fullWidth && "w-full",

@@ -4,6 +4,15 @@ import { Target, Zap, Video, Award, Check, Activity, Star } from 'lucide-react';
 import { QUESTIONNAIRE_OPTIONS } from '../services/constants';
 import { api } from '../services/api';
 import Swal from 'sweetalert2';
+import {
+  DFCard,
+  DFButton,
+  DFInput,
+  DFTextarea,
+  DFPageHeader,
+  DFPageActions,
+  DFContainer
+} from '../components/ui';
 
 const StudentProfileView = () => {
   const { user, questionnaire, updateQuestionnaire } = useStore();
@@ -68,12 +77,9 @@ const StudentProfileView = () => {
     Swal.fire({
       icon: 'success',
       title: 'Perfil Actualizado',
-      text: 'Tus objetivos se han guardado correctamente.',
-      timer: 1500,
-      showConfirmButton: false,
-      background: '#051424',
+      background: '#0A1828',
       color: '#D4AF37',
-      customClass: { popup: 'glass-card border-primary/40' }
+      customClass: { popup: 'df-card !border-df-primary/40' }
     });
   };
 
@@ -85,14 +91,14 @@ const StudentProfileView = () => {
           <button
             key={opt.id}
             onClick={() => toggleOption(field, opt.id)}
-            className={`flex items-center justify-between px-6 py-4 rounded glass-card text-left transition-all duration-300 border-none ${
+            className={`flex items-center justify-between px-5 py-3 rounded-xl transition-all duration-300 border-2 text-left cursor-pointer ${
               selected.includes(opt.id)
-              ? 'bg-primary/20 text-primary shadow-[0_0_15px_rgba(212,175,55,0.2)] scale-[1.02]'
-              : 'bg-white/5 text-zinc-500 hover:bg-white/10'
+              ? 'border-df-primary/40 bg-df-primary/10 text-df-primary shadow-lg'
+              : 'border-df-border bg-df-surface-3 text-df-text-muted hover:border-df-primary/20 hover:text-df-text-soft'
             }`}
           >
-            <span className="label-luxury !text-[10px] !tracking-[0.1em] !color-inherit">{opt.label}</span>
-            {selected.includes(opt.id) && <Check size={16} strokeWidth={3} />}
+            <span className="df-label !text-[10px]">{opt.label}</span>
+            {selected.includes(opt.id) && <Check size={14} strokeWidth={4} />}
           </button>
         ))}
       </div>
@@ -102,179 +108,160 @@ const StudentProfileView = () => {
   const completion = questionnaire?.completionPercentage || 0;
 
   return (
-    <div className="space-y-12 pb-24">
+    <div className="space-y-10 pb-12">
       {/* Header */}
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-primary/10 pb-12">
-        <div className="space-y-4">
-          <span className="label-luxury">Gestión Personal</span>
-          <div className="flex items-center gap-6">
-            <h1 className="font-sora text-4xl md:text-6xl font-extrabold text-white italic uppercase tracking-tighter leading-none">Mi <span className="text-primary">Perfil</span></h1>
-            {user?.isPro && (
-                <span className="bg-primary/10 text-primary text-[10px] font-bold px-4 py-1.5 rounded-full border border-primary/30 uppercase tracking-widest neon-gold">PRO</span>
-            )}
+      <DFPageHeader
+        title="Mi Perfil Flow"
+        subtitle="Tu identidad artística y objetivos personales en la academia."
+      >
+        <DFPageActions>
+          <div className="hidden sm:flex flex-col items-end mr-4">
+              <div className="flex justify-between w-40 mb-1.5">
+                 <span className="df-label !text-[8px] text-df-text-muted">Progreso</span>
+                 <span className="df-label !text-[8px] text-df-primary font-bold">{completion}%</span>
+              </div>
+              <div className="h-1 w-40 bg-df-surface-3 rounded-full overflow-hidden border border-df-border-subtle">
+                 <div className="h-full bg-df-primary transition-all duration-1000 ease-out" style={{ width: `${completion}%` }} />
+              </div>
           </div>
-          <p className="font-sora text-zinc-500 text-lg font-light">Personaliza tu experiencia y objetivos de maestría.</p>
-        </div>
+          <DFButton onClick={handleSubmit} variant="primary" size="md" className="min-w-[120px]">
+             Guardar Cambios
+          </DFButton>
+        </DFPageActions>
+      </DFPageHeader>
 
-        <div className="flex items-center gap-8 glass-card p-6 rounded-2xl">
-           <div className="hidden sm:block w-48 space-y-3">
-              <div className="flex justify-between label-luxury !text-[9px] !text-zinc-500">
-                 <span>Progreso de Perfil</span>
-                 <span className={completion === 100 ? 'text-primary' : ''}>{completion}%</span>
-              </div>
-              <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                 <div className="h-full bg-primary transition-all duration-1000 ease-out" style={{ width: `${completion}%` }} />
-              </div>
-           </div>
-           <button onClick={handleSubmit} className="btn-primary h-14">
-             Guardar
-           </button>
-        </div>
-      </header>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <div className="lg:col-span-2 space-y-12">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
           {/* Section 1 */}
-          <section className="glass-card p-8 md:p-12 space-y-10">
-             <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded text-primary">
-                    <Target size={24} />
+          <DFCard className="bg-df-surface-2 border-df-border-subtle p-8 md:p-10">
+             <div className="flex items-center gap-4 mb-10">
+                <div className="p-3 bg-df-primary/5 rounded-xl text-df-primary border border-df-primary/10">
+                    <Target size={22} />
                 </div>
-                <h3 className="font-sora text-2xl font-bold uppercase italic text-white">Objetivos de Baile</h3>
+                <h3 className="df-title uppercase italic">Objetivos de Maestría</h3>
              </div>
-             <div className="space-y-12">
-                <div className="space-y-6">
-                   <label className="label-luxury !text-zinc-500">¿Por qué empezaste?</label>
+             <div className="space-y-10">
+                <div className="space-y-5">
+                   <label className="df-label text-df-text-muted">¿Por qué decidiste empezar?</label>
                    {renderMultiSelect('whyStarted', QUESTIONNAIRE_OPTIONS.whyStarted)}
                 </div>
-                <div className="space-y-6">
-                   <label className="label-luxury !text-zinc-500">Objetivos actuales</label>
+                <div className="space-y-5">
+                   <label className="df-label text-df-text-muted">Tus metas actuales</label>
                    {renderMultiSelect('objectives', QUESTIONNAIRE_OPTIONS.objectives)}
                 </div>
              </div>
-          </section>
+          </DFCard>
 
           {/* Section 2 */}
-          <section className="glass-card p-8 md:p-12 space-y-10">
-             <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded text-primary">
-                    <Zap size={24} />
+          <DFCard className="bg-df-surface-2 border-df-border-subtle p-8 md:p-10">
+             <div className="flex items-center gap-4 mb-10">
+                <div className="p-3 bg-df-primary/5 rounded-xl text-df-primary border border-df-primary/10">
+                    <Zap size={22} />
                 </div>
-                <h3 className="font-sora text-2xl font-bold uppercase italic text-white">Desafíos y Miedos</h3>
+                <h3 className="df-title uppercase italic">Desafíos Artísticos</h3>
              </div>
-             <div className="space-y-12">
-                <div className="space-y-6">
-                   <label className="label-luxury !text-zinc-500">¿Qué es lo que más te cuesta?</label>
+             <div className="space-y-10">
+                <div className="space-y-5">
+                   <label className="df-label text-df-text-muted">¿Qué aspecto te resulta más complejo?</label>
                    {renderMultiSelect('hardestPart', QUESTIONNAIRE_OPTIONS.hardestPart)}
                 </div>
-                <div className="space-y-6">
-                   <label className="label-luxury !text-zinc-500">Miedos o barreras</label>
+                <div className="space-y-5">
+                   <label className="df-label text-df-text-muted">Posibles barreras o miedos</label>
                    {renderMultiSelect('fears', QUESTIONNAIRE_OPTIONS.fears)}
                 </div>
              </div>
-          </section>
+          </DFCard>
 
           {/* Section 3 */}
-          <section className="glass-card p-8 md:p-12 space-y-10">
-             <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded text-primary">
-                    <Activity size={24} />
+          <DFCard className="bg-df-surface-2 border-df-border-subtle p-8 md:p-10">
+             <div className="flex items-center gap-4 mb-10">
+                <div className="p-3 bg-df-primary/5 rounded-xl text-df-primary border border-df-primary/10">
+                    <Activity size={22} />
                 </div>
-                <h3 className="font-sora text-2xl font-bold uppercase italic text-white">Detalles Técnicos</h3>
+                <h3 className="df-title uppercase italic">Perfil Técnico</h3>
              </div>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div className="space-y-4">
-                   <label className="label-luxury !text-zinc-500">Nivel de Experiencia</label>
-                   <input
-                      type="text"
-                      value={formData.experienceLevel}
-                      onChange={e => setFormData({...formData, experienceLevel: e.target.value})}
-                      placeholder="Ej. 6 meses, 2 años..."
-                   />
-                </div>
-                <div className="space-y-4">
-                   <label className="label-luxury !text-zinc-500">Estilos Preferidos</label>
-                   <input
-                      type="text"
-                      value={formData.preferredStyles}
-                      onChange={e => setFormData({...formData, preferredStyles: e.target.value})}
-                      placeholder="Bachata, Salsa..."
-                   />
-                </div>
-                <div className="md:col-span-2 space-y-4">
-                   <label className="label-luxury !text-zinc-500">Dedicación Semanal</label>
-                   <input
-                      type="text"
-                      value={formData.weeklyDedication}
-                      onChange={e => setFormData({...formData, weeklyDedication: e.target.value})}
-                      placeholder="¿Cuántas horas o días a la semana?"
-                   />
-                </div>
-                <div className="md:col-span-2 space-y-4">
-                   <label className="label-luxury !text-red-500/60">Lesiones o Limitaciones</label>
-                   <textarea
-                      value={formData.physicalLimitations}
-                      onChange={e => setFormData({...formData, physicalLimitations: e.target.value})}
-                      placeholder="Detalla cualquier limitación para adaptar tu entrenamiento..."
-                      className="min-h-[120px]"
-                   />
-                </div>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <DFInput
+                   label="Nivel de Experiencia"
+                   value={formData.experienceLevel}
+                   onChange={e => setFormData({...formData, experienceLevel: e.target.value})}
+                   placeholder="Ej. 6 meses, 2 años..."
+                />
+                <DFInput
+                   label="Estilos Preferidos"
+                   value={formData.preferredStyles}
+                   onChange={e => setFormData({...formData, preferredStyles: e.target.value})}
+                   placeholder="Bachata, Salsa..."
+                />
+                <DFInput
+                   label="Dedicación Semanal"
+                   containerClassName="md:col-span-2"
+                   value={formData.weeklyDedication}
+                   onChange={e => setFormData({...formData, weeklyDedication: e.target.value})}
+                   placeholder="¿Cuántas horas o días a la semana?"
+                />
+                <DFTextarea
+                   label="Observaciones Físicas o Limitaciones"
+                   containerClassName="md:col-span-2"
+                   value={formData.physicalLimitations}
+                   onChange={e => setFormData({...formData, physicalLimitations: e.target.value})}
+                   placeholder="Detalla cualquier limitación para adaptar tu entrenamiento..."
+                   rows={3}
+                />
              </div>
-          </section>
+          </DFCard>
         </div>
 
-        <div className="space-y-12">
+        <div className="space-y-8">
           {/* Recording Pref */}
-          <section className="glass-card p-8 space-y-10">
-             <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded text-primary">
-                    <Video size={24} />
+          <DFCard className="bg-df-surface-2 border-df-border-subtle p-6 md:p-8">
+             <div className="flex items-center gap-4 mb-8">
+                <div className="p-3 bg-df-primary/5 rounded-xl text-df-primary border border-df-primary/10">
+                    <Video size={20} />
                 </div>
-                <h3 className="font-sora text-xl font-bold uppercase italic text-white">Grabación</h3>
+                <h3 className="df-title uppercase italic">Grabación</h3>
              </div>
-             <div className="space-y-3">
+             <div className="space-y-2.5">
                 {QUESTIONNAIRE_OPTIONS.recordingPreference.map((opt) => (
                   <button
                     key={opt.id}
                     onClick={() => setSingleOption('recordingPreference', opt.id)}
-                    className={`w-full text-left px-6 py-4 rounded transition-all duration-300 border-none ${
+                    className={`w-full text-left px-5 py-3.5 rounded-xl transition-all duration-300 border-2 cursor-pointer ${
                       formData.recordingPreference === opt.id
-                      ? 'bg-primary/20 text-primary shadow-lg scale-[1.02]'
-                      : 'bg-white/5 text-zinc-500 hover:bg-white/10'
+                      ? 'border-df-primary/40 bg-df-primary/10 text-df-primary shadow-md'
+                      : 'border-df-border bg-df-surface-3 text-df-text-muted hover:border-df-primary/20 hover:text-df-text-soft'
                     }`}
                   >
-                    <span className="label-luxury !text-[9px] !tracking-[0.1em] !color-inherit">{opt.label}</span>
+                    <span className="df-label !text-[9px] font-bold">{opt.label}</span>
                   </button>
                 ))}
              </div>
-          </section>
+          </DFCard>
 
           {/* Testimonial */}
-          <section className="glass-card p-8 space-y-10">
-             <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded text-primary">
-                    <Award size={24} />
+          <DFCard className="bg-df-surface-2 border-df-border-subtle p-6 md:p-8">
+             <div className="flex items-center gap-4 mb-8">
+                <div className="p-3 bg-df-primary/5 rounded-xl text-df-primary border border-df-primary/10">
+                    <Award size={20} />
                 </div>
-                <h3 className="font-sora text-xl font-bold uppercase italic text-white">Testimonio</h3>
+                <h3 className="df-title uppercase italic">Tu Historia</h3>
              </div>
              <div className="space-y-8">
-                <div className="space-y-4">
-                    <label className="label-luxury !text-zinc-500">Tu Mensaje Público</label>
-                    <textarea
-                       value={formData.testimonial}
-                       onChange={(e) => setFormData({...formData, testimonial: e.target.value})}
-                       placeholder="Comparte tu evolución con la comunidad..."
-                       className="min-h-[160px]"
-                    />
-                </div>
-                <div className="space-y-6">
-                   <span className="label-luxury !text-zinc-500 text-center block">Calificación</span>
-                   <div className="flex gap-4 justify-center bg-black/40 py-6 rounded border border-primary/10">
+                <DFTextarea
+                   label="Tu Testimonio Público"
+                   value={formData.testimonial}
+                   onChange={(e) => setFormData({...formData, testimonial: e.target.value})}
+                   placeholder="Comparte tu evolución con la comunidad..."
+                   rows={5}
+                />
+                <div className="space-y-5">
+                   <span className="df-label text-df-text-muted text-center block">Calificación de Experiencia</span>
+                   <div className="flex gap-4 justify-center bg-df-bg/40 py-5 rounded-2xl border border-df-border-subtle shadow-inner">
                        {[1, 2, 3, 4, 5].map(star => (
                            <button
                                key={star}
                                onClick={() => setFormData({...formData, testimonialStars: star})}
-                               className={`transition-all duration-300 hover:scale-125 ${formData.testimonialStars >= star ? 'text-primary' : 'text-zinc-900'}`}
+                               className={`transition-all duration-300 hover:scale-125 cursor-pointer ${formData.testimonialStars >= star ? 'text-df-primary' : 'text-df-surface-3'}`}
                            >
                                <Star size={24} fill={formData.testimonialStars >= star ? 'currentColor' : 'none'} />
                            </button>
@@ -282,7 +269,7 @@ const StudentProfileView = () => {
                    </div>
                 </div>
              </div>
-          </section>
+          </DFCard>
         </div>
       </div>
     </div>

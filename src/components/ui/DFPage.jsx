@@ -4,8 +4,8 @@ import clsx from 'clsx';
 const DFPage = ({ children, className = "", fullBleed = false }) => {
   return (
     <div className={clsx(
-      "min-h-[calc(100vh-80px)] w-full flex flex-col",
-      !fullBleed && "py-6 md:py-10",
+      "min-h-screen pt-20 pb-12 transition-colors duration-300",
+      !fullBleed && "px-4 md:px-8",
       className
     )}>
       {children}

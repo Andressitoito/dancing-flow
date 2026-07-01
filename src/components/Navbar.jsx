@@ -1,6 +1,7 @@
 import React from 'react';
 import { Home, User, GraduationCap, LayoutGrid, LogIn, Users, LogOut } from 'lucide-react';
 import useStore from '../store/useStore';
+import { DFContainer } from './ui';
 
 const Navbar = ({ activeTab, onTabChange }) => {
   const { user, logout } = useStore();
@@ -27,20 +28,20 @@ const Navbar = ({ activeTab, onTabChange }) => {
   }
 
   return (
-    <nav className="fixed top-0 left-0 right-0 w-full h-[64px] md:h-[80px] smoked-gold-glass z-50 flex items-center px-4 md:px-12">
-      <div className="flex justify-between items-center w-full max-w-[1400px] mx-auto">
+    <nav className="fixed top-0 left-0 right-0 w-full h-[64px] bg-df-bg/80 backdrop-blur-2xl border-b border-df-border-subtle z-50 flex items-center">
+      <DFContainer className="flex justify-between items-center w-full">
         {/* Logo Section */}
         <div
           className="flex items-center cursor-pointer group"
           onClick={() => onTabChange('home')}
         >
-          <span className="font-sora text-xl md:text-2xl font-extrabold italic text-primary tracking-tighter neon-gold transition-transform group-hover:scale-105">
+          <span className="df-display text-lg md:text-xl text-df-primary tracking-tighter transition-transform group-hover:scale-105">
             DANCING FLOW
           </span>
         </div>
 
         {/* Tabs Section */}
-        <div className="flex items-center gap-2 md:gap-6">
+        <div className="flex items-center gap-2 md:gap-4">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -48,18 +49,18 @@ const Navbar = ({ activeTab, onTabChange }) => {
               <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                className={`relative flex items-center gap-2 px-3 md:px-4 py-2 rounded-md transition-all duration-300 group ${
-                  isActive ? 'text-primary' : 'text-df-text-dim hover:text-primary'
+                className={`relative flex items-center gap-2 px-3 md:px-4 py-2 rounded-xl transition-all duration-300 group cursor-pointer ${
+                  isActive ? 'text-df-primary bg-df-primary/5' : 'text-df-text-muted hover:text-df-primary'
                 }`}
               >
-                <Icon size={18} className="md:w-5 md:h-5" />
-                <span className="hidden md:block label-luxury !text-[10px] !tracking-[0.2em]">
+                <Icon size={18} />
+                <span className="hidden md:block df-nav !text-[10px]">
                   {tab.label}
                 </span>
 
                 {/* Active Indicator */}
                 {isActive && (
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full shadow-[0_0_8px_rgba(212,175,55,0.8)]" />
+                  <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-df-primary rounded-full shadow-[0_0_10px_rgba(212,175,55,0.8)]" />
                 )}
               </button>
             );
@@ -68,16 +69,16 @@ const Navbar = ({ activeTab, onTabChange }) => {
           {user && (
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-3 md:px-4 py-2 text-df-text-dim hover:text-red-500 transition-colors"
+              className="flex items-center gap-2 px-3 md:px-4 py-2 text-df-text-muted hover:text-df-danger transition-colors cursor-pointer"
             >
-              <LogOut size={18} className="md:w-5 md:h-5" />
-              <span className="hidden md:block label-luxury !text-[10px] !tracking-[0.2em] !color-inherit">
+              <LogOut size={18} />
+              <span className="hidden md:block df-nav !text-[10px]">
                 Salir
               </span>
             </button>
           )}
         </div>
-      </div>
+      </DFContainer>
     </nav>
   );
 };

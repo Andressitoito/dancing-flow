@@ -14,9 +14,9 @@ const SegmentationSection = ({
                 );
 
                 return (
-                    <DFCard key={pref.id} padding="none" className="flex flex-col">
-                        <div className="p-4 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
-                            <h3 className="df-label !text-[10px] !tracking-widest text-primary font-bold">
+                    <DFCard key={pref.id} noPadding className="flex flex-col h-full">
+                        <div className="p-4 border-b border-df-border-subtle flex items-center justify-between bg-df-primary/5">
+                            <h3 className="df-label text-df-primary">
                                 {pref.label}
                             </h3>
                             <DFBadge variant="primary" size="sm">
@@ -24,10 +24,10 @@ const SegmentationSection = ({
                             </DFBadge>
                         </div>
 
-                        <div className="flex-1 p-2 max-h-[300px] overflow-y-auto custom-scrollbar">
+                        <div className="flex-1 p-3 max-h-[340px] overflow-y-auto custom-scrollbar">
                             {list.length === 0 ? (
-                                <div className="py-8 text-center">
-                                    <p className="df-label !text-[9px] opacity-30">Sin alumnos</p>
+                                <div className="py-10 text-center">
+                                    <p className="df-caption italic opacity-50">Sin alumnos segmentados</p>
                                 </div>
                             ) : (
                                 <div className="space-y-1">
@@ -35,10 +35,10 @@ const SegmentationSection = ({
                                         <button
                                             key={user.id}
                                             onClick={() => onView(user)}
-                                            className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors group text-left cursor-pointer"
+                                            className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-df-primary/10 transition-all group text-left cursor-pointer"
                                         >
                                             <DFAvatar name={user.username} size="xs" />
-                                            <span className="text-sm text-zinc-400 group-hover:text-white transition-colors">
+                                            <span className="df-body-sm text-df-text-soft group-hover:text-df-primary transition-colors">
                                                 {user.username}
                                             </span>
                                         </button>

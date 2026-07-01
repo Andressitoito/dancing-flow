@@ -1,8 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
 import useStore from '../store/useStore';
-import { Play, Mic, Send, ChevronRight, X, User, MessageSquare, Video, History, GraduationCap, Clock } from 'lucide-react';
+import {
+  Play,
+  Mic,
+  Send,
+  ChevronRight,
+  X,
+  User,
+  MessageSquare,
+  Video,
+  History,
+  GraduationCap,
+  Clock,
+  LayoutGrid,
+  Filter
+} from 'lucide-react';
 import { getMediaUrl } from '../services/constants';
 import Swal from 'sweetalert2';
+import {
+  DFCard,
+  DFButton,
+  DFIconButton,
+  DFBadge,
+  DFPageHeader,
+  DFPageActions,
+  DFEmptyState,
+  DFContainer
+} from '../components/ui';
 
 const StudentTrainingView = ({ isAdminPreview = false }) => {
   const { assignments, fetchAssignments, postReply, user } = useStore();
@@ -39,9 +63,9 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
       Swal.fire({
         icon: 'error',
         title: 'Error al enviar',
-        background: '#051424',
+        background: '#0A1828',
         color: '#D4AF37',
-        customClass: { popup: 'glass-card border-primary/40' }
+        customClass: { popup: 'df-card !border-df-primary/40' }
       });
     }
   };
@@ -77,72 +101,72 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
 
   if (!selectedAssignment) {
     return (
-      <div className="space-y-12 pb-24">
+      <div className="space-y-10 pb-12">
         {!isAdminPreview && (
-          <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-primary/10 pb-12">
-            <div className="space-y-4">
-              <span className="label-luxury">Plan de Estudio</span>
-              <h1 className="font-sora text-4xl md:text-6xl font-extrabold text-white italic uppercase tracking-tighter leading-none">Mis <span className="text-primary">Clases</span></h1>
-              <p className="font-sora text-zinc-500 text-lg font-light">Seguimiento personalizado para tu evolución artística.</p>
-            </div>
-
-            <div className="flex items-center gap-8 glass-card px-8 py-6 rounded-2xl">
+          <DFPageHeader
+            title="Training Flow"
+            subtitle="Tu evolución artística bajo la guía experta de nuestros mentores."
+          >
+            <div className="flex items-center gap-6 bg-df-surface-2 border border-df-border-subtle px-6 py-4 rounded-2xl shadow-inner">
                <div className="flex flex-col items-center">
-                  <span className="font-sora text-2xl font-bold text-white">{safeAssignments.length}</span>
-                  <span className="label-luxury !text-[8px] !text-zinc-500">Módulos</span>
+                  <span className="df-title !text-df-text leading-none mb-1">{safeAssignments.length}</span>
+                  <span className="df-label !text-[8px] text-df-text-muted">Módulos</span>
                </div>
-               <div className="w-[1px] h-10 bg-primary/20" />
+               <div className="w-[1px] h-8 bg-df-border-subtle" />
                <div className="flex flex-col items-center">
-                  <span className="font-sora text-2xl font-bold text-primary">
+                  <span className="df-title !text-df-primary leading-none mb-1">
                     {safeAssignments.filter(a => a.Replies?.length > 0).length}
                   </span>
-                  <span className="label-luxury !text-[8px] !text-zinc-500">Activos</span>
+                  <span className="df-label !text-[8px] text-df-text-muted">Activos</span>
                </div>
             </div>
-          </header>
+          </DFPageHeader>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {safeAssignments.map((asgn) => (
             <button
               key={asgn.id}
               onClick={() => setSelectedAssignment(asgn)}
-              className="group glass-card border-none overflow-hidden hover:border-primary/20 transition-all duration-500 flex flex-col text-left"
+              className="group df-card no-padding overflow-hidden hover:border-df-primary/40 transition-all duration-300 flex flex-col text-left bg-df-surface-1 shadow-lg"
             >
-              <div className="aspect-video bg-black relative overflow-hidden flex items-center justify-center border-b border-primary/10">
+              <div className="aspect-video bg-black relative overflow-hidden flex items-center justify-center border-b border-df-border-subtle">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
                 {asgn.StudyBlock?.type === 'video' ? (
-                   <div className="p-4 bg-primary/10 rounded-full text-primary group-hover:scale-110 group-hover:bg-primary group-hover:text-black transition-all duration-500 z-20">
+                   <div className="p-4 bg-df-primary/10 rounded-full text-df-primary group-hover:scale-110 group-hover:bg-df-primary group-hover:text-black transition-all duration-500 z-20 shadow-xl">
                      <Play size={24} fill="currentColor" />
                    </div>
                 ) : (
-                  <MessageSquare size={32} className="text-zinc-800 z-20" />
+                  <MessageSquare size={32} className="text-df-primary/40 z-20" />
                 )}
-                <div className="absolute top-4 left-4 z-20 bg-black/60 text-primary label-luxury !text-[8px] px-3 py-1 rounded border border-primary/20 backdrop-blur-md">
-                  {asgn.StudyBlock?.level}
+                <div className="absolute top-4 left-4 z-20">
+                  <DFBadge variant="primary" size="xs" className="!bg-black/60 backdrop-blur-md">
+                    {asgn.StudyBlock?.level}
+                  </DFBadge>
                 </div>
               </div>
 
-              <div className="p-8 space-y-4 flex-1">
-                <h3 className="font-sora text-xl font-bold text-white uppercase italic tracking-tighter group-hover:text-primary transition-colors">{asgn.StudyBlock?.title}</h3>
-                <p className="text-zinc-500 text-sm line-clamp-2 leading-relaxed">{asgn.StudyBlock?.description}</p>
+              <div className="p-6 space-y-3 flex-1">
+                <h3 className="df-title uppercase italic text-df-text group-hover:text-df-primary transition-colors">{asgn.StudyBlock?.title}</h3>
+                <p className="df-body-sm text-df-text-muted line-clamp-2">{asgn.StudyBlock?.description}</p>
               </div>
 
-              <div className="p-8 pt-0 flex items-center justify-between border-t border-primary/5 mt-4 pt-6">
-                 <div className="flex items-center gap-3">
-                    <MessageSquare size={14} className="text-primary/40" />
-                    <span className="label-luxury !text-[8px] !text-zinc-500">{asgn.Replies?.length || 0} Mensajes</span>
+              <div className="px-6 py-4 flex items-center justify-between border-t border-df-border-subtle bg-df-primary/[0.02]">
+                 <div className="flex items-center gap-2">
+                    <MessageSquare size={14} className="text-df-primary/60" />
+                    <span className="df-caption uppercase font-bold text-df-text-muted">{asgn.Replies?.length || 0} Interacciones</span>
                  </div>
-                 <ChevronRight size={18} className="text-primary translate-x-[-10px] opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500" />
+                 <ChevronRight size={18} className="text-df-primary translate-x-[-10px] opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300" />
               </div>
             </button>
           ))}
 
           {safeAssignments.length === 0 && (
-            <div className="col-span-full py-32 text-center glass-card border-dashed">
-              <History size={48} className="mx-auto text-zinc-800 mb-6" />
-              <h3 className="label-luxury !text-zinc-600">Esperando nuevas clases</h3>
-              <p className="font-sora text-zinc-500 text-sm mt-2">Tu mentor te asignará contenido pronto.</p>
+            <div className="col-span-full py-20 bg-df-surface-2 border border-dashed border-df-border rounded-3xl text-center">
+              <DFEmptyState
+                title="Esperando contenido"
+                description="Tu mentor está preparando tu próximo desafío artístico. Te notificaremos pronto."
+              />
             </div>
           )}
         </div>
@@ -153,112 +177,120 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
   const currentAssignment = safeAssignments.find(a => a.id === selectedAssignment.id) || selectedAssignment;
 
   return (
-    <div className={`fixed inset-0 md:top-[80px] z-40 bg-black/95 flex flex-col md:flex-row animate-in slide-in-from-right duration-500`}>
+    <div className={`fixed inset-0 top-[64px] z-40 bg-df-bg flex flex-col lg:flex-row animate-in slide-in-from-right duration-500 overflow-hidden`}>
       {/* Content Area */}
       <div className="flex-1 flex flex-col overflow-y-auto">
-        <header className="p-6 md:p-10 flex items-center justify-between border-b border-primary/10 bg-black/40">
-          <button onClick={() => setSelectedAssignment(null)} className="btn-secondary !p-3 !rounded">
-            <X size={20} strokeWidth={3} />
-          </button>
-          <div className="text-right space-y-1">
-            <span className="label-luxury !text-[8px] !text-primary">{currentAssignment.StudyBlock?.level}</span>
-            <h2 className="font-sora text-2xl md:text-3xl font-bold text-white italic uppercase tracking-tighter leading-none">{currentAssignment.StudyBlock?.title}</h2>
+        <header className="px-6 py-4 md:px-8 border-b border-df-border-subtle bg-df-surface-1 flex items-center justify-between sticky top-0 z-10">
+          <DFButton
+            variant="secondary"
+            size="sm"
+            onClick={() => setSelectedAssignment(null)}
+            leftIcon={X}
+          >
+            Volver
+          </DFButton>
+          <div className="text-right">
+            <p className="df-label text-df-primary mb-0.5">{currentAssignment.StudyBlock?.level}</p>
+            <h2 className="df-title uppercase italic leading-none">{currentAssignment.StudyBlock?.title}</h2>
           </div>
         </header>
 
-        <div className="flex-1 flex flex-col p-6 md:p-12 gap-10 max-w-5xl mx-auto w-full">
+        <div className="p-6 md:p-10 space-y-10 max-w-5xl mx-auto w-full">
            {currentAssignment.StudyBlock?.type === 'video' && currentAssignment.StudyBlock?.contentUrl && (
-             <div className="aspect-video bg-black rounded-xl overflow-hidden border border-primary/20 shadow-2xl relative group">
+             <div className="aspect-video bg-black rounded-2xl overflow-hidden border border-df-border-subtle shadow-2xl group">
                 <video src={getMediaUrl(currentAssignment.StudyBlock.contentUrl)} controls className="w-full h-full object-contain" />
              </div>
            )}
 
-           <div className="glass-card p-8 md:p-12 space-y-6">
-              <div className="flex items-center gap-4 text-primary">
-                <GraduationCap size={24} />
-                <h3 className="label-luxury">Guía de Entrenamiento</h3>
+           <DFCard className="bg-df-surface-2 border-df-primary/10 shadow-lg">
+              <div className="flex items-center gap-3 text-df-primary mb-4">
+                <GraduationCap size={20} />
+                <h3 className="df-label">Instrucciones del Mentor</h3>
               </div>
-              <p className="font-sora text-zinc-300 text-lg md:text-xl leading-relaxed italic opacity-95">
-                "{currentAssignment.StudyBlock?.description}"
+              <p className="df-body-lg text-df-text italic opacity-90 leading-relaxed border-l-2 border-df-primary/20 pl-6">
+                {currentAssignment.StudyBlock?.description}
               </p>
-           </div>
+           </DFCard>
         </div>
       </div>
 
       {/* Chat Area */}
-      <div className="w-full md:w-[450px] bg-surface flex flex-col border-l border-primary/10 shadow-2xl">
-        <div className="p-8 border-b border-primary/10 flex items-center justify-between bg-black/40">
-           <div className="space-y-1">
-            <h3 className="font-sora text-xl font-bold text-white italic tracking-tight">Mentoría <span className="text-primary neon-gold">Flow</span></h3>
-            <p className="label-luxury !text-[8px] !text-zinc-600">Feedback Directo</p>
+      <div className="w-full lg:w-[420px] bg-df-surface-1 flex flex-col border-l border-df-border-subtle shadow-2xl relative">
+        <div className="p-6 border-b border-df-border-subtle flex items-center justify-between bg-df-surface-2">
+           <div>
+            <h3 className="df-title uppercase italic text-df-primary">Mentoria Personal</h3>
+            <p className="df-label !text-[8px] text-df-text-muted">Directo con tu profesor</p>
            </div>
-           <MessageSquare size={20} className="text-primary/40" />
+           <MessageSquare size={20} className="text-df-primary/40" />
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
-          {currentAssignment.Replies?.map((reply, i) => (
-            <div key={i} className={`flex flex-col ${reply.User?.role === 'profesor' ? 'items-start' : 'items-end'}`}>
-              <div className={`max-w-[90%] p-6 rounded-lg transition-all duration-500 ${
-                reply.User?.role === 'profesor'
-                ? 'bg-white/5 border border-primary/20 text-zinc-200'
-                : 'bg-primary text-black font-bold'
-              }`}>
-                {reply.content && <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap">{reply.content}</p>}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+          {currentAssignment.Replies?.map((reply, i) => {
+            const isMentor = reply.User?.role === 'profesor';
+            return (
+              <div key={i} className={`flex flex-col ${isMentor ? 'items-start' : 'items-end'}`}>
+                <div className={`max-w-[90%] p-4 rounded-2xl transition-all shadow-md ${
+                  isMentor
+                  ? 'bg-df-surface-3 border border-df-border text-df-text-soft'
+                  : 'bg-df-primary text-black font-bold'
+                }`}>
+                  {reply.content && <p className="df-body-sm leading-relaxed whitespace-pre-wrap">{reply.content}</p>}
 
-                {reply.type === 'audio' && (
-                   <div className="mt-4 bg-black/20 p-2 rounded border border-white/10">
-                        <audio src={getMediaUrl(reply.audioUrl)} controls className={`w-full h-8 ${reply.User?.role === 'profesor' ? 'invert' : ''}`} />
-                   </div>
-                )}
+                  {reply.type === 'audio' && (
+                     <div className={`mt-3 p-2 rounded-xl border ${isMentor ? 'bg-black/20 border-white/5' : 'bg-black/10 border-black/10'}`}>
+                          <audio src={getMediaUrl(reply.audioUrl)} controls className={`w-full h-8 ${isMentor ? 'invert' : ''}`} />
+                     </div>
+                  )}
 
-                {reply.type === 'video' && (
-                   <div className="mt-4 rounded overflow-hidden border border-white/10">
-                        <video src={getMediaUrl(reply.videoUrl)} controls className="w-full" />
-                   </div>
-                )}
+                  {reply.type === 'video' && (
+                     <div className="mt-3 rounded-xl overflow-hidden border border-black/10 shadow-lg">
+                          <video src={getMediaUrl(reply.videoUrl)} controls className="w-full" />
+                     </div>
+                  )}
 
-                <div className={`flex items-center justify-between mt-4 gap-4 label-luxury !text-[8px] ${reply.User?.role === 'profesor' ? '!text-zinc-600' : '!text-black/60'}`}>
-                  <div className="flex items-center gap-2">
-                      <User size={10} strokeWidth={4} />
-                      <span>{reply.User?.role === 'profesor' ? 'Mentor' : 'Mi Avance'}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                      <Clock size={10} strokeWidth={4} />
-                      <span>{new Date(reply.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  <div className={`flex items-center justify-between mt-3 gap-4 df-caption !text-[7px] font-bold ${isMentor ? 'text-df-text-muted' : 'text-black/60'} uppercase tracking-widest`}>
+                    <div className="flex items-center gap-1.5">
+                        <User size={10} strokeWidth={3} />
+                        <span>{isMentor ? 'Mentor' : 'Alumno'}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                        <Clock size={10} strokeWidth={3} />
+                        <span>{new Date(reply.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           <div ref={chatEndRef} />
         </div>
 
-        <div className="p-6 md:p-8 bg-black/40 border-t border-primary/10 space-y-4">
+        <div className="p-6 bg-df-surface-2 border-t border-df-border-subtle space-y-4 shadow-inner">
           {(audioBlob || videoFile) && (
-            <div className="bg-primary/10 border border-primary/30 text-primary label-luxury !text-[8px] p-4 rounded flex items-center justify-between">
+            <div className="bg-df-primary/10 border border-df-primary/20 text-df-primary df-label !text-[8px] p-3 rounded-xl flex items-center justify-between animate-in fade-in slide-in-from-bottom-2">
                <div className="flex items-center gap-3">
                    {audioBlob ? <Mic size={14} /> : <Video size={14} />}
-                   {audioBlob ? 'Audio Listo' : `Video: ${videoFile.name}`}
+                   <span>{audioBlob ? 'Audio capturado' : `Video: ${videoFile.name}`}</span>
                </div>
-               <button onClick={() => {setAudioBlob(null); setVideoFile(null)}}>
+               <button onClick={() => {setAudioBlob(null); setVideoFile(null)}} className="hover:text-white transition-colors">
                    <X size={16} strokeWidth={3} />
                </button>
             </div>
           )}
 
           <div className="flex items-end gap-3">
-            <div className="flex-1 bg-black rounded p-3 flex flex-col gap-3">
+            <div className="flex-1 bg-df-bg rounded-2xl p-2 border border-df-border-subtle focus-within:border-df-primary/40 transition-all flex flex-col gap-2 shadow-inner">
               <textarea
-                rows="1"
+                rows="2"
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
-                placeholder="Escribe tu mensaje..."
+                placeholder="Escribe tu mensaje artístico..."
                 disabled={isAdminPreview}
-                className="flex-1 !bg-transparent !p-2 !border-none !text-sm placeholder:text-zinc-800"
+                className="flex-1 bg-transparent px-3 py-2 df-body-sm outline-none text-df-text resize-none"
               />
-              <div className="flex items-center gap-4 px-2">
+              <div className="flex items-center gap-4 px-3 pb-1 border-t border-df-border-subtle/30 pt-2">
                 {user?.isPro && (
-                  <button onClick={() => !isAdminPreview && videoInputRef.current?.click()} className="text-zinc-700 hover:text-primary transition-colors">
+                  <button onClick={() => !isAdminPreview && videoInputRef.current?.click()} className="text-df-text-muted hover:text-df-primary transition-colors cursor-pointer">
                     <Video size={18} />
                     <input type="file" ref={videoInputRef} className="hidden" accept="video/*" onChange={(e) => setVideoFile(e.target.files[0])} />
                   </button>
@@ -266,19 +298,20 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
                 <button
                   onMouseDown={startRecording} onMouseUp={stopRecording}
                   onTouchStart={startRecording} onTouchEnd={stopRecording}
-                  className={`transition-colors ${isRecording ? 'text-red-500 scale-125 animate-pulse' : 'text-zinc-700 hover:text-primary'}`}
+                  className={`transition-all cursor-pointer ${isRecording ? 'text-df-danger scale-125 animate-pulse' : 'text-df-text-muted hover:text-df-primary'}`}
                 >
                   <Mic size={18} />
                 </button>
               </div>
             </div>
-            <button
+            <DFIconButton
+              icon={Send}
+              variant="primary"
+              size="lg"
               onClick={handleSendReply}
               disabled={(!replyText.trim() && !audioBlob && !videoFile) || isAdminPreview}
-              className="btn-primary !p-4 !h-auto"
-            >
-              <Send size={20} strokeWidth={3} />
-            </button>
+              className="!rounded-2xl shadow-xl"
+            />
           </div>
         </div>
       </div>
