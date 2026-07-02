@@ -19,6 +19,7 @@ import UsersSection from '../../components/UsersSection';
 import SegmentationSection from '../../components/SegmentationSection';
 import AdminClassesView from './AdminClassesView';
 import UserProfileModal from '../../components/UserProfileModal';
+import Swal from 'sweetalert2';
 
 const AdminControlView = () => {
   const { users, fetchInitialData, deleteUser } = useStore();
@@ -43,7 +44,23 @@ const AdminControlView = () => {
   ];
 
   const handleDeleteUser = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+    const result = await Swal.fire({
+      title: '¿Eliminar usuario?',
+      text: "Esta acción no se puede deshacer.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      background: '#051424',
+      color: '#D4AF37',
+      confirmButtonColor: '#D4AF37',
+      cancelButtonColor: '#1e293b',
+      customClass: {
+        popup: 'glass-card border-primary/20'
+      }
+    });
+
+    if (result.isConfirmed) {
       await deleteUser(id);
     }
   };

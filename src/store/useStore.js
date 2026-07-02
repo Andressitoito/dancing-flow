@@ -190,30 +190,6 @@ const useStore = create((set, get) => ({
     } catch (e) {
       console.error('Error posting reply:', e);
     }
-  },
-
-  updateUser: async (userId, data) => {
-    try {
-      await api.updateUser(userId, data);
-      const { users } = get();
-      set({
-        users: users.map(u => u.id === userId ? { ...u, ...data } : u)
-      });
-    } catch (e) {
-      console.error('Error updating user:', e);
-    }
-  },
-
-  deleteUser: async (userId) => {
-    try {
-      await api.deleteUser(userId);
-      const { users } = get();
-      set({
-        users: users.filter(u => u.id !== userId)
-      });
-    } catch (e) {
-      console.error('Error deleting user:', e);
-    }
   }
 }));
 

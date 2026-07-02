@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard | Dancing Flow Academy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#D4AF37",
+                        "background": "#050505",
+                        "on-primary": "#1a1300",
+                        "inverse-surface": "#f5f5f5",
+                        "primary-fixed": "#f9ebc5",
+                        "secondary": "#a8a8a8",
+                        "on-surface": "#e0e0e0",
+                        "outline": "#4d4d4d",
+                        "surface-bright": "#1a1a1a",
+                        "surface-container-high": "#121212",
+                        "inverse-on-surface": "#121212",
+                        "secondary-fixed": "#e0e0e0",
+                        "secondary-container": "#2a2a2a",
+                        "primary-fixed-dim": "#D4AF37",
+                        "on-secondary": "#1a1a1a",
+                        "tertiary-fixed-dim": "#60df72",
+                        "surface-variant": "#1a1a1a",
+                        "error-container": "#93000a",
+                        "error": "#ffb4ab",
+                        "on-error": "#690005",
+                        "on-primary-container": "#4a3b00",
+                        "on-secondary-fixed": "#1a1a1a",
+                        "outline-variant": "#2a2a2a",
+                        "surface": "#050505",
+                        "surface-container": "#0a0a0a",
+                        "on-primary-fixed-variant": "#6b5600",
+                        "on-background": "#e0e0e0",
+                        "on-secondary-container": "#a8a8a8",
+                        "tertiary-container": "#1ba741",
+                        "surface-dim": "#050505",
+                        "primary-container": "#D4AF37",
+                        "surface-container-low": "#080808",
+                        "on-secondary-fixed-variant": "#4d4d4d",
+                        "surface-tint": "#D4AF37",
+                        "on-tertiary": "#00390f",
+                        "tertiary-fixed": "#7efd8b",
+                        "surface-container-highest": "#1a1a1a",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#002106",
+                        "on-tertiary-container": "#00320c",
+                        "secondary-fixed-dim": "#a8a8a8",
+                        "surface-container-lowest": "#020202",
+                        "on-primary-fixed": "#241d00",
+                        "inverse-primary": "#8a7023",
+                        "tertiary": "#60df72",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "on-surface-variant": "#a8a8a8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "margin-desktop": "64px",
+                        "xl": "40px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Sora"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Sora"],
+                        "body-lg": ["Inter"],
+                        "title-sm": ["Sora"],
+                        "display-lg": ["Sora"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "label-sm": ["10px", {"lineHeight": "1", "fontWeight": "500"}],
+                        "label-md": ["12px", {"lineHeight": "1", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "title-sm": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #050505;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-card {
+            background: rgba(18, 18, 18, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        .active-glow {
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+        .kinetic-italic {
+            font-style: italic;
+            transform: skewX(-2deg);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen selection:bg-primary selection:text-on-primary">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full h-[56px] z-50 bg-surface/80 dark:bg-surface/80 backdrop-blur-md border-b border-surface-variant dark:border-outline-variant flex justify-between items-center px-margin-desktop w-full max-w-full">
+<div class="flex items-center gap-xl">
+<span class="font-headline-md text-headline-md font-extrabold italic text-primary tracking-tighter">Dancing Flow</span>
+<div class="hidden md:flex gap-lg items-center">
+<a class="text-primary dark:text-primary font-bold border-b-2 border-primary pb-1 font-label-md text-label-md" href="#">Dashboard</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" href="#">Horarios</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" href="#">Finanzas</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" href="#">Staff</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-primary text-on-primary px-lg py-xs rounded-xl font-label-md text-label-md hover:scale-95 active:scale-90 transition-all active-glow">
+            Profesor
+        </button>
+<button class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-xs font-label-md text-label-md">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+            Salir
+        </button>
+</div>
+</nav>
+<main class="pt-[56px] px-margin-mobile md:px-margin-desktop pb-xl">
+<!-- Header Section -->
+<header class="py-xl">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div class="space-y-xs">
+<span class="font-title-sm text-title-sm text-primary tracking-[0.2em] uppercase">Administración Academy</span>
+<h1 class="font-display-lg text-display-lg kinetic-italic text-on-surface flex items-baseline gap-sm">
+                    PANEL <span class="font-label-md text-label-md text-primary uppercase tracking-widest italic opacity-80">Profesor</span>
+</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl">Control general de la comunidad, estadísticas y segmentación de alumnos en tiempo real.</p>
+</div>
+<!-- View Switcher -->
+<div class="flex bg-surface-container-low p-xs rounded-lg border border-outline-variant h-fit">
+<button class="bg-primary text-on-primary px-lg py-xs rounded-md font-label-md text-label-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">equalizer</span>
+                    STATS
+                </button>
+<button class="text-on-surface-variant hover:bg-surface-variant/50 px-lg py-xs rounded-md font-label-md text-label-md flex items-center gap-xs transition-all">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                    SEGS
+                </button>
+<button class="text-on-surface-variant hover:bg-surface-variant/50 px-lg py-xs rounded-md font-label-md text-label-md flex items-center gap-xs transition-all">
+<span class="material-symbols-outlined text-[18px]">groups</span>
+                    ALUMS
+                </button>
+</div>
+</div>
+</header>
+<!-- Stats Grid (Compact) -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mb-xl">
+<!-- Total Alumnos -->
+<div class="glass-card rounded-xl p-lg flex flex-col items-center justify-center text-center group hover:border-primary transition-all duration-300">
+<div class="w-10 h-10 bg-surface-container-highest rounded-lg flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+<span class="font-title-sm text-title-sm text-on-surface-variant tracking-[0.15em] uppercase mb-sm">Total Alumnos</span>
+<span class="font-display-lg text-headline-lg text-primary kinetic-italic">324</span>
+</div>
+<!-- Comunidad Femenina -->
+<div class="glass-card rounded-xl p-lg flex flex-col items-center justify-center text-center group hover:border-primary transition-all duration-300">
+<div class="w-10 h-10 bg-surface-container-highest rounded-lg flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary">female</span>
+</div>
+<span class="font-title-sm text-title-sm text-on-surface-variant tracking-[0.15em] uppercase mb-sm">Comunidad Femenina</span>
+<span class="font-display-lg text-headline-lg text-primary kinetic-italic">186</span>
+</div>
+<!-- Comunidad Masculina -->
+<div class="glass-card rounded-xl p-lg flex flex-col items-center justify-center text-center group hover:border-secondary transition-all duration-300">
+<div class="w-10 h-10 bg-surface-container-highest rounded-lg flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-secondary">male</span>
+</div>
+<span class="font-title-sm text-title-sm text-on-surface-variant tracking-[0.15em] uppercase mb-sm">Comunidad Masculina</span>
+<span class="font-display-lg text-headline-lg text-secondary kinetic-italic">132</span>
+</div>
+<!-- No Identificados -->
+<div class="glass-card rounded-xl p-lg flex flex-col items-center justify-center text-center group hover:border-outline transition-all duration-300">
+<div class="w-10 h-10 bg-surface-container-highest rounded-lg flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-outline">help</span>
+</div>
+<span class="font-title-sm text-title-sm text-on-surface-variant tracking-[0.15em] uppercase mb-sm">No Identificados</span>
+<span class="font-display-lg text-headline-lg text-outline kinetic-italic">6</span>
+</div>
+</section>
+<!-- Main Content Canvas -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Panel: Activity Chart -->
+<div class="lg:col-span-8 glass-card rounded-xl overflow-hidden flex flex-col">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-md text-title-sm uppercase tracking-wider text-on-surface">Actividad Semanal</h3>
+<div class="flex gap-sm">
+<span class="flex items-center gap-xs font-label-sm text-label-sm text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-primary"></span> Bachata
+                    </span>
+<span class="flex items-center gap-xs font-label-sm text-label-sm text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-secondary"></span> Salsa
+                    </span>
+</div>
+</div>
+<div class="relative h-[300px] w-full p-lg overflow-hidden">
+<div class="absolute inset-x-lg bottom-xl h-48 flex items-end justify-between gap-md">
+<div class="flex-1 bg-surface-container-highest rounded-t-sm relative group">
+<div class="absolute bottom-0 w-full bg-primary h-3/4 rounded-t-sm transition-all duration-500 hover:brightness-110"></div>
+<div class="absolute bottom-0 w-full bg-secondary h-1/2 rounded-t-sm opacity-60"></div>
+</div>
+<div class="flex-1 bg-surface-container-highest rounded-t-sm relative">
+<div class="absolute bottom-0 w-full bg-primary h-2/3 rounded-t-sm"></div>
+<div class="absolute bottom-0 w-full bg-secondary h-1/3 rounded-t-sm opacity-60"></div>
+</div>
+<div class="flex-1 bg-surface-container-highest rounded-t-sm relative">
+<div class="absolute bottom-0 w-full bg-primary h-5/6 rounded-t-sm"></div>
+<div class="absolute bottom-0 w-full bg-secondary h-2/3 rounded-t-sm opacity-60"></div>
+</div>
+<div class="flex-1 bg-surface-container-highest rounded-t-sm relative">
+<div class="absolute bottom-0 w-full bg-primary h-1/2 rounded-t-sm"></div>
+<div class="absolute bottom-0 w-full bg-secondary h-1/4 rounded-t-sm opacity-60"></div>
+</div>
+<div class="flex-1 bg-surface-container-highest rounded-t-sm relative">
+<div class="absolute bottom-0 w-full bg-primary h-4/5 rounded-t-sm"></div>
+<div class="absolute bottom-0 w-full bg-secondary h-3/5 rounded-t-sm opacity-60"></div>
+</div>
+</div>
+<div class="absolute inset-x-lg bottom-sm flex justify-between font-label-sm text-label-sm text-outline uppercase tracking-tighter">
+<span>Lunes</span><span>Martes</span><span>Miércoles</span><span>Jueves</span><span>Viernes</span>
+</div>
+</div>
+</div>
+<!-- Right Panel: Upcoming Classes -->
+<div class="lg:col-span-4 flex flex-col gap-gutter">
+<div class="glass-card rounded-xl p-lg flex-1">
+<div class="flex justify-between items-center mb-lg">
+<h3 class="font-headline-md text-title-sm uppercase tracking-wider text-on-surface">Próximas Clases</h3>
+<span class="material-symbols-outlined text-primary cursor-pointer hover:rotate-90 transition-transform">sync</span>
+</div>
+<div class="space-y-md">
+<div class="flex items-center gap-md p-sm rounded-lg hover:bg-surface-container-highest transition-colors cursor-pointer group">
+<div class="w-12 h-12 rounded bg-surface-container flex flex-col items-center justify-center border border-outline-variant">
+<span class="font-label-sm text-label-sm text-primary uppercase">Mar</span>
+<span class="font-headline-md text-body-lg text-on-surface">14</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-label-md text-on-surface">Bachata Sensual III</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 19:30 - Studio A
+                            </p>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+<div class="flex items-center gap-md p-sm rounded-lg hover:bg-surface-container-highest transition-colors cursor-pointer group">
+<div class="w-12 h-12 rounded bg-surface-container flex flex-col items-center justify-center border border-outline-variant">
+<span class="font-label-sm text-label-sm text-primary uppercase">Mie</span>
+<span class="font-headline-md text-body-lg text-on-surface">15</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-label-md text-on-surface">Salsa On2 Advanced</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 21:00 - Main Hall
+                            </p>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+<button class="w-full mt-lg border border-outline-variant py-sm rounded font-label-md text-label-md text-on-surface-variant hover:bg-primary/10 hover:text-primary transition-all">
+                    Ver Agenda Completa
+                </button>
+</div>
+<!-- Quick Action Card -->
+<div class="bg-gradient-to-br from-primary to-inverse-primary rounded-xl p-lg flex flex-col gap-sm relative overflow-hidden group">
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-[120px] opacity-10 group-hover:rotate-12 transition-transform text-on-primary">grade</span>
+<h4 class="font-headline-md text-headline-md text-on-primary kinetic-italic leading-tight">Nueva<br/>Inscripción</h4>
+<p class="font-body-md text-label-md text-on-primary/80 max-w-[140px]">Agrega un nuevo talento a la comunidad hoy mismo.</p>
+<button class="mt-md bg-on-primary text-primary w-fit px-lg py-xs rounded-xl font-label-md text-label-md hover:scale-105 active:scale-95 transition-all">
+                    Registrar
+                </button>
+</div>
+</div>
+</section>
+<!-- Segments Detailed View -->
+<section class="mt-xl">
+<h3 class="font-headline-md text-title-sm uppercase tracking-[0.2em] text-on-surface mb-lg flex items-center gap-md">
+            Segmentación Detallada <div class="h-px flex-1 bg-outline-variant opacity-30"></div>
+</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="glass-card rounded-xl p-lg">
+<p class="font-label-md text-label-md text-on-surface-variant mb-md uppercase tracking-widest">Nivel de Dominio</p>
+<div class="space-y-md">
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md">Iniciado</span>
+<span class="font-label-md text-label-md text-primary">45%</span>
+</div>
+<div class="h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[45%]"></div>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md">Intermedio</span>
+<span class="font-label-md text-label-md text-secondary">38%</span>
+</div>
+<div class="h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[38%]"></div>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md">Avanzado</span>
+<span class="font-label-md text-label-md text-tertiary">17%</span>
+</div>
+<div class="h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[17%]"></div>
+</div>
+</div>
+</div>
+<div class="glass-card rounded-xl p-lg flex flex-col justify-between">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-md uppercase tracking-widest">Retención Mensual</p>
+<div class="flex items-baseline gap-sm mb-xs">
+<span class="font-display-lg text-display-lg text-on-surface kinetic-italic">94%</span>
+<span class="text-tertiary flex items-center font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px]">trending_up</span> +2.4%
+                        </span>
+</div>
+<p class="font-body-md text-label-sm text-on-surface-variant">Excelente tasa de permanencia comparado al mes anterior.</p>
+</div>
+<div class="mt-lg h-12 flex items-center justify-center bg-surface-container-low rounded border border-dashed border-outline-variant hover:border-primary/50 transition-colors cursor-pointer">
+<span class="font-label-sm text-label-sm text-outline group-hover:text-primary">Reporte de Deserción</span>
+</div>
+</div>
+<div class="glass-card rounded-xl overflow-hidden group cursor-pointer relative">
+<img class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" data-alt="A cinematic, high-speed action shot of a professional dancer performing a fluid spin on a dark stage. Sharp gold and amber lights cut through the scene, highlighting the athlete's muscular definition and the motion blur of their elegant movement. The lighting is dramatic and precise, creating a modern, high-energy atmosphere that mirrors the Dancing Flow brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0bwlYy9khgvPzUA0nKRcuTuAWlKZco-_NBCp3hqKb8znB7XM47pG4nNHPhuLXh8q24Tk0J1DtL9eKFO_jd-YA5Et4QnwDZOUhLUHg49FYbj2eT5i44CW2CxsieL0SuQTzBqLb1ftLQc_3whZrjr3szRhxnLS4Mj1oBVLpQIc3yVjO8r6n0t11Cui3OqjGBwsXaOKcjppmaUy9x1cBahIFxb2uEdadoYEBYURDpZMKq7Kvx-4X57Z_JhVn5uknwdDjSOqcPtAQF3sF"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-lg left-lg">
+<span class="font-title-sm text-title-sm text-primary uppercase">Nueva Galería</span>
+<h4 class="font-headline-md text-headline-md text-on-surface kinetic-italic">Workshop Madrid 2024</h4>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-md bg-surface-dim dark:bg-surface-dim border-t border-surface-variant dark:border-outline-variant flex flex-col md:flex-row justify-between items-center px-margin-desktop w-full">
+<span class="font-title-sm text-title-sm text-on-surface mb-sm md:mb-0">Dancing Flow</span>
+<div class="flex gap-lg">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm" href="#">Privacidad</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm" href="#">Soporte</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm" href="#">Términos</a>
+</div>
+<p class="font-body-md text-label-sm text-secondary dark:text-secondary-fixed mt-md md:mt-0 opacity-80">
+        © 2024 Dancing Flow Academy. Precision in every step.
+    </p>
+</footer>
+<!-- Micro-interaction Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const statsCards = document.querySelectorAll('.glass-card');
+        statsCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100 * index);
+        });
+    });
+</script>
+</body></html>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { ChevronDown, Star, Instagram, Twitter, Facebook } from 'lucide-react';
-import { DFCard, DFButton, DFContainer } from '../../components/ui/index';
 
 const HomeView = ({ onTabChange }) => {
   const [scrollY, setScrollY] = useState(0);
@@ -82,13 +81,12 @@ const HomeView = ({ onTabChange }) => {
           </p>
 
           <div className="mt-12">
-            <DFButton
-                size="xl"
+            <button
                 onClick={() => onTabChange('login')}
-                className="!px-12"
+                className="btn-primary px-12 py-4"
             >
                 Comenzar ahora
-            </DFButton>
+            </button>
           </div>
         </div>
 
@@ -108,7 +106,7 @@ const HomeView = ({ onTabChange }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {mentors.map((mentor, idx) => (
-              <DFCard key={idx} padding="none" className="overflow-hidden group">
+              <div key={idx} className="glass-card overflow-hidden group">
                 <div className="h-[400px] relative overflow-hidden">
                    <img
                     src={mentor.image}
@@ -125,15 +123,15 @@ const HomeView = ({ onTabChange }) => {
                    <p className="text-xl text-white italic mb-6 opacity-90">"{mentor.bio}"</p>
                    <p className="text-zinc-400 border-l-2 border-primary/30 pl-6 mb-8">{mentor.career}</p>
                    <div className="flex gap-4">
-                      <button className="p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-primary hover:text-black transition-all">
+                      <button className="p-3 bg-white/5 rounded hover:bg-primary hover:text-black transition-all">
                         <Instagram size={20} />
                       </button>
-                      <button className="p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-primary hover:text-black transition-all">
+                      <button className="p-3 bg-white/5 rounded hover:bg-primary hover:text-black transition-all">
                         <Twitter size={20} />
                       </button>
                    </div>
                 </div>
-              </DFCard>
+              </div>
             ))}
           </div>
         </div>
@@ -148,10 +146,10 @@ const HomeView = ({ onTabChange }) => {
                 { val: '42', label: 'Premios Internacionales' },
                 { val: '12', label: 'Sedes Mundiales' }
             ].map((stat, i) => (
-                <DFCard key={i} className="text-center p-8 border-none hover:bg-white/5">
+                <div key={i} className="text-center p-8 glass-card border-none hover:bg-white/5">
                     <div className="font-sora text-4xl md:text-6xl font-bold text-primary mb-2 italic">{stat.val}</div>
                     <div className="df-label !text-[9px]">{stat.label}</div>
-                </DFCard>
+                </div>
             ))}
         </div>
       </section>
@@ -199,13 +197,12 @@ const HomeView = ({ onTabChange }) => {
       {/* Final CTA */}
       <section className="py-32 bg-gradient-to-t from-primary/10 to-transparent border-t border-primary/5 text-center">
         <h2 className="font-sora text-4xl md:text-7xl font-bold text-white mb-12 italic uppercase tracking-tighter">Únete a la Élite</h2>
-        <DFButton
-            size="xl"
+        <button
             onClick={() => onTabChange('login')}
-            className="!px-16 !h-16 !text-xl"
+            className="btn-primary px-16 py-5 text-xl"
         >
             Inscribirme ahora
-        </DFButton>
+        </button>
       </section>
 
       {/* Footer */}

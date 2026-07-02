@@ -3,13 +3,7 @@ import useStore from '../../store/useStore';
 import { Play, Mic, Send, ChevronRight, X, User, MessageSquare, Video, History, GraduationCap, Clock } from 'lucide-react';
 import { getMediaUrl } from '../../services/constants';
 import Swal from 'sweetalert2';
-import {
-  DFCard,
-  DFButton,
-  DFPageHeader,
-  DFContainer,
-  DFTextarea
-} from '../../components/ui/index';
+import { DFCard, DFButton, DFPageHeader, DFContainer } from '../../components/ui/index';
 
 const StudentTrainingView = ({ isAdminPreview = false }) => {
   const { assignments, fetchAssignments, postReply, user } = useStore();
@@ -256,13 +250,13 @@ const StudentTrainingView = ({ isAdminPreview = false }) => {
 
           <div className="flex items-end gap-3">
             <div className="flex-1 bg-black rounded p-3 flex flex-col gap-3">
-              <DFTextarea
+              <textarea
                 rows="1"
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
                 placeholder="Escribe tu mensaje..."
                 disabled={isAdminPreview}
-                className="!bg-transparent !p-2 !border-none !text-sm"
+                className="flex-1 !bg-transparent !p-2 !border-none !text-sm placeholder:text-zinc-800 outline-none"
               />
               <div className="flex items-center gap-4 px-2">
                 {user?.isPro && (

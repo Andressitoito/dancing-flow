@@ -1,6 +1,5 @@
 import React from 'react';
 import { Instagram, Twitter, Facebook, Award, Star, Heart } from 'lucide-react';
-import { DFCard, DFContainer } from '../../components/ui/index';
 
 const AboutUsView = () => {
   const teachers = [
@@ -46,7 +45,7 @@ const AboutUsView = () => {
         <section key={idx} className={`flex flex-col ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-12 md:gap-24 items-center`}>
           <div className="w-full md:w-1/2 relative group">
             <div className="absolute -inset-4 bg-primary/10 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 rounded-full" />
-            <DFCard padding="none" className="relative aspect-[4/5] overflow-hidden border-none" hover={false}>
+            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl glass-card border-none">
               <img
                 src={teacher.image}
                 alt={teacher.name}
@@ -57,7 +56,7 @@ const AboutUsView = () => {
                 <p className="df-label !text-primary !text-[10px] mb-2">{teacher.role}</p>
                 <h2 className="font-sora text-4xl md:text-5xl font-bold text-white italic tracking-tighter leading-none">{teacher.name}</h2>
               </div>
-            </DFCard>
+            </div>
           </div>
 
           <div className="w-full md:w-1/2 space-y-12">
@@ -86,17 +85,17 @@ const AboutUsView = () => {
 
             <div className="flex gap-6 pt-4">
               {teacher.socials.instagram && (
-                <a href={teacher.socials.instagram} className="p-4 bg-white/5 backdrop-blur-md rounded-2xl border border-primary/20 text-zinc-400 hover:text-primary transition-all">
+                <a href={teacher.socials.instagram} className="p-4 glass-card border-primary/20 text-zinc-400 hover:text-primary transition-all">
                   <Instagram size={24} />
                 </a>
               )}
               {teacher.socials.twitter && (
-                <a href={teacher.socials.twitter} className="p-4 bg-white/5 backdrop-blur-md rounded-2xl border border-primary/20 text-zinc-400 hover:text-primary transition-all">
+                <a href={teacher.socials.twitter} className="p-4 glass-card border-primary/20 text-zinc-400 hover:text-primary transition-all">
                   <Twitter size={24} />
                 </a>
               )}
               {teacher.socials.facebook && (
-                <a href={teacher.socials.facebook} className="p-4 bg-white/5 backdrop-blur-md rounded-2xl border border-primary/20 text-zinc-400 hover:text-primary transition-all">
+                <a href={teacher.socials.facebook} className="p-4 glass-card border-primary/20 text-zinc-400 hover:text-primary transition-all">
                   <Facebook size={24} />
                 </a>
               )}
