@@ -1,0 +1,15 @@
+@utility df-table {
+  @apply w-full border-collapse;
+}
+
+@utility df-table-row {
+  @apply border-b border-df-border-subtle hover:bg-white/[0.02] transition-colors;
+}
+
+@utility df-table-cell {
+  @apply py-4 px-6 text-df-text-soft;
+}
+
+@utility df-table-header {
+  @apply py-4 px-6 text-left df-label !text-df-text-muted border-b border-df-border-subtle uppercase tracking-widest;
+}

@@ -4,9 +4,9 @@ export const APP_PALETTES = {
     primary: '#D4AF37',
     secondary: '#EAC249',
     accent: '#C5A028',
-    background: '#071321',
-    surface: '#0A1828',
-    border: 'rgba(212, 175, 55, 0.16)'
+    background: '#000000',
+    surface: '#051424',
+    border: 'rgba(212, 175, 55, 0.2)'
   }
 };
 

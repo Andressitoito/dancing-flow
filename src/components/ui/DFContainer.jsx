@@ -1,29 +1,29 @@
-import React from 'react';
-import clsx from 'clsx';
+import clsx from "clsx";
+
+const sizes = {
+  xs: "max-w-3xl",
+  sm: "max-w-5xl",
+  md: "max-w-7xl",
+  lg: "max-w-[1600px]",
+  full: "w-full",
+};
 
 const DFContainer = ({
   children,
   className = "",
-  size = "xl",
-  noPadding = false
+  size = "md",
+  as: Component = "div",
 }) => {
-  const sizes = {
-    sm: "max-w-screen-sm",
-    md: "max-w-screen-md",
-    lg: "max-w-screen-lg",
-    xl: "max-w-7xl",
-    full: "max-w-none"
-  };
-
   return (
-    <div className={clsx(
-      "w-full mx-auto",
-      !noPadding && "px-4 md:px-8",
-      sizes[size],
-      className
-    )}>
+    <Component
+      className={clsx(
+        "mx-auto w-full px-4 md:px-6 xl:px-8",
+        sizes[size],
+        className
+      )}
+    >
       {children}
-    </div>
+    </Component>
   );
 };
 

@@ -1,0 +1,19 @@
+@utility badge {
+  @apply inline-flex items-center px-2.5 py-1 rounded-full df-label font-bold uppercase tracking-widest;
+}
+
+@utility badge-primary {
+  @apply badge bg-df-primary/10 text-df-primary border border-df-primary/20;
+}
+
+@utility badge-secondary {
+  @apply badge bg-df-surface-3 text-df-text-soft border border-df-border;
+}
+
+@utility badge-success {
+  @apply badge bg-emerald-500/10 text-emerald-400 border border-emerald-500/20;
+}
+
+@utility badge-danger {
+  @apply badge bg-red-500/10 text-red-400 border border-red-500/20;
+}

@@ -1,0 +1,25 @@
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2.5 h-11 px-5 rounded-xl cursor-pointer transition-all duration-200 font-medium;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2.5 h-11 px-5 rounded-xl cursor-pointer transition-all duration-200 font-medium bg-df-primary text-black hover:bg-df-primary-hover shadow-lg shadow-df-primary/10;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2.5 h-11 px-5 rounded-xl cursor-pointer transition-all duration-200 font-medium bg-transparent text-df-primary border border-df-border hover:bg-df-primary/10 hover:border-df-primary;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2.5 h-11 px-5 rounded-xl cursor-pointer transition-all duration-200 font-medium bg-transparent text-df-text-soft hover:bg-white/5 hover:text-df-text;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2.5 h-11 px-5 rounded-xl cursor-pointer transition-all duration-200 font-medium bg-df-danger text-white hover:bg-red-600 shadow-lg shadow-red-900/20;
+  }
+
+  .btn-icon {
+    @apply inline-flex items-center justify-center gap-2.5 h-11 px-5 rounded-xl cursor-pointer transition-all duration-200 font-medium h-11 w-11 p-0 rounded-xl;
+  }
+}
