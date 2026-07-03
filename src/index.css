@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #D4AF37;
+  --color-secondary: #EAC249;
+  --color-accent: #C5A028;
+  --color-background: #051424;
+  --color-surface: #122131;
+  --color-surface-bright: #2c3a4c;
+  --color-on-surface: #d4e4fa;
+  --color-on-surface-variant: #a1a1a1;
+  --color-outline: #ab888e;
+  --color-outline-variant: #333333;
+
+  --font-sora: "Sora", sans-serif;
+  --font-inter: "Inter", sans-serif;
+
+  --radius-DEFAULT: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+  --radius-full: 9999px;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-on-surface font-inter antialiased;
+    background-color: #051424;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sora font-bold;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-surface/70 backdrop-blur-md border border-primary/10;
+  }
+
+  .neon-glow {
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5), 0 0 20px rgba(212, 175, 55, 0.3);
+  }
+
+  .active-glow {
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+  }
+
+  .kinetic-italic {
+    @apply italic;
+    transform: skewX(-2deg);
+  }
+
+  .label-luxury {
+    @apply uppercase tracking-[0.2em] font-semibold;
+  }
+}
+
+@utility max-container {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.parallax-bg {
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    will-change: transform;
+}
