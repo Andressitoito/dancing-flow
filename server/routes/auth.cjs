@@ -46,13 +46,13 @@ router.post('/signup-user', async (req, res) => {
 
     const hashedPassword = bcrypt.hashSync(password, 10);
 
-    // Map frontend Spanish gender values to backend English ENUM
+    // Map frontend Spanish gender values to backend ENUM
     const genderMap = {
       'hombre': 'male',
       'mujer': 'female',
-      'otro': 'other'
+      'otro': 'otro'
     };
-    const dbGender = genderMap[gender] || gender || 'unidentified';
+    const dbGender = genderMap[gender] || 'otro';
 
     const newUser = await User.create({
       username: username.toLowerCase(),

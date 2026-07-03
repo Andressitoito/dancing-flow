@@ -21,8 +21,8 @@ const User = sequelize.define('User', {
     defaultValue: 'alumno'
   },
   gender: {
-    type: DataTypes.ENUM('male', 'female', 'other', 'unidentified'),
-    defaultValue: 'unidentified'
+    type: DataTypes.ENUM('male', 'female', 'otro'),
+    defaultValue: 'otro'
   },
   status: {
     type: DataTypes.ENUM('active', 'inactive'),
