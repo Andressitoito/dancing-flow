@@ -50,9 +50,13 @@ router.post('/signup-user', async (req, res) => {
     const genderMap = {
       'hombre': 'male',
       'mujer': 'female',
-      'otro': 'otro'
+      'otro': 'otro',
+      'male': 'male',
+      'female': 'female'
     };
     const dbGender = genderMap[gender] || 'otro';
+
+    console.log('DEBUG Signup:', { receivedGender: gender, dbGender });
 
     const newUser = await User.create({
       username: username.toLowerCase(),
