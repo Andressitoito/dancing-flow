@@ -82,9 +82,9 @@ const AdminControlView = () => {
 
   const stats = {
     total: users.length,
-    femenino: users.filter(u => u.gender === 'mujer').length,
-    masculino: users.filter(u => u.gender === 'hombre').length,
-    otros: users.filter(u => u.gender === 'otro' || !u.gender).length
+    femenino: users.filter(u => u.gender === 'mujer' || u.gender === 'female').length,
+    masculino: users.filter(u => u.gender === 'hombre' || u.gender === 'male').length,
+    otros: users.filter(u => u.gender === 'otro' || u.gender === 'other' || !u.gender || u.gender === 'unidentified').length
   };
 
   return (
