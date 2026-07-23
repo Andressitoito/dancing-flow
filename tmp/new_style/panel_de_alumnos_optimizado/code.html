@@ -268,14 +268,14 @@
                     const names = ["DANIELA", "MARCOS", "LUCIA", "ROBERTO", "ELENA", "SANTIAGO", "VALENTINA", "JAVIER", "PAULA", "MATIAS", "CARLA", "DIEGO"];
                     const roles = ["ALUMNO", "PROFESOR"];
                     const levels = ["Intermedio", "Avanzado", "Principiante"];
-                    
+
                     const container = document.querySelector('.custom-scrollbar');
                     for (let i = 0; i < 12; i++) {
                         const name = names[i % names.length];
                         const role = roles[i % roles.length];
                         const level = levels[i % levels.length];
                         const letter = name.charAt(0);
-                        
+
                         const row = document.createElement('div');
                         row.className = "grid grid-cols-[48px_1fr_120px_120px_160px] md:grid-cols-[48px_2fr_1fr_1fr_200px] gap-md px-md py-sm items-center hover:bg-surface-variant/30 transition-colors border-b border-outline-variant/10 group";
                         row.innerHTML = `

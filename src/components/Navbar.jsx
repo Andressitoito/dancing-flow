@@ -53,7 +53,7 @@ const Navbar = ({ activeTab, onTabChange }) => {
                 }`}
               >
                 <Icon size={18} className="md:w-5 md:h-5" />
-                <span className="hidden md:block label-luxury !text-[10px] !tracking-[0.2em]">
+                <span className="hidden md:block df-label !text-[10px] !tracking-[0.2em]">
                   {tab.label}
                 </span>
 
@@ -71,7 +71,7 @@ const Navbar = ({ activeTab, onTabChange }) => {
               className="flex items-center gap-2 px-3 md:px-4 py-2 text-df-text-dim hover:text-red-500 transition-colors"
             >
               <LogOut size={18} className="md:w-5 md:h-5" />
-              <span className="hidden md:block label-luxury !text-[10px] !tracking-[0.2em] !color-inherit">
+              <span className="hidden md:block df-label !text-[10px] !tracking-[0.2em] !color-inherit">
                 Salir
               </span>
             </button>

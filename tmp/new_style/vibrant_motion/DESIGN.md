@@ -112,7 +112,7 @@ spacing:
 
 ## Brand & Style
 
-This design system embodies the high-energy and professional atmosphere of a premier dance academy. It balances the sultry, fluid nature of Bachata Sensual with the rigorous discipline of professional mentorship. 
+This design system embodies the high-energy and professional atmosphere of a premier dance academy. It balances the sultry, fluid nature of Bachata Sensual with the rigorous discipline of professional mentorship.
 
 The visual style is **Corporate Modern with a Neon Edge**. It utilizes a deep, layered dark mode to create a premium "stage-like" environment where vibrant accents can shine. The aesthetic is sharp, precise, and energetic, moving away from oversized elements toward a sophisticated, compact UI that maximizes information density without sacrificing elegance.
 
@@ -123,12 +123,12 @@ The visual style is **Corporate Modern with a Neon Edge**. It utilizes a deep, l
 
 ## Colors
 
-The palette is optimized for a high-contrast dark environment. 
+The palette is optimized for a high-contrast dark environment.
 
-- **Primary (Electric Pink):** Reserved for primary actions, active navigation states, and brand highlights. 
+- **Primary (Electric Pink):** Reserved for primary actions, active navigation states, and brand highlights.
 - **Secondary (Cyan Blue):** Used for data visualization, secondary stats, and distinguishing gender-neutral or alternative data points.
 - **Neutrals:** A range of cool-toned greys facilitate hierarchy within the dark UI.
-- **Layering Logic:** 
+- **Layering Logic:**
     - `Base`: The main background.
     - `Level 1`: Large cards and navigation bars.
     - `Level 2`: Inset elements, list items, and hover states.
@@ -144,10 +144,10 @@ The typography strategy pairs expressive, italicized display fonts with a highly
 
 ## Layout & Spacing
 
-The system uses a **4px base grid** to achieve a dense, "pro-app" feel. 
+The system uses a **4px base grid** to achieve a dense, "pro-app" feel.
 
-- **Navbar:** A slim 56px sticky bar on desktop, reduced to 48px on mobile. 
-- **Grid System:** 
+- **Navbar:** A slim 56px sticky bar on desktop, reduced to 48px on mobile.
+- **Grid System:**
     - **Desktop:** 12-column fluid grid with 16px gutters. Stats cards should span 3 columns (4 per row).
     - **Mobile:** 4-column grid with 16px gutters. Most elements reflow to full-width or side-scrolling containers.
 - **Compactness:** Vertical padding in list items and cards is aggressively tightened (typically 12px-16px) to maximize visible items on the dashboard.
@@ -163,7 +163,7 @@ Hierarchy is established through color luminosity and subtle borders rather than
 
 ## Shapes
 
-The shape language is **Soft** but disciplined. 
+The shape language is **Soft** but disciplined.
 
 - **Small Components:** Checkboxes and small tags use a 4px (0.25rem) radius.
 - **Standard UI:** Buttons, input fields, and list items use an 8px (0.5rem) radius.
@@ -174,7 +174,7 @@ The shape language is **Soft** but disciplined.
 
 ### Buttons
 - **Primary:** Solid `#FF2D78` with white or near-black text. Height: 36px (Compact) or 44px (Standard).
-- **Ghost:** Transparent background with a `surface_level_3` border. 
+- **Ghost:** Transparent background with a `surface_level_3` border.
 - **Tabs:** Segmented control style with a sliding background highlight.
 
 ### Cards & Stats

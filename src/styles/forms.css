@@ -1,0 +1,19 @@
+@utility input {
+  @apply w-full h-11 px-4 bg-df-surface-2 border border-df-border rounded-xl text-df-text placeholder:text-df-text-disabled outline-none transition-all duration-200 focus:border-df-primary/40 focus:bg-df-surface-3;
+}
+
+@utility input-label {
+  @apply block df-label text-df-text-muted mb-2 uppercase tracking-widest;
+}
+
+@utility input-error {
+  @apply border-red-500/50 focus:border-red-500 bg-red-500/5;
+}
+
+@utility textarea {
+  @apply input min-h-[120px] py-3 resize-none;
+}
+
+@utility select {
+  @apply input appearance-none cursor-pointer;
+}

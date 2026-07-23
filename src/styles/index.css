@@ -4,65 +4,69 @@
    Dancing Flow Design System
    ========================================================================== */
 
-@import "./styles/colors.css";
-@import "./styles/typography.css";
-@import "./styles/spacing.css";
-@import "./styles/layout.css";
-@import "./styles/components.css";
-@import "./styles/animations.css";
+@import "./colors.css";
+@import "./typography.css";
+@import "./spacing.css";
+@import "./layout.css";
+@import "./components.css";
+@import "./buttons.css";
+@import "./forms.css";
+@import "./tables.css";
+@import "./badges.css";
+@import "./navbar.css";
+@import "./utilities.css";
+@import "./animations.css";
+
+@theme {
+  --color-df-primary: var(--df-primary);
+  --color-df-primary-hover: var(--df-primary-hover);
+  --color-df-bg: var(--df-bg);
+  --color-df-surface-1: var(--df-surface-1);
+  --color-df-surface-2: var(--df-surface-2);
+  --color-df-surface-3: var(--df-surface-3);
+  --color-df-border: var(--df-border);
+  --color-df-border-subtle: var(--df-border-subtle);
+  --color-df-border-strong: var(--df-border-strong);
+  --color-df-text: var(--df-text);
+  --color-df-text-soft: var(--df-text-soft);
+  --color-df-text-muted: var(--df-text-muted);
+  --color-df-text-disabled: var(--df-text-disabled);
+  --color-df-danger: var(--df-danger);
+}
 
 /* ==========================================================================
    Global
    ========================================================================== */
 
-html{
-
-scroll-behavior:smooth;
-
+html {
+    scroll-behavior: smooth;
 }
 
-body{
-
-margin:0;
-
-overflow-x:hidden;
-
-background:var(--df-bg);
-
-color:var(--df-text);
-
-font-family:var(--df-font-body);
-
--webkit-font-smoothing:antialiased;
-
--moz-osx-font-smoothing:grayscale;
-
+body {
+    margin: 0;
+    overflow-x: hidden;
+    background: var(--df-bg);
+    color: var(--df-text);
+    font-family: var(--df-font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-*{
-
-box-sizing:border-box;
-
+* {
+    box-sizing: border-box;
 }
 
-img{
-
-display:block;
-
-max-width:100%;
-
+img {
+    display: block;
+    max-width: 100%;
 }
 
-button{
-
-font:inherit;
-
+button {
+    font: inherit;
 }
 
 input,
 textarea,
-select{
-
-font:inherit;
-
+select {
+    font: inherit;
 }

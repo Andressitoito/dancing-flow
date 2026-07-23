@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import useStore from './store/useStore';
 
-import HomeView from "./views/HomeView";
-import AboutUsView from "./views/AboutUsView";
-import LoginView from "./views/LoginView";
-import StudentProfileView from "./views/StudentProfileView";
-import StudentTrainingView from "./views/StudentTrainingView";
-import AdminControlView from "./views/AdminControlView";
+import HomeView from "./views/home/HomeView";
+import AboutUsView from "./views/about/AboutUsView";
+import LoginView from "./views/login/LoginView";
+import StudentProfileView from "./views/student/StudentProfileView";
+import StudentTrainingView from "./views/student/StudentTrainingView";
+import AdminControlView from "./views/admin/AdminControlView";
 
 import Navbar from "./components/Navbar";
 

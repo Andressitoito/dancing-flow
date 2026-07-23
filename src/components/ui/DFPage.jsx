@@ -1,23 +1,12 @@
-import DFSection from "./DFSection";
+import React from 'react';
+import clsx from 'clsx';
 
-const DFPage = ({
-  children,
-}) => {
-
+const DFPage = ({ children, className }) => {
   return (
-
-    <DFSection spacing="md">
-
-      <div className="space-y-8">
-
-        {children}
-
-      </div>
-
-    </DFSection>
-
+    <div className={clsx("min-h-screen", className)}>
+      {children}
+    </div>
   );
-
 };
 
 export default DFPage;

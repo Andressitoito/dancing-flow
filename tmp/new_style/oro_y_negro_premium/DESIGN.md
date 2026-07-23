@@ -128,16 +128,16 @@ The palette is strictly curated to evoke the "Oro y Negro" aesthetic.
 
 This design system utilizes **Sora** to maintain its geometric precision while elevating it through specific styling.
 
-- **Headlines:** Use tighter letter-spacing and heavier weights to create a sense of structural permanence. 
+- **Headlines:** Use tighter letter-spacing and heavier weights to create a sense of structural permanence.
 - **Labels:** Small labels and captions should utilize uppercase styling with increased letter spacing to mimic the typography of luxury watchmaking and high-fashion branding.
-- **Body Text:** Maintain generous line heights to ensure the dense black backgrounds remain legible and breathable. 
+- **Body Text:** Maintain generous line heights to ensure the dense black backgrounds remain legible and breathable.
 - **Color Application:** Primary headlines may occasionally use the gold gradient for a "foil" effect, while body text should remain an off-white or light grey (e.g., #E0E0E0) to preserve readability.
 
 ## Layout & Spacing
 
-The layout philosophy follows a **Fixed Grid** model on desktop to enforce a sense of controlled, curated content. 
+The layout philosophy follows a **Fixed Grid** model on desktop to enforce a sense of controlled, curated content.
 
-- **Symmetry:** Layouts should prioritize centered compositions or perfectly balanced asymmetrical grids. 
+- **Symmetry:** Layouts should prioritize centered compositions or perfectly balanced asymmetrical grids.
 - **Whitespace:** Use "Luxury Whitespace" (in this case, "Blackspace"). Increase margins between sections (80px - 120px) to allow components to breathe and feel more like artifacts in a gallery.
 - **Responsive Behavior:** On mobile, margins shrink to 16px, and multi-column grids collapse into a single column, ensuring the gold accents remain the focal point without overwhelming the small screen.
 
@@ -152,7 +152,7 @@ In this design system, depth is achieved through **Tonal Layers** and **Metallic
 
 ## Shapes
 
-The design system adopts **Soft (0.25rem)** roundedness to maintain a sharp, professional, and architectural feel. 
+The design system adopts **Soft (0.25rem)** roundedness to maintain a sharp, professional, and architectural feel.
 
 While rounded corners provide a modern touch, they are kept minimal to avoid appearing too "bubbly" or consumer-grade. The goal is to mimic the precision-cut edges of jewelry or premium electronics. Large containers like cards use `rounded-lg` (0.5rem) to subtly soften the layout without losing the "Oro y Negro" edge.
 

@@ -1,0 +1,15 @@
+@utility navbar {
+  @apply fixed top-0 left-0 right-0 h-14 bg-black/80 backdrop-blur-xl border-b border-df-border z-50 transition-all duration-300;
+}
+
+@utility nav-link {
+  @apply flex items-center gap-2 h-full px-4 df-nav text-df-text-soft hover:text-df-primary hover:bg-df-primary/5 transition-all relative;
+}
+
+@utility nav-link-active {
+  @apply text-df-primary bg-df-primary/5;
+}
+
+@utility nav-link-active-indicator {
+  @apply absolute bottom-0 left-0 right-0 h-0.5 bg-df-primary shadow-[0_0_10px_rgba(212,175,55,0.4)];
+}
