@@ -7,55 +7,28 @@ async function initDB() {
     await sequelize.authenticate();
     console.log('Database connection successful');
 
-    const queryInterface = sequelize.getQueryInterface();
+    const dialect = sequelize.getDialect();
+    if (dialect === 'mariadb' || dialect === 'mysql') {
+      console.log(`Performing robust data migration for ENUMs on ${dialect}...`);
+      try {
+        // 1. Temporarily change column to TEXT to allow any value during migration
+        await sequelize.query("ALTER TABLE Users MODIFY COLUMN gender TEXT");
 
-    // Check for Users table and add missing columns
-    try {
-      const usersTable = await queryInterface.describeTable('Users');
-      if (!usersTable.isPro) {
-        console.log('Adding isPro to Users...');
-        await queryInterface.addColumn('Users', 'isPro', {
-          type: DataTypes.BOOLEAN,
-          defaultValue: false
-        });
+        // 2. Map old values to new valid ones
+        await sequelize.query("UPDATE Users SET gender = 'otro' WHERE gender NOT IN ('male', 'female', 'otro') OR gender IS NULL");
+        console.log('Existing gender values migrated to valid options');
+
+        // 3. Change column back to the new ENUM definition
+        await sequelize.query("ALTER TABLE Users MODIFY COLUMN gender ENUM('male', 'female', 'otro') DEFAULT 'otro'");
+        console.log('Users.gender ENUM updated manually to: male, female, otro');
+      } catch (e) {
+        console.warn('MariaDB/MySQL migration skipped or failed (might be first run):', e.message);
       }
-      if (!usersTable.level) {
-        console.log('Adding level to Users...');
-        await queryInterface.addColumn('Users', 'level', {
-          type: DataTypes.ENUM('principiante', 'pre-intermedio', 'intermedio', 'avanzado'),
-          allowNull: true
-        });
-      }
-    } catch (e) {
-      console.log('Users table does not exist yet.');
     }
 
-    // Check for Questionnaires table and add new columns
-    try {
-      const qTable = await queryInterface.describeTable('Questionnaires');
-      const newCols = [
-        { name: 'experienceLevel', type: DataTypes.STRING },
-        { name: 'preferredStyles', type: DataTypes.STRING },
-        { name: 'weeklyDedication', type: DataTypes.STRING },
-        { name: 'physicalLimitations', type: DataTypes.TEXT }
-      ];
-
-      for (const col of newCols) {
-        if (!qTable[col.name]) {
-          console.log(`Adding ${col.name} to Questionnaires...`);
-          await queryInterface.addColumn('Questionnaires', col.name, {
-            type: col.type,
-            allowNull: true
-          });
-        }
-      }
-    } catch (e) {
-      console.log('Questionnaires table does not exist yet.');
-    }
-
-    // Sync all models WITHOUT alter:true to avoid foreign key issues on SQLite
-    await sequelize.sync();
-    console.log('Database synced');
+    // Sync all models with alter:true to automatically update schema
+    await sequelize.sync({ alter: true });
+    console.log('Database synced with alter:true');
   } catch (error) {
     console.error('Failed to initialize database:', error);
     throw error;
